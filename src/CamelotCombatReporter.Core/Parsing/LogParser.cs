@@ -17,6 +17,11 @@ public class LogParser
         @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You hit (the )?(?<target>.+?) for (?<amount>\d+) points of(?: (?<type>\w+))? damage[!.]?$",
         RegexOptions.Compiled);
 
+    // Regex to capture damage taken by the player.
+    private static readonly Regex DamageTakenPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<source>.+?) hits you for (?<amount>\d+) points of(?: (?<type>\w+))? damage[.!]?$",
+        RegexOptions.Compiled);
+
     public LogParser(string logFilePath)
     {
         _logFilePath = logFilePath;
@@ -38,10 +43,10 @@ public class LogParser
         // Using File.ReadLines for memory efficiency with large files.
         foreach (var line in File.ReadLines(_logFilePath))
         {
-            var match = DamageDealtPattern.Match(line);
-            if (match.Success)
+            var dealtMatch = DamageDealtPattern.Match(line);
+            if (dealtMatch.Success)
             {
-                var groups = match.Groups;
+                var groups = dealtMatch.Groups;
 
                 var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
                 var target = groups["target"].Value.Trim();
@@ -55,8 +60,26 @@ public class LogParser
                     DamageAmount: amount,
                     DamageType: damageType
                 );
+                continue; // Move to the next line
             }
-            // In the future, other patterns (healing, damage taken, etc.) would be checked here.
+
+            var takenMatch = DamageTakenPattern.Match(line);
+            if (takenMatch.Success)
+            {
+                var groups = takenMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var source = groups["source"].Value.Trim();
+                var amount = int.Parse(groups["amount"].Value);
+                var damageType = groups["type"].Success ? groups["type"].Value.Trim() : "Unknown";
+
+                yield return new DamageEvent(
+                    Timestamp: timestamp,
+                    Source: source,
+                    Target: "You",
+                    DamageAmount: amount,
+                    DamageType: damageType
+                );
+            }
         }
     }
 }
