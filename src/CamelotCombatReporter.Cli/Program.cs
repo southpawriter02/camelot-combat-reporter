@@ -4,11 +4,12 @@ using CamelotCombatReporter.Core.Parsing;
 if (args.Length == 0)
 {
     Console.WriteLine("Error: Please provide the path to a log file.");
-    Console.WriteLine("Usage: dotnet run --project src/CamelotCombatReporter.Cli -- <path_to_log_file>");
+    Console.WriteLine("Usage: dotnet run --project src/CamelotCombatReporter.Cli -- <path_to_log_file> [combatant_name]");
     return 1;
 }
 
 var logFilePath = args[0];
+var combatantName = args.Length > 1 ? args[1] : "You";
 var logParser = new LogParser(logFilePath);
 var events = logParser.Parse().ToList();
 
@@ -26,7 +27,7 @@ var duration = lastEventTime - firstEventTime;
 var combatStyleCount = events.OfType<CombatStyleEvent>().Count();
 var spellCastCount = events.OfType<SpellCastEvent>().Count();
 
-var damageDealtEvents = events.OfType<DamageEvent>().Where(e => e.Source == "You").ToList();
+var damageDealtEvents = events.OfType<DamageEvent>().Where(e => e.Source == combatantName).ToList();
 var totalDamageDealt = damageDealtEvents.Sum(e => e.DamageAmount);
 var damageDealtAmounts = damageDealtEvents.Select(e => e.DamageAmount).OrderBy(d => d).ToList();
 
@@ -45,7 +46,7 @@ var dps = duration.TotalSeconds > 0 ? totalDamageDealt / duration.TotalSeconds :
 // Reporting
 Console.WriteLine("--- Combat Report ---");
 Console.WriteLine($"Log Duration: {duration.TotalMinutes:F2} minutes");
-Console.WriteLine("\n--- Player Statistics ---");
+Console.WriteLine($"\n--- Statistics for {combatantName} ---");
 Console.WriteLine($"Total Damage Dealt: {totalDamageDealt}");
 Console.WriteLine($"Damage Per Second (DPS): {dps:F2}");
 Console.WriteLine($"Average Damage: {damageAverage:F2}");
