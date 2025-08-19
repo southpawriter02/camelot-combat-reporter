@@ -22,6 +22,16 @@ public class LogParser
         @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<source>.+?) hits you for (?<amount>\d+) points of(?: (?<type>\w+))? damage[.!]?$",
         RegexOptions.Compiled);
 
+    // Regex to capture combat styles used by the player.
+    private static readonly Regex CombatStylePattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You use (?<style>.+?) on (?<target>.+?)[.!]?$",
+        RegexOptions.Compiled);
+
+    // Regex to capture spells cast by the player.
+    private static readonly Regex SpellCastPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You cast (?<spell>.+?) on (?<target>.+?)[.!]?$",
+        RegexOptions.Compiled);
+
     public LogParser(string logFilePath)
     {
         _logFilePath = logFilePath;
@@ -79,6 +89,41 @@ public class LogParser
                     DamageAmount: amount,
                     DamageType: damageType
                 );
+                continue;
+            }
+
+            var styleMatch = CombatStylePattern.Match(line);
+            if (styleMatch.Success)
+            {
+                var groups = styleMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var style = groups["style"].Value.Trim();
+                var target = groups["target"].Value.Trim();
+
+                yield return new CombatStyleEvent(
+                    Timestamp: timestamp,
+                    Source: "You",
+                    Target: target,
+                    StyleName: style
+                );
+                continue;
+            }
+
+            var spellMatch = SpellCastPattern.Match(line);
+            if (spellMatch.Success)
+            {
+                var groups = spellMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var spell = groups["spell"].Value.Trim();
+                var target = groups["target"].Value.Trim();
+
+                yield return new SpellCastEvent(
+                    Timestamp: timestamp,
+                    Source: "You",
+                    Target: target,
+                    SpellName: spell
+                );
+                continue;
             }
         }
     }
