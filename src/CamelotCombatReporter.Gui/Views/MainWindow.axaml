@@ -1,0 +1,171 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CamelotCombatReporter.Gui.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="650"
+        x:Class="CamelotCombatReporter.Gui.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Camelot Combat Reporter"
+        Width="600" Height="650">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Title -->
+            <TextBlock Text="Camelot Combat Reporter" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+            <!-- File Selection -->
+            <Border BorderBrush="#CCCCCC" 
+                    BorderThickness="1" 
+                    CornerRadius="5" 
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Log File Selection" FontWeight="Bold" FontSize="16"/>
+                    <Button Content="Select Log File" 
+                            Command="{Binding SelectLogFileCommand}"
+                            HorizontalAlignment="Left"
+                            Padding="15,8"/>
+                    <TextBlock Text="{Binding SelectedLogFile}" 
+                               TextWrapping="Wrap"
+                               Foreground="Gray"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Combatant Name -->
+            <Border BorderBrush="#CCCCCC" 
+                    BorderThickness="1" 
+                    CornerRadius="5" 
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Combatant Name" FontWeight="Bold" FontSize="16"/>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBox Grid.Column="0" 
+                                 Text="{Binding CombatantName}" 
+                                 Watermark="Enter combatant name"
+                                 VerticalContentAlignment="Center"/>
+                        <Button Grid.Column="1" 
+                                Content="Analyze" 
+                                Command="{Binding AnalyzeLogCommand}"
+                                Margin="10,0,0,0"
+                                Padding="15,8"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Combat Statistics -->
+            <Border BorderBrush="#4CAF50" 
+                    BorderThickness="2" 
+                    CornerRadius="5" 
+                    Padding="15"
+                    IsVisible="{Binding HasAnalyzedData}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Combat Statistics" 
+                               FontWeight="Bold" 
+                               FontSize="18"
+                               Foreground="#4CAF50"/>
+
+                    <Separator/>
+
+                    <!-- Log Duration -->
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Log Duration" FontWeight="SemiBold"/>
+                        <TextBlock FontSize="18" Foreground="#2196F3">
+                            <Run Text="{Binding LogDuration}"/>
+                            <Run Text=" minutes"/>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <Separator/>
+
+                    <!-- Damage Stats -->
+                    <TextBlock Text="Damage Statistics" 
+                               FontWeight="SemiBold" 
+                               FontSize="16"
+                               Margin="0,5,0,5"/>
+
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                        <!-- Total Damage -->
+                        <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,5,10">
+                            <TextBlock Text="Total Damage" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalDamageDealt}" 
+                                       FontSize="20" 
+                                       FontWeight="Bold"
+                                       Foreground="#FF5722"/>
+                        </StackPanel>
+
+                        <!-- DPS -->
+                        <StackPanel Grid.Column="1" Grid.Row="0" Margin="5,0,0,10">
+                            <TextBlock Text="DPS" FontSize="12" Foreground="Gray"/>
+                            <TextBlock FontSize="20" FontWeight="Bold" Foreground="#FF9800">
+                                <Run Text="{Binding DamagePerSecond}"/>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Average Damage -->
+                        <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,5,10">
+                            <TextBlock Text="Average Damage" FontSize="12" Foreground="Gray"/>
+                            <TextBlock FontSize="20" FontWeight="Bold" Foreground="#9C27B0">
+                                <Run Text="{Binding AverageDamage}"/>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Median Damage -->
+                        <StackPanel Grid.Column="1" Grid.Row="1" Margin="5,0,0,10">
+                            <TextBlock Text="Median Damage" FontSize="12" Foreground="Gray"/>
+                            <TextBlock FontSize="20" FontWeight="Bold" Foreground="#673AB7">
+                                <Run Text="{Binding MedianDamage}"/>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Combat Styles -->
+                        <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,0,5,0">
+                            <TextBlock Text="Combat Styles" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding CombatStylesUsed}" 
+                                       FontSize="20" 
+                                       FontWeight="Bold"
+                                       Foreground="#3F51B5"/>
+                        </StackPanel>
+
+                        <!-- Spells Cast -->
+                        <StackPanel Grid.Column="1" Grid.Row="2" Margin="5,0,0,0">
+                            <TextBlock Text="Spells Cast" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding SpellsCast}" 
+                                       FontSize="20" 
+                                       FontWeight="Bold"
+                                       Foreground="#00BCD4"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Instructions (shown when no data) -->
+            <Border BorderBrush="#FFC107" 
+                    BorderThickness="2" 
+                    CornerRadius="5" 
+                    Padding="15"
+                    IsVisible="{Binding !HasAnalyzedData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Getting Started" 
+                               FontWeight="Bold" 
+                               FontSize="16"
+                               Foreground="#FFC107"/>
+                    <TextBlock TextWrapping="Wrap">
+                        1. Click "Select Log File" to choose your combat log file<LineBreak/>
+                        2. Enter the combatant name (default: "You")<LineBreak/>
+                        3. Click "Analyze" to view your combat statistics
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+
+</Window>
