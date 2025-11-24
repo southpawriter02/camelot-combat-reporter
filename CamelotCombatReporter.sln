@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CamelotCombatReporter.Core.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CamelotCombatReporter.Gui", "src\CamelotCombatReporter.Gui\CamelotCombatReporter.Gui.csproj", "{B4DC8EA3-3494-4797-B6C8-95830F5A3408}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CamelotCombatReporter.Gui.Tests", "tests\CamelotCombatReporter.Gui.Tests\CamelotCombatReporter.Gui.Tests.csproj", "{7E0324DB-0592-4982-98F8-A031D1F030E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,18 @@ Global
 		{B4DC8EA3-3494-4797-B6C8-95830F5A3408}.Release|x64.Build.0 = Release|Any CPU
 		{B4DC8EA3-3494-4797-B6C8-95830F5A3408}.Release|x86.ActiveCfg = Release|Any CPU
 		{B4DC8EA3-3494-4797-B6C8-95830F5A3408}.Release|x86.Build.0 = Release|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Debug|x64.Build.0 = Debug|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Debug|x86.Build.0 = Debug|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Release|x64.ActiveCfg = Release|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Release|x64.Build.0 = Release|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Release|x86.ActiveCfg = Release|Any CPU
+		{7E0324DB-0592-4982-98F8-A031D1F030E9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,5 +96,6 @@ Global
 		{ACE0EA0A-D76B-435D-8B3A-3560320EDE8D} = {0985A033-AA8C-4F23-9187-57ADAC88A87C}
 		{2186CD36-EEB0-406F-8281-3F490487822B} = {50B2A47A-6890-40EE-9CE9-079478A9CAC3}
 		{B4DC8EA3-3494-4797-B6C8-95830F5A3408} = {0985A033-AA8C-4F23-9187-57ADAC88A87C}
+		{7E0324DB-0592-4982-98F8-A031D1F030E9} = {50B2A47A-6890-40EE-9CE9-079478A9CAC3}
 	EndGlobalSection
 EndGlobal
