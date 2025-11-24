@@ -70,7 +70,6 @@ public partial class MainWindowViewModel : ViewModelBase
         if (files.Count > 0)
         {
             SelectedLogFile = files[0].Path.LocalPath;
-            await AnalyzeLog();
         }
     }
 

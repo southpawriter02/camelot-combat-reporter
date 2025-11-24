@@ -29,18 +29,25 @@ public class MainWindowViewModelTests
     {
         // Arrange
         var viewModel = new MainWindowViewModel();
-        // Navigate from test bin directory to repository root
-        var repoRoot = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "..");
+        
+        // Find repository root by looking for the .git directory or data folder
+        var currentDir = AppDomain.CurrentDomain.BaseDirectory;
+        var repoRoot = FindRepositoryRoot(currentDir);
+        
+        if (repoRoot == null)
+        {
+            return; // Skip test if repository root cannot be found
+        }
+        
         var testLogPath = Path.Combine(repoRoot, "data", "sample.log");
-        var fullPath = Path.GetFullPath(testLogPath);
         
         // Skip test if sample.log doesn't exist
-        if (!File.Exists(fullPath))
+        if (!File.Exists(testLogPath))
         {
             return; // Skip test gracefully
         }
         
-        viewModel.SelectedLogFile = fullPath;
+        viewModel.SelectedLogFile = testLogPath;
 
         // Act
         await viewModel.AnalyzeLogCommand.ExecuteAsync(null);
@@ -53,6 +60,22 @@ public class MainWindowViewModelTests
         Assert.Equal("62.50", viewModel.MedianDamage);
         Assert.Equal(1, viewModel.CombatStylesUsed);
         Assert.Equal(2, viewModel.SpellsCast);
+    }
+
+    private static string? FindRepositoryRoot(string startPath)
+    {
+        var dir = new DirectoryInfo(startPath);
+        while (dir != null)
+        {
+            // Look for .git directory or data folder as markers of repository root
+            if (Directory.Exists(Path.Combine(dir.FullName, ".git")) ||
+                Directory.Exists(Path.Combine(dir.FullName, "data")))
+            {
+                return dir.FullName;
+            }
+            dir = dir.Parent;
+        }
+        return null;
     }
 
     [Fact]
