@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:CamelotCombatReporter.Gui.ViewModels"
+        xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="650"
@@ -16,18 +17,25 @@
 
     <ScrollViewer>
         <StackPanel Margin="20" Spacing="15">
-            <!-- Title -->
-            <TextBlock Text="Camelot Combat Reporter" 
-                       FontSize="24" 
-                       FontWeight="Bold" 
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,10"/>
+            <!-- Title and Theme Toggle -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+                <TextBlock Text="Camelot Combat Reporter"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Grid.Column="0"/>
+                <Button Content="Toggle Theme"
+                        Click="ToggleTheme"
+                        Grid.Column="1"/>
+            </Grid>
 
             <!-- File Selection -->
             <Border BorderBrush="#CCCCCC" 
                     BorderThickness="1" 
                     CornerRadius="5" 
-                    Padding="15">
+                    Padding="15"
+                    DragDrop.AllowDrop="True"
+                    DragDrop.Drop="OnDrop">
                 <StackPanel Spacing="10">
                     <TextBlock Text="Log File Selection" FontWeight="Bold" FontSize="16"/>
                     <Button Content="Select Log File" 
@@ -68,10 +76,16 @@
                     Padding="15"
                     IsVisible="{Binding HasAnalyzedData}">
                 <StackPanel Spacing="12">
-                    <TextBlock Text="Combat Statistics" 
-                               FontWeight="Bold" 
-                               FontSize="18"
-                               Foreground="#4CAF50"/>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="Combat Statistics"
+                                   FontWeight="Bold"
+                                   FontSize="18"
+                                   VerticalAlignment="Center"
+                                   Foreground="#4CAF50"/>
+                        <Button Grid.Column="1"
+                                Content="Export CSV"
+                                Command="{Binding ExportCsvCommand}"/>
+                    </Grid>
 
                     <Separator/>
 
@@ -144,6 +158,19 @@
                                        Foreground="#00BCD4"/>
                         </StackPanel>
                     </Grid>
+
+                    <Separator/>
+
+                    <!-- Damage Chart -->
+                    <TextBlock Text="Damage Over Time"
+                               FontWeight="SemiBold"
+                               FontSize="16"
+                               Margin="0,5,0,5"/>
+
+                    <lvc:CartesianChart Series="{Binding Series}"
+                                        XAxes="{Binding XAxes}"
+                                        Height="250"
+                                        Margin="0,0,0,10"/>
                 </StackPanel>
             </Border>
 
