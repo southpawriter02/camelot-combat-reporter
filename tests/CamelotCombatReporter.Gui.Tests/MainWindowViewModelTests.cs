@@ -101,4 +101,30 @@ public class MainWindowViewModelTests
         // Assert
         Assert.Equal("TestPlayer", viewModel.CombatantName);
     }
+
+    [Fact]
+    public async Task AnalyzeLog_ShouldGenerateChartSeries()
+    {
+        // Arrange
+        var viewModel = new MainWindowViewModel();
+
+        var currentDir = AppDomain.CurrentDomain.BaseDirectory;
+        var repoRoot = FindRepositoryRoot(currentDir);
+
+        if (repoRoot == null) return;
+
+        var testLogPath = Path.Combine(repoRoot, "data", "sample.log");
+
+        if (!File.Exists(testLogPath)) return;
+
+        viewModel.SelectedLogFile = testLogPath;
+
+        // Act
+        await viewModel.AnalyzeLogCommand.ExecuteAsync(null);
+
+        // Assert
+        Assert.True(viewModel.HasAnalyzedData);
+        Assert.NotNull(viewModel.Series);
+        Assert.NotEmpty(viewModel.Series);
+    }
 }
