@@ -4,93 +4,246 @@
         xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="650"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
         x:Class="CamelotCombatReporter.Gui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Camelot Combat Reporter"
-        Width="600" Height="650">
+        Width="1000" Height="900"
+        MinWidth="800" MinHeight="600">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding SelectLogFileCommand}"/>
+        <KeyBinding Gesture="Ctrl+E" Command="{Binding ExportCsvCommand}"/>
+        <KeyBinding Gesture="Ctrl+Shift+E" Command="{Binding ExportJsonCommand}"/>
+        <KeyBinding Gesture="Ctrl+R" Command="{Binding ResetFiltersCommand}"/>
+        <KeyBinding Gesture="F5" Command="{Binding AnalyzeLogCommand}"/>
+    </Window.KeyBindings>
+
     <ScrollViewer>
         <StackPanel Margin="20" Spacing="15">
-            <!-- Title and Theme Toggle -->
-            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+            <!-- Title Bar and Theme Toggle -->
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,10">
                 <TextBlock Text="Camelot Combat Reporter"
                            FontSize="24"
                            FontWeight="Bold"
-                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
                            Grid.Column="0"/>
-                <Button Content="Toggle Theme"
-                        Click="ToggleTheme"
-                        Grid.Column="1"/>
+
+                <!-- Quick Stats Summary Bar -->
+                <Border Grid.Column="1"
+                        Background="#1E88E5"
+                        CornerRadius="5"
+                        Padding="10,5"
+                        Margin="20,0"
+                        IsVisible="{Binding HasAnalyzedData}">
+                    <TextBlock Text="{Binding QuickStatsSummary}"
+                               Foreground="White"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+
+                <StackPanel Orientation="Horizontal" Spacing="10" Grid.Column="2">
+                    <TextBlock Text="Ctrl+O: Open | F5: Analyze | Ctrl+E: Export"
+                               FontSize="10"
+                               Foreground="Gray"
+                               VerticalAlignment="Center"/>
+                    <Button Content="Toggle Theme" Click="ToggleTheme"/>
+                </StackPanel>
             </Grid>
 
-            <!-- File Selection -->
-            <Border BorderBrush="#CCCCCC" 
-                    BorderThickness="1" 
-                    CornerRadius="5" 
-                    Padding="15"
-                    DragDrop.AllowDrop="True"
-                    DragDrop.Drop="OnDrop">
-                <StackPanel Spacing="10">
-                    <TextBlock Text="Log File Selection" FontWeight="Bold" FontSize="16"/>
-                    <Button Content="Select Log File" 
-                            Command="{Binding SelectLogFileCommand}"
-                            HorizontalAlignment="Left"
-                            Padding="15,8"/>
-                    <TextBlock Text="{Binding SelectedLogFile}" 
-                               TextWrapping="Wrap"
-                               Foreground="Gray"/>
-                </StackPanel>
-            </Border>
-
-            <!-- Combatant Name -->
-            <Border BorderBrush="#CCCCCC" 
-                    BorderThickness="1" 
-                    CornerRadius="5" 
-                    Padding="15">
-                <StackPanel Spacing="10">
-                    <TextBlock Text="Combatant Name" FontWeight="Bold" FontSize="16"/>
-                    <Grid ColumnDefinitions="*,Auto">
-                        <TextBox Grid.Column="0" 
-                                 Text="{Binding CombatantName}" 
-                                 Watermark="Enter combatant name"
-                                 VerticalContentAlignment="Center"/>
-                        <Button Grid.Column="1" 
-                                Content="Analyze" 
-                                Command="{Binding AnalyzeLogCommand}"
-                                Margin="10,0,0,0"
+            <!-- File Selection and Combatant Input Row -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+                <!-- File Selection -->
+                <Border BorderBrush="#CCCCCC"
+                        BorderThickness="1"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0"
+                        DragDrop.AllowDrop="True"
+                        DragDrop.Drop="OnDrop">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Log File Selection" FontWeight="Bold" FontSize="16"/>
+                        <Button Content="Select Log File (Ctrl+O)"
+                                Command="{Binding SelectLogFileCommand}"
+                                HorizontalAlignment="Left"
                                 Padding="15,8"/>
-                    </Grid>
-                </StackPanel>
+                        <TextBlock Text="{Binding SelectedLogFile}"
+                                   TextWrapping="Wrap"
+                                   Foreground="Gray"
+                                   FontSize="11"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Combatant Name -->
+                <Border BorderBrush="#CCCCCC"
+                        BorderThickness="1"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="7,0,0,0"
+                        Grid.Column="1">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Combatant Name" FontWeight="Bold" FontSize="16"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding CombatantName}"
+                                     Watermark="Enter combatant name"
+                                     VerticalContentAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    Content="Analyze (F5)"
+                                    Command="{Binding AnalyzeLogCommand}"
+                                    Margin="10,0,0,0"
+                                    Padding="15,8"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Filters Panel -->
+            <Border BorderBrush="#2196F3"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasAnalyzedData}">
+                <Expander Header="Filters &amp; Options" IsExpanded="True">
+                    <StackPanel Spacing="15" Margin="0,10,0,0">
+                        <!-- Event Type Toggles -->
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Event Types" FontWeight="SemiBold"/>
+                            <WrapPanel>
+                                <CheckBox Content="Damage Dealt" IsChecked="{Binding ShowDamageDealt}" Margin="0,0,15,0"/>
+                                <CheckBox Content="Damage Taken" IsChecked="{Binding ShowDamageTaken}" Margin="0,0,15,0"/>
+                                <CheckBox Content="Healing Done" IsChecked="{Binding ShowHealingDone}" Margin="0,0,15,0"/>
+                                <CheckBox Content="Healing Received" IsChecked="{Binding ShowHealingReceived}" Margin="0,0,15,0"/>
+                                <CheckBox Content="Combat Styles" IsChecked="{Binding ShowCombatStyles}" Margin="0,0,15,0"/>
+                                <CheckBox Content="Spells" IsChecked="{Binding ShowSpells}" Margin="0,0,15,0"/>
+                            </WrapPanel>
+                        </StackPanel>
+
+                        <Separator/>
+
+                        <!-- Damage Type and Target Filters -->
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto">
+                            <StackPanel Spacing="5" Margin="0,0,10,0">
+                                <TextBlock Text="Damage Type" FontWeight="SemiBold"/>
+                                <ComboBox ItemsSource="{Binding AvailableDamageTypes}"
+                                          SelectedItem="{Binding SelectedDamageType}"
+                                          HorizontalAlignment="Stretch"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Spacing="5" Margin="5,0">
+                                <TextBlock Text="Target Filter" FontWeight="SemiBold"/>
+                                <ComboBox ItemsSource="{Binding AvailableTargets}"
+                                          SelectedItem="{Binding SelectedTarget}"
+                                          HorizontalAlignment="Stretch"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Spacing="5" Margin="10,0,0,0">
+                                <TextBlock Text="Actions" FontWeight="SemiBold"/>
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <Button Content="Apply" Command="{Binding ApplyFiltersCommand}" Padding="10,5"/>
+                                    <Button Content="Reset (Ctrl+R)" Command="{Binding ResetFiltersCommand}" Padding="10,5"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
+                        <Separator/>
+
+                        <!-- Time Range Filter -->
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Time Range" FontWeight="SemiBold"/>
+                            <Grid ColumnDefinitions="Auto,*,Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                <TextBlock Text="Start:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <TextBox Grid.Column="1"
+                                         Text="{Binding TimeRangeStartText}"
+                                         Watermark="HH:mm:ss"
+                                         Width="100"/>
+                                <TextBlock Grid.Column="2" Text="End:" VerticalAlignment="Center" Margin="15,0,5,0"/>
+                                <TextBox Grid.Column="3"
+                                         Text="{Binding TimeRangeEndText}"
+                                         Watermark="HH:mm:ss"
+                                         Width="100"/>
+
+                                <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="5" Margin="15,0,0,0">
+                                    <Button Content="First 5m" Command="{Binding SetTimeRangePresetCommand}" CommandParameter="first5m" Padding="8,3"/>
+                                    <Button Content="Last 5m" Command="{Binding SetTimeRangePresetCommand}" CommandParameter="last5m" Padding="8,3"/>
+                                    <Button Content="First 10m" Command="{Binding SetTimeRangePresetCommand}" CommandParameter="first10m" Padding="8,3"/>
+                                    <Button Content="Last 10m" Command="{Binding SetTimeRangePresetCommand}" CommandParameter="last10m" Padding="8,3"/>
+                                    <Button Content="All" Command="{Binding SetTimeRangePresetCommand}" CommandParameter="all" Padding="8,3"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+
+                        <Separator/>
+
+                        <!-- Statistics Visibility Toggles -->
+                        <Expander Header="Statistics Visibility">
+                            <WrapPanel Margin="0,10,0,0">
+                                <CheckBox Content="Duration" IsChecked="{Binding ShowDurationStat}" Margin="0,0,15,5"/>
+                                <CheckBox Content="Total Damage" IsChecked="{Binding ShowTotalDamageStat}" Margin="0,0,15,5"/>
+                                <CheckBox Content="DPS" IsChecked="{Binding ShowDpsStat}" Margin="0,0,15,5"/>
+                                <CheckBox Content="Average Damage" IsChecked="{Binding ShowAverageDamageStat}" Margin="0,0,15,5"/>
+                                <CheckBox Content="Median Damage" IsChecked="{Binding ShowMedianDamageStat}" Margin="0,0,15,5"/>
+                                <CheckBox Content="Combat Styles" IsChecked="{Binding ShowCombatStylesStat}" Margin="0,0,15,5"/>
+                                <CheckBox Content="Spells Cast" IsChecked="{Binding ShowSpellsCastStat}" Margin="0,0,15,5"/>
+                                <CheckBox Content="Healing Stats" IsChecked="{Binding ShowHealingStats}" Margin="0,0,15,5"/>
+                                <CheckBox Content="Damage Taken Stats" IsChecked="{Binding ShowDamageTakenStats}" Margin="0,0,15,5"/>
+                            </WrapPanel>
+                        </Expander>
+
+                        <Separator/>
+
+                        <!-- Comparison Mode -->
+                        <Expander Header="Log Comparison">
+                            <StackPanel Spacing="10" Margin="0,10,0,0">
+                                <CheckBox Content="Enable Comparison Mode" IsChecked="{Binding IsComparisonMode}"/>
+                                <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsComparisonMode}">
+                                    <Button Content="Select Comparison Log" Command="{Binding SelectComparisonLogFileCommand}" Padding="10,5"/>
+                                    <TextBlock Text="{Binding ComparisonLogFile}"
+                                               Foreground="Gray"
+                                               VerticalAlignment="Center"
+                                               MaxWidth="400"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding ComparisonSummary}"
+                                           IsVisible="{Binding IsComparisonMode}"
+                                           FontWeight="SemiBold"
+                                           Foreground="#4CAF50"/>
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                </Expander>
             </Border>
 
-            <!-- Combat Statistics -->
-            <Border BorderBrush="#4CAF50" 
-                    BorderThickness="2" 
-                    CornerRadius="5" 
+            <!-- Combat Statistics Panel -->
+            <Border BorderBrush="#4CAF50"
+                    BorderThickness="2"
+                    CornerRadius="5"
                     Padding="15"
                     IsVisible="{Binding HasAnalyzedData}">
                 <StackPanel Spacing="12">
+                    <!-- Header with Export Buttons -->
                     <Grid ColumnDefinitions="*,Auto">
                         <TextBlock Text="Combat Statistics"
                                    FontWeight="Bold"
                                    FontSize="18"
                                    VerticalAlignment="Center"
                                    Foreground="#4CAF50"/>
-                        <Button Grid.Column="1"
-                                Content="Export CSV"
-                                Command="{Binding ExportCsvCommand}"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                            <Button Content="Export CSV (Ctrl+E)" Command="{Binding ExportCsvCommand}"/>
+                            <Button Content="Export JSON" Command="{Binding ExportJsonCommand}"/>
+                        </StackPanel>
                     </Grid>
 
                     <Separator/>
 
                     <!-- Log Duration -->
-                    <StackPanel Spacing="5">
+                    <StackPanel Spacing="5" IsVisible="{Binding ShowDurationStat}">
                         <TextBlock Text="Log Duration" FontWeight="SemiBold"/>
                         <TextBlock FontSize="18" Foreground="#2196F3">
                             <Run Text="{Binding LogDuration}"/>
@@ -98,26 +251,26 @@
                         </TextBlock>
                     </StackPanel>
 
-                    <Separator/>
+                    <Separator IsVisible="{Binding ShowDurationStat}"/>
 
-                    <!-- Damage Stats -->
-                    <TextBlock Text="Damage Statistics" 
-                               FontWeight="SemiBold" 
+                    <!-- Damage Dealt Stats -->
+                    <TextBlock Text="Damage Dealt Statistics"
+                               FontWeight="SemiBold"
                                FontSize="16"
                                Margin="0,5,0,5"/>
 
-                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto">
                         <!-- Total Damage -->
-                        <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,5,10">
+                        <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,5,10" IsVisible="{Binding ShowTotalDamageStat}">
                             <TextBlock Text="Total Damage" FontSize="12" Foreground="Gray"/>
-                            <TextBlock Text="{Binding TotalDamageDealt}" 
-                                       FontSize="20" 
+                            <TextBlock Text="{Binding TotalDamageDealt}"
+                                       FontSize="20"
                                        FontWeight="Bold"
                                        Foreground="#FF5722"/>
                         </StackPanel>
 
                         <!-- DPS -->
-                        <StackPanel Grid.Column="1" Grid.Row="0" Margin="5,0,0,10">
+                        <StackPanel Grid.Column="1" Grid.Row="0" Margin="5,0,5,10" IsVisible="{Binding ShowDpsStat}">
                             <TextBlock Text="DPS" FontSize="12" Foreground="Gray"/>
                             <TextBlock FontSize="20" FontWeight="Bold" Foreground="#FF9800">
                                 <Run Text="{Binding DamagePerSecond}"/>
@@ -125,7 +278,7 @@
                         </StackPanel>
 
                         <!-- Average Damage -->
-                        <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,5,10">
+                        <StackPanel Grid.Column="2" Grid.Row="0" Margin="5,0,5,10" IsVisible="{Binding ShowAverageDamageStat}">
                             <TextBlock Text="Average Damage" FontSize="12" Foreground="Gray"/>
                             <TextBlock FontSize="20" FontWeight="Bold" Foreground="#9C27B0">
                                 <Run Text="{Binding AverageDamage}"/>
@@ -133,7 +286,7 @@
                         </StackPanel>
 
                         <!-- Median Damage -->
-                        <StackPanel Grid.Column="1" Grid.Row="1" Margin="5,0,0,10">
+                        <StackPanel Grid.Column="3" Grid.Row="0" Margin="5,0,0,10" IsVisible="{Binding ShowMedianDamageStat}">
                             <TextBlock Text="Median Damage" FontSize="12" Foreground="Gray"/>
                             <TextBlock FontSize="20" FontWeight="Bold" Foreground="#673AB7">
                                 <Run Text="{Binding MedianDamage}"/>
@@ -141,54 +294,322 @@
                         </StackPanel>
 
                         <!-- Combat Styles -->
-                        <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,0,5,0">
+                        <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,5,0" IsVisible="{Binding ShowCombatStylesStat}">
                             <TextBlock Text="Combat Styles" FontSize="12" Foreground="Gray"/>
-                            <TextBlock Text="{Binding CombatStylesUsed}" 
-                                       FontSize="20" 
+                            <TextBlock Text="{Binding CombatStylesUsed}"
+                                       FontSize="20"
                                        FontWeight="Bold"
                                        Foreground="#3F51B5"/>
                         </StackPanel>
 
                         <!-- Spells Cast -->
-                        <StackPanel Grid.Column="1" Grid.Row="2" Margin="5,0,0,0">
+                        <StackPanel Grid.Column="1" Grid.Row="1" Margin="5,0,5,0" IsVisible="{Binding ShowSpellsCastStat}">
                             <TextBlock Text="Spells Cast" FontSize="12" Foreground="Gray"/>
-                            <TextBlock Text="{Binding SpellsCast}" 
-                                       FontSize="20" 
+                            <TextBlock Text="{Binding SpellsCast}"
+                                       FontSize="20"
                                        FontWeight="Bold"
                                        Foreground="#00BCD4"/>
                         </StackPanel>
                     </Grid>
 
-                    <Separator/>
+                    <!-- Damage Taken Stats -->
+                    <Separator IsVisible="{Binding ShowDamageTakenStats}"/>
+                    <StackPanel IsVisible="{Binding ShowDamageTakenStats}" Spacing="5">
+                        <TextBlock Text="Damage Taken Statistics"
+                                   FontWeight="SemiBold"
+                                   FontSize="16"
+                                   Margin="0,5,0,5"/>
+                        <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto">
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Text="Total Taken" FontSize="12" Foreground="Gray"/>
+                                <TextBlock Text="{Binding TotalDamageTaken}"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Foreground="#F44336"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5,0,5,0">
+                                <TextBlock Text="DTPS" FontSize="12" Foreground="Gray"/>
+                                <TextBlock FontSize="20" FontWeight="Bold" Foreground="#E91E63">
+                                    <Run Text="{Binding DamageTakenPerSecond}"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Margin="5,0,5,0">
+                                <TextBlock Text="Average Taken" FontSize="12" Foreground="Gray"/>
+                                <TextBlock FontSize="20" FontWeight="Bold" Foreground="#C2185B">
+                                    <Run Text="{Binding AverageDamageTaken}"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="3" Margin="5,0,0,0">
+                                <TextBlock Text="Median Taken" FontSize="12" Foreground="Gray"/>
+                                <TextBlock FontSize="20" FontWeight="Bold" Foreground="#AD1457">
+                                    <Run Text="{Binding MedianDamageTaken}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
 
-                    <!-- Damage Chart -->
-                    <TextBlock Text="Damage Over Time"
-                               FontWeight="SemiBold"
-                               FontSize="16"
-                               Margin="0,5,0,5"/>
-
-                    <lvc:CartesianChart Series="{Binding Series}"
-                                        XAxes="{Binding XAxes}"
-                                        Height="250"
-                                        Margin="0,0,0,10"/>
+                    <!-- Healing Stats -->
+                    <Separator IsVisible="{Binding ShowHealingStats}"/>
+                    <StackPanel IsVisible="{Binding ShowHealingStats}" Spacing="5">
+                        <TextBlock Text="Healing Statistics"
+                                   FontWeight="SemiBold"
+                                   FontSize="16"
+                                   Margin="0,5,0,5"/>
+                        <Grid ColumnDefinitions="*,*,*,*,*,*" RowDefinitions="Auto">
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Text="Total Healing Done" FontSize="12" Foreground="Gray"/>
+                                <TextBlock Text="{Binding TotalHealingDone}"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Foreground="#4CAF50"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5,0,5,0">
+                                <TextBlock Text="HPS" FontSize="12" Foreground="Gray"/>
+                                <TextBlock FontSize="20" FontWeight="Bold" Foreground="#66BB6A">
+                                    <Run Text="{Binding HealingPerSecond}"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Margin="5,0,5,0">
+                                <TextBlock Text="Average Heal" FontSize="12" Foreground="Gray"/>
+                                <TextBlock FontSize="20" FontWeight="Bold" Foreground="#81C784">
+                                    <Run Text="{Binding AverageHealing}"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="3" Margin="5,0,5,0">
+                                <TextBlock Text="Median Heal" FontSize="12" Foreground="Gray"/>
+                                <TextBlock FontSize="20" FontWeight="Bold" Foreground="#A5D6A7">
+                                    <Run Text="{Binding MedianHealing}"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4" Margin="5,0,5,0">
+                                <TextBlock Text="Healing Received" FontSize="12" Foreground="Gray"/>
+                                <TextBlock Text="{Binding TotalHealingReceived}"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Foreground="#00C853"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="5" Margin="5,0,0,0">
+                                <TextBlock Text="HRPS" FontSize="12" Foreground="Gray"/>
+                                <TextBlock FontSize="20" FontWeight="Bold" Foreground="#69F0AE">
+                                    <Run Text="{Binding HealingReceivedPerSecond}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
                 </StackPanel>
             </Border>
 
+            <!-- Chart Options and Main Chart -->
+            <Border BorderBrush="#9C27B0"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasAnalyzedData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Damage Over Time Chart"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#9C27B0"/>
+
+                    <!-- Chart Options -->
+                    <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto" RowDefinitions="Auto">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Type:" VerticalAlignment="Center"/>
+                            <ComboBox ItemsSource="{Binding ChartTypes}"
+                                      SelectedItem="{Binding SelectedChartType}"
+                                      Width="80"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" Margin="20,0,0,0">
+                            <TextBlock Text="Interval:" VerticalAlignment="Center"/>
+                            <ComboBox ItemsSource="{Binding ChartIntervals}"
+                                      SelectedItem="{Binding SelectedChartInterval}"
+                                      Width="70"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" Margin="20,0,0,0">
+                            <CheckBox Content="Damage Dealt" IsChecked="{Binding ShowDamageDealtOnChart}"/>
+                            <CheckBox Content="Damage Taken" IsChecked="{Binding ShowDamageTakenOnChart}"/>
+                            <CheckBox Content="Healing" IsChecked="{Binding ShowHealingOnChart}"/>
+                            <CheckBox Content="DPS Trend" IsChecked="{Binding ShowDpsTrendLine}"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="4"
+                                Content="Update Chart"
+                                Command="{Binding UpdateChartCommand}"
+                                Padding="10,5"/>
+                    </Grid>
+
+                    <!-- Main Chart -->
+                    <lvc:CartesianChart Series="{Binding Series}"
+                                        XAxes="{Binding XAxes}"
+                                        YAxes="{Binding YAxes}"
+                                        Height="300"
+                                        Margin="0,10,0,0"
+                                        LegendPosition="Right"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Pie Charts Row -->
+            <Grid ColumnDefinitions="*,*" IsVisible="{Binding HasAnalyzedData}">
+                <!-- Damage By Target -->
+                <Border BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Damage By Target"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#FF9800"/>
+                        <lvc:PieChart Series="{Binding DamageByTargetSeries}"
+                                      Height="200"
+                                      LegendPosition="Right"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Damage Type Distribution -->
+                <Border Grid.Column="1"
+                        BorderBrush="#00BCD4"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Damage Type Distribution"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#00BCD4"/>
+                        <lvc:PieChart Series="{Binding DamageTypeSeries}"
+                                      Height="200"
+                                      LegendPosition="Right"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Combat Styles and Spells Lists -->
+            <Grid ColumnDefinitions="*,*" IsVisible="{Binding HasAnalyzedData}">
+                <!-- Combat Styles List -->
+                <Border BorderBrush="#3F51B5"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Combat Styles Used"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#3F51B5"/>
+                        <DataGrid ItemsSource="{Binding CombatStyleDetails}"
+                                  Height="150"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Style Name" Binding="{Binding StyleName}" Width="*"/>
+                                <DataGridTextColumn Header="Count" Binding="{Binding Count}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Spells List -->
+                <Border Grid.Column="1"
+                        BorderBrush="#E91E63"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Spells Cast"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#E91E63"/>
+                        <DataGrid ItemsSource="{Binding SpellCastDetails}"
+                                  Height="150"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Spell Name" Binding="{Binding SpellName}" Width="*"/>
+                                <DataGridTextColumn Header="Count" Binding="{Binding Count}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Detailed Event Table -->
+            <Border BorderBrush="#607D8B"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasAnalyzedData}">
+                <Expander Header="Detailed Event Log" IsExpanded="False">
+                    <StackPanel Spacing="10" Margin="0,10,0,0">
+                        <!-- Search/Filter -->
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding EventTableFilter}"
+                                     Watermark="Filter by source, target, or details..."
+                                     Margin="0,0,10,0"/>
+                            <Button Grid.Column="2"
+                                    Content="Filter"
+                                    Command="{Binding ApplyFiltersCommand}"
+                                    Padding="15,5"/>
+                        </Grid>
+
+                        <!-- Event Table -->
+                        <DataGrid ItemsSource="{Binding EventTableRows}"
+                                  Height="300"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="All"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  CanUserSortColumns="True"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Time" Binding="{Binding Timestamp}" Width="80"/>
+                                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="70"/>
+                                <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="*"/>
+                                <DataGridTextColumn Header="Target" Binding="{Binding Target}" Width="*"/>
+                                <DataGridTextColumn Header="Amount" Binding="{Binding Amount}" Width="80"/>
+                                <DataGridTextColumn Header="Details" Binding="{Binding Details}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Expander>
+            </Border>
+
             <!-- Instructions (shown when no data) -->
-            <Border BorderBrush="#FFC107" 
-                    BorderThickness="2" 
-                    CornerRadius="5" 
+            <Border BorderBrush="#FFC107"
+                    BorderThickness="2"
+                    CornerRadius="5"
                     Padding="15"
                     IsVisible="{Binding !HasAnalyzedData}">
                 <StackPanel Spacing="10">
-                    <TextBlock Text="Getting Started" 
-                               FontWeight="Bold" 
+                    <TextBlock Text="Getting Started"
+                               FontWeight="Bold"
                                FontSize="16"
                                Foreground="#FFC107"/>
                     <TextBlock TextWrapping="Wrap">
-                        1. Click "Select Log File" to choose your combat log file<LineBreak/>
+                        1. Click "Select Log File" or drag-and-drop a combat log file<LineBreak/>
                         2. Enter the combatant name (default: "You")<LineBreak/>
-                        3. Click "Analyze" to view your combat statistics
+                        3. Click "Analyze" to view your combat statistics<LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Keyboard Shortcuts:</Run><LineBreak/>
+                        - Ctrl+O: Open log file<LineBreak/>
+                        - F5: Analyze log<LineBreak/>
+                        - Ctrl+E: Export to CSV<LineBreak/>
+                        - Ctrl+Shift+E: Export to JSON<LineBreak/>
+                        - Ctrl+R: Reset filters
                     </TextBlock>
                 </StackPanel>
             </Border>

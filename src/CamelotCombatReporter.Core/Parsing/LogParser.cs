@@ -32,6 +32,16 @@ public class LogParser
         @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You cast (?<spell>.+?) on (?<target>.+?)[.!]?$",
         RegexOptions.Compiled);
 
+    // Regex to capture healing done by the player.
+    private static readonly Regex HealingDonePattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You heal (?<target>.+?) for (?<amount>\d+) hit points[.!]?$",
+        RegexOptions.Compiled);
+
+    // Regex to capture healing received by the player.
+    private static readonly Regex HealingReceivedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<source>.+?) heals you for (?<amount>\d+) hit points[.!]?$",
+        RegexOptions.Compiled);
+
     public LogParser(string logFilePath)
     {
         _logFilePath = logFilePath;
@@ -122,6 +132,40 @@ public class LogParser
                     Source: "You",
                     Target: target,
                     SpellName: spell
+                );
+                continue;
+            }
+
+            var healDoneMatch = HealingDonePattern.Match(line);
+            if (healDoneMatch.Success)
+            {
+                var groups = healDoneMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+                var amount = int.Parse(groups["amount"].Value);
+
+                yield return new HealingEvent(
+                    Timestamp: timestamp,
+                    Source: "You",
+                    Target: target,
+                    HealingAmount: amount
+                );
+                continue;
+            }
+
+            var healReceivedMatch = HealingReceivedPattern.Match(line);
+            if (healReceivedMatch.Success)
+            {
+                var groups = healReceivedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var source = groups["source"].Value.Trim();
+                var amount = int.Parse(groups["amount"].Value);
+
+                yield return new HealingEvent(
+                    Timestamp: timestamp,
+                    Source: source,
+                    Target: "You",
+                    HealingAmount: amount
                 );
                 continue;
             }
