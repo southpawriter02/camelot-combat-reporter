@@ -1,0 +1,10 @@
+This line has no timestamp
+[25:00:00] Invalid hour in timestamp
+[12:60:00] Invalid minute in timestamp
+[12:00:60] Invalid second in timestamp
+[12:00:01] You hit the goblin for 150 damage!
+Just some random text
+[12:00:02] Valid line here
+[abc:de:fg] Invalid timestamp format
+
+[12:00:03] Another valid damage line: You hit the troll for 200 damage!
