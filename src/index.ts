@@ -80,3 +80,62 @@ export {
 
 // Utilities
 export { extractTimestamp, hasValidTimestamp, type TimestampResult } from './utils/index.js';
+
+// Combat Analysis
+export {
+  // Main Analyzer
+  CombatAnalyzer,
+  // Configuration
+  type CombatSessionConfig,
+  type MetricsConfig,
+  type AnalysisConfig,
+  DEFAULT_SESSION_CONFIG,
+  DEFAULT_METRICS_CONFIG,
+  DEFAULT_ANALYSIS_CONFIG,
+  // Session
+  type ParticipantRole,
+  type SessionParticipant,
+  type KeyEventReason,
+  type KeyEvent,
+  type SessionSummary,
+  type CombatSession,
+  type SessionUpdate,
+  // Metrics
+  type CriticalStats,
+  type ActionBreakdown,
+  type DamageTypeBreakdown,
+  type TargetBreakdown,
+  type SourceBreakdown,
+  type DamageMetrics,
+  type SpellHealingBreakdown,
+  type HealingTargetBreakdown,
+  type HealingSourceBreakdown,
+  type HealingMetrics,
+  type ParticipantMetrics,
+  // Summary
+  type DamageMeterEntry,
+  type HealingMeterEntry,
+  type DeathTimelineEntry,
+  type CCTimelineEntry,
+  type FightSummary,
+  type AnalysisResult,
+  // Sub-components
+  SessionDetector,
+  DPSCalculator,
+  DamageCalculator,
+  HealingCalculator,
+  KeyEventDetector,
+  FightSummarizer,
+  type TimelinePoint,
+  type PeakResult,
+  type KeyEventConfig,
+  type FightSummarizerConfig,
+  DEFAULT_KEY_EVENT_CONFIG,
+  DEFAULT_FIGHT_SUMMARIZER_CONFIG,
+  // Time utilities
+  formatDuration,
+  calculateDuration,
+  getRelativeTime,
+  formatTimestamp,
+  formatRelativeTime,
+} from './analysis/index.js';
