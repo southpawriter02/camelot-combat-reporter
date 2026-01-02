@@ -19,6 +19,12 @@ import {
   type PlayerSessionStats,
   type PlayerAggregateStats,
 } from './player-stats/index.js';
+import {
+  TimelineGenerator,
+  type TimelineView,
+  type TimelineEntry,
+  type TimelineFilterConfig,
+} from './timeline/index.js';
 
 /**
  * Main facade class for combat analysis
@@ -49,6 +55,7 @@ export class CombatAnalyzer {
   private healingCalculator: HealingCalculator;
   private fightSummarizer: FightSummarizer;
   private playerStatisticsCalculator: PlayerStatisticsCalculator;
+  private timelineGenerator: TimelineGenerator;
 
   constructor(config: PartialAnalysisConfig = {}) {
     this.config = {
@@ -65,6 +72,7 @@ export class CombatAnalyzer {
       metrics: this.config.metrics,
     });
     this.playerStatisticsCalculator = new PlayerStatisticsCalculator();
+    this.timelineGenerator = new TimelineGenerator();
   }
 
   /**
@@ -375,5 +383,53 @@ export class CombatAnalyzer {
    */
   getAllPlayerStats(sessions: CombatSession[]): Map<string, PlayerAggregateStats> {
     return this.playerStatisticsCalculator.calculateAllPlayers(sessions);
+  }
+
+  /**
+   * Get a timeline view for a session with optional filtering
+   *
+   * @param session - The combat session to generate timeline for
+   * @param filter - Optional filter configuration
+   * @returns Complete timeline view with entries, stats, and time range
+   *
+   * @example
+   * ```typescript
+   * // Get all events
+   * const timeline = analyzer.getTimeline(session);
+   *
+   * // Get only damage events above 100
+   * const damageTimeline = analyzer.getTimeline(session, {
+   *   eventTypes: [EventType.DAMAGE_DEALT, EventType.DAMAGE_RECEIVED],
+   *   minValue: 100,
+   * });
+   *
+   * // Get events for a specific player
+   * const playerTimeline = analyzer.getTimeline(session, {
+   *   entityName: 'PlayerName',
+   * });
+   *
+   * // Get events in a time window
+   * const windowTimeline = analyzer.getTimeline(session, {
+   *   startTimeMs: 30000,  // 30 seconds in
+   *   endTimeMs: 60000,    // 60 seconds in
+   * });
+   * ```
+   */
+  getTimeline(
+    session: CombatSession,
+    filter?: Partial<TimelineFilterConfig>
+  ): TimelineView {
+    return this.timelineGenerator.generate(session, filter);
+  }
+
+  /**
+   * Create a single timeline entry from a combat event
+   *
+   * @param event - The combat event to convert
+   * @param sessionStartTime - Start time of the session for relative timing
+   * @returns A rich timeline entry representation
+   */
+  getTimelineEntry(event: CombatEvent, sessionStartTime: Date): TimelineEntry {
+    return this.timelineGenerator.createEntry(event, sessionStartTime);
   }
 }

@@ -93,3 +93,22 @@ export {
   type TrendData,
   PlayerStatisticsCalculator,
 } from './player-stats/index.js';
+
+// Timeline
+export {
+  // Types
+  type TimelineMarkerCategory,
+  type TimelineEntryDetails,
+  type TimelineEntry,
+  type TimelineFilterConfig,
+  type TimelineStats,
+  type TimelineVisibleRange,
+  type TimelineView,
+  type TimelineConfig,
+  DEFAULT_TIMELINE_FILTER,
+  DEFAULT_TIMELINE_CONFIG,
+  // Classes
+  TimelineEventFormatter,
+  TimelineFilter,
+  TimelineGenerator,
+} from './timeline/index.js';
