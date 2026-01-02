@@ -71,3 +71,25 @@ export {
   formatTimestamp,
   formatRelativeTime,
 } from './utils/timeUtils.js';
+
+// Player Statistics
+export {
+  // Types
+  type PerformanceRating,
+  type ConsistencyRating,
+  type TrendPoint,
+  type PlayerSessionStats,
+  type PlayerAggregateStats,
+  type PlayerStatsConfig,
+  type PerformanceThresholds,
+  type ConsistencyThresholds,
+  DEFAULT_PERFORMANCE_THRESHOLDS,
+  DEFAULT_CONSISTENCY_THRESHOLDS,
+  DEFAULT_PLAYER_STATS_CONFIG,
+  // Classes
+  PerformanceScorer,
+  type PerformanceInput,
+  TrendCalculator,
+  type TrendData,
+  PlayerStatisticsCalculator,
+} from './player-stats/index.js';

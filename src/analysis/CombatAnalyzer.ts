@@ -14,6 +14,11 @@ import { SessionDetector } from './session/SessionDetector.js';
 import { DamageCalculator } from './metrics/DamageCalculator.js';
 import { HealingCalculator } from './metrics/HealingCalculator.js';
 import { FightSummarizer } from './summary/FightSummarizer.js';
+import {
+  PlayerStatisticsCalculator,
+  type PlayerSessionStats,
+  type PlayerAggregateStats,
+} from './player-stats/index.js';
 
 /**
  * Main facade class for combat analysis
@@ -43,6 +48,7 @@ export class CombatAnalyzer {
   private damageCalculator: DamageCalculator;
   private healingCalculator: HealingCalculator;
   private fightSummarizer: FightSummarizer;
+  private playerStatisticsCalculator: PlayerStatisticsCalculator;
 
   constructor(config: PartialAnalysisConfig = {}) {
     this.config = {
@@ -58,6 +64,7 @@ export class CombatAnalyzer {
     this.fightSummarizer = new FightSummarizer({
       metrics: this.config.metrics,
     });
+    this.playerStatisticsCalculator = new PlayerStatisticsCalculator();
   }
 
   /**
@@ -330,5 +337,43 @@ export class CombatAnalyzer {
    */
   getDamageReport(session: CombatSession): string {
     return this.fightSummarizer.getDamageReport(session);
+  }
+
+  /**
+   * Get player statistics for a specific session
+   *
+   * @param session - The combat session to analyze
+   * @param playerName - Name of the player to get stats for
+   * @returns Player session stats or null if player not found
+   */
+  getPlayerSessionStats(
+    session: CombatSession,
+    playerName: string
+  ): PlayerSessionStats | null {
+    return this.playerStatisticsCalculator.calculateForSession(session, playerName);
+  }
+
+  /**
+   * Get aggregate player statistics across multiple sessions
+   *
+   * @param sessions - Array of combat sessions to analyze
+   * @param playerName - Name of the player to get stats for
+   * @returns Aggregate player stats or null if player not found in any session
+   */
+  getPlayerAggregateStats(
+    sessions: CombatSession[],
+    playerName: string
+  ): PlayerAggregateStats | null {
+    return this.playerStatisticsCalculator.calculateAggregate(sessions, playerName);
+  }
+
+  /**
+   * Get aggregate statistics for all players across multiple sessions
+   *
+   * @param sessions - Array of combat sessions to analyze
+   * @returns Map of player names to their aggregate stats
+   */
+  getAllPlayerStats(sessions: CombatSession[]): Map<string, PlayerAggregateStats> {
+    return this.playerStatisticsCalculator.calculateAllPlayers(sessions);
   }
 }
