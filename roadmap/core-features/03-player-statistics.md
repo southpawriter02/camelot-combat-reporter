@@ -1,5 +1,20 @@
 # 3. Player Statistics
 
+## Status: ✅ Complete
+
+**Implementation Location:** `src/statistics/`
+
+**Key Components:**
+- `PlayerStatistics` - Per-player aggregate statistics
+- `StatisticsCalculator` - Calculates totals, averages, trends
+- `PerformanceMetrics` - DPS/HPS/DTPS calculations with time windows
+- `LeaderboardGenerator` - Rankings by various metrics
+- Integration with database for persistent storage
+
+**Test Coverage:** Comprehensive unit tests in `tests/unit/statistics/`
+
+---
+
 ## Description
 
 This feature focuses on tracking and presenting long-term statistics for the player. While combat analysis provides per-session insights, player statistics will offer a historical view of performance, allowing players to track their progress over time.

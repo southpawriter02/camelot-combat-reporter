@@ -93,3 +93,6 @@ export {
 
 // OpenAPI
 export { generateOpenApiSpec, getSchemas } from './openapi/index.js';
+
+// Routes (for custom route registration)
+export { createMLRoutes } from './routes/ml.js';

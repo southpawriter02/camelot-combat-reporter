@@ -18,6 +18,7 @@ export type ApiPermission =
   | 'read:players'
   | 'read:stats'
   | 'read:realtime'
+  | 'read:ml'
   | 'admin';
 
 // ============================================================================

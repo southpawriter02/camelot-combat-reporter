@@ -35,7 +35,9 @@ import { createSessionRoutes } from './routes/sessions.js';
 import { createPlayerRoutes } from './routes/players.js';
 import { createStatsRoutes } from './routes/stats.js';
 import { createRealtimeRoutes } from './routes/realtime.js';
+import { createMLRoutes } from './routes/ml.js';
 import { generateOpenApiSpec } from './openapi/generator.js';
+import { MLPredictor } from '../ml/index.js';
 
 /**
  * SSE Manager for handling Server-Sent Event connections
@@ -202,6 +204,7 @@ export class ApiServer extends EventEmitter {
   private compiledRoutes: CompiledRoute[] = [];
   private globalMiddleware: Middleware[] = [];
   private sseManager: SSEManager;
+  private mlPredictor: MLPredictor;
 
   // Stats
   private startedAt: Date | null = null;
@@ -213,6 +216,7 @@ export class ApiServer extends EventEmitter {
     this.config = this.mergeConfig(DEFAULT_API_SERVER_CONFIG, config);
     this.database = database;
     this.sseManager = new SSEManager(this.config.sse);
+    this.mlPredictor = new MLPredictor();
 
     this.setupMiddleware();
     this.setupRoutes();
@@ -278,6 +282,11 @@ export class ApiServer extends EventEmitter {
     // Real-time routes
     this.routes.push(
       ...createRealtimeRoutes(this.sseManager, this, requirePermission('read:realtime'))
+    );
+
+    // ML routes
+    this.routes.push(
+      ...createMLRoutes(this.database, requirePermission('read:ml'), this.mlPredictor)
     );
 
     // OpenAPI route
@@ -471,6 +480,13 @@ export class ApiServer extends EventEmitter {
    */
   getDatabase(): DatabaseAdapter {
     return this.database;
+  }
+
+  /**
+   * Get ML predictor
+   */
+  getMLPredictor(): MLPredictor {
+    return this.mlPredictor;
   }
 
   /**

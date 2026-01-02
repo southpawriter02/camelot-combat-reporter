@@ -1,5 +1,20 @@
 # 1. Plugin System
 
+## Status: 📋 Planned
+
+**Prerequisites Met:**
+- ✅ Stable core API (parser, analysis, statistics, timeline)
+- ✅ Database integration with adapter pattern
+- ✅ REST API for external access
+
+**Next Steps:**
+- Define plugin manifest format
+- Create plugin loader with sandboxing
+- Design plugin hooks for data access and events
+- Build plugin registry/manager
+
+---
+
 ## Description
 
 To foster a community of developers and allow for maximum extensibility, a plugin system could be implemented. This would allow third-party developers to create and share their own plugins that add new features, visualizations, or analysis to the core application.

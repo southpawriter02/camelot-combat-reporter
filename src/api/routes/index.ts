@@ -7,3 +7,4 @@ export { createSessionRoutes } from './sessions.js';
 export { createPlayerRoutes } from './players.js';
 export { createStatsRoutes } from './stats.js';
 export { createRealtimeRoutes } from './realtime.js';
+export { createMLRoutes } from './ml.js';

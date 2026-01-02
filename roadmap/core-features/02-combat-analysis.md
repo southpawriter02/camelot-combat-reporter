@@ -1,5 +1,20 @@
 # 2. Combat Analysis
 
+## Status: ✅ Complete
+
+**Implementation Location:** `src/analysis/`
+
+**Key Components:**
+- `CombatAnalyzer` - Main analyzer with session detection and fight boundaries
+- `DamageAnalyzer` - Damage calculations, DPS, damage type breakdowns
+- `HealingAnalyzer` - Healing calculations, HPS, overheal tracking
+- `SessionManager` - Combat session detection with configurable thresholds
+- `FightSummary` - Per-fight summaries with participants, duration, meters
+
+**Test Coverage:** Comprehensive unit tests in `tests/unit/analysis/`
+
+---
+
 ## Description
 
 Once the log data is parsed, the next step is to analyze it to provide meaningful insights into combat encounters. This feature will focus on aggregating the parsed data to generate detailed combat reports.

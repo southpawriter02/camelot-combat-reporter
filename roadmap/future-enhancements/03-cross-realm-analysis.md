@@ -1,5 +1,21 @@
 # 3. Cross-Realm Analysis
 
+## Status: 📋 Planned
+
+**Prerequisites Met:**
+- ✅ Database integration with PostgreSQL adapter pattern
+- ✅ REST API for data upload and retrieval
+- ✅ Statistics aggregation queries
+
+**Next Steps:**
+- Design data anonymization strategy
+- Create opt-in consent mechanism
+- Design central server architecture
+- Build realm-specific aggregation queries
+- Create public leaderboard endpoints
+
+---
+
 ## Description
 
 This feature would enable the aggregation of data from players across different realms (Albion, Midgard, Hibernia) to provide a broader perspective on the game's balance and meta.

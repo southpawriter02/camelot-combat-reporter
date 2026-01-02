@@ -1,5 +1,13 @@
 # 1. UI Dashboard
 
+## Status: ⏸️ Deferred
+
+**Reason:** The project follows a library-first approach. The core library provides all the building blocks for UI development, but a dedicated UI dashboard is deferred to allow consumers to build their own interfaces using the API and data structures provided.
+
+**Alternative:** Use the REST API (`src/api/`) to build custom dashboards with any UI framework (React, Vue, Angular, Electron, etc.).
+
+---
+
 ## Description
 
 This feature involves creating a user-friendly graphical interface to present all the parsed data and analysis. A well-designed dashboard will make the tool accessible to a wider audience and enhance the user experience.

@@ -1,5 +1,20 @@
 # 2. Machine Learning Insights
 
+## Status: 📋 Planned
+
+**Prerequisites Met:**
+- ✅ Database integration for data storage
+- ✅ REST API for serving predictions
+- ✅ Statistics infrastructure for feature engineering
+
+**Next Steps:**
+- Define ML feature extraction from combat events
+- Create training data pipeline
+- Evaluate ML frameworks (TensorFlow.js for browser, Python for training)
+- Start with simpler models (fight outcome prediction)
+
+---
+
 ## Description
 
 This futuristic feature would leverage machine learning (ML) models to analyze the vast amounts of data collected by the log parser and provide predictive and prescriptive insights to players.

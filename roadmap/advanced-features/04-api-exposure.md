@@ -1,5 +1,30 @@
 # 4. API Exposure
 
+## Status: ✅ Complete
+
+**Implementation Location:** `src/api/`
+
+**Key Components:**
+- `ApiServer` - Native Node.js HTTP server (zero external dependencies)
+- `SSEManager` - Server-Sent Events for real-time streaming
+- Authentication middleware with API key support
+- Rate limiting middleware with configurable windows
+- CORS middleware for cross-origin requests
+- OpenAPI 3.0 specification generator
+
+**Endpoints:**
+- `/api/v1/events` - Query combat events
+- `/api/v1/sessions` - Query combat sessions
+- `/api/v1/players` - Player statistics and trends
+- `/api/v1/stats` - Aggregations and leaderboards
+- `/api/v1/realtime` - SSE streaming endpoints
+- `/api/v1/health` - Health checks
+- `/api/v1/openapi.json` - Auto-generated API documentation
+
+**Test Coverage:** Comprehensive unit tests in `tests/unit/api/`
+
+---
+
 ## Description
 
 This feature involves exposing the parsed data and analysis through an API (Application Programming Interface). This would allow other developers to build third-party tools, websites, or integrations on top of the DAoC Log Parser.

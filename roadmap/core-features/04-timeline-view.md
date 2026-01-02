@@ -1,5 +1,19 @@
 # 4. Timeline View
 
+## Status: ✅ Complete
+
+**Implementation Location:** `src/timeline/`
+
+**Key Components:**
+- `TimelineBuilder` - Constructs chronological event timelines
+- `TimelineFilter` - Filters by event type, participant, time range
+- `TimelineMarker` - Marks significant events (deaths, key abilities)
+- `TimelineExporter` - Export to various formats
+
+**Test Coverage:** Comprehensive unit tests in `tests/unit/timeline/`
+
+---
+
 ## Description
 
 The Timeline View will provide a detailed, chronological breakdown of a combat encounter. This feature allows users to replay a fight event by event, helping them to understand the flow of battle and analyze critical moments.

@@ -1,4 +1,4 @@
-import type { CombatEvent, ParsedLog } from '../types/index.js';
+import type { CombatEvent, ParsedLog, Entity } from '../types/index.js';
 import type {
   AnalysisConfig,
   PartialAnalysisConfig,
@@ -25,6 +25,14 @@ import {
   type TimelineEntry,
   type TimelineFilterConfig,
 } from './timeline/index.js';
+import {
+  MLPredictor,
+  type MLConfig,
+  type FightOutcomePrediction,
+  type PlaystyleClassification,
+  type PerformancePrediction,
+  type ThreatAssessment,
+} from '../ml/index.js';
 
 /**
  * Main facade class for combat analysis
@@ -48,6 +56,19 @@ import {
  * }
  * ```
  */
+/**
+ * Extended analysis config with optional ML settings
+ */
+export interface AnalysisConfigWithML extends AnalysisConfig {
+  /** ML prediction configuration */
+  ml?: Partial<MLConfig>;
+}
+
+export interface PartialAnalysisConfigWithML extends PartialAnalysisConfig {
+  /** ML prediction configuration */
+  ml?: Partial<MLConfig>;
+}
+
 export class CombatAnalyzer {
   private config: AnalysisConfig;
   private sessionDetector: SessionDetector;
@@ -56,8 +77,9 @@ export class CombatAnalyzer {
   private fightSummarizer: FightSummarizer;
   private playerStatisticsCalculator: PlayerStatisticsCalculator;
   private timelineGenerator: TimelineGenerator;
+  private mlPredictor: MLPredictor | null = null;
 
-  constructor(config: PartialAnalysisConfig = {}) {
+  constructor(config: PartialAnalysisConfigWithML = {}) {
     this.config = {
       ...DEFAULT_ANALYSIS_CONFIG,
       ...config,
@@ -73,6 +95,11 @@ export class CombatAnalyzer {
     });
     this.playerStatisticsCalculator = new PlayerStatisticsCalculator();
     this.timelineGenerator = new TimelineGenerator();
+
+    // Initialize ML predictor if ML config is provided or enabled by default
+    if (config.ml !== undefined) {
+      this.mlPredictor = new MLPredictor(config.ml);
+    }
   }
 
   /**
@@ -431,5 +458,176 @@ export class CombatAnalyzer {
    */
   getTimelineEntry(event: CombatEvent, sessionStartTime: Date): TimelineEntry {
     return this.timelineGenerator.createEntry(event, sessionStartTime);
+  }
+
+  // ============================================================================
+  // ML Prediction Methods
+  // ============================================================================
+
+  /**
+   * Check if ML predictions are available
+   */
+  isMLEnabled(): boolean {
+    return this.mlPredictor !== null && this.mlPredictor.isEnabled;
+  }
+
+  /**
+   * Get the ML predictor instance (creates one if not initialized)
+   */
+  getMLPredictor(): MLPredictor {
+    if (!this.mlPredictor) {
+      this.mlPredictor = new MLPredictor();
+    }
+    return this.mlPredictor;
+  }
+
+  /**
+   * Preload ML models for faster predictions
+   *
+   * Call this at startup to avoid latency on first prediction.
+   */
+  async loadMLModels(): Promise<void> {
+    const predictor = this.getMLPredictor();
+    await predictor.loadModels();
+  }
+
+  /**
+   * Unload ML models to free memory
+   */
+  unloadMLModels(): void {
+    if (this.mlPredictor) {
+      this.mlPredictor.unloadModels();
+    }
+  }
+
+  /**
+   * Predict fight outcome (win/loss probability)
+   *
+   * @param session - Combat session to analyze
+   * @param playerName - Name of the player to predict for
+   * @returns Fight outcome prediction or null if ML is disabled
+   *
+   * @example
+   * ```typescript
+   * const prediction = await analyzer.predictFightOutcome(session, 'PlayerName');
+   * if (prediction && prediction.winProbability > 0.7) {
+   *   console.log('Looking good!');
+   * }
+   * ```
+   */
+  async predictFightOutcome(
+    session: CombatSession,
+    playerName: string
+  ): Promise<FightOutcomePrediction | null> {
+    const predictor = this.getMLPredictor();
+    if (!predictor.isEnabled) {
+      return null;
+    }
+    return predictor.predictFightOutcome(session, playerName);
+  }
+
+  /**
+   * Classify player's playstyle
+   *
+   * @param session - Combat session to analyze
+   * @param playerName - Name of the player to classify
+   * @returns Playstyle classification or null if ML is disabled
+   *
+   * @example
+   * ```typescript
+   * const style = await analyzer.classifyPlaystyle(session, 'PlayerName');
+   * if (style) {
+   *   console.log(`Primary style: ${style.primaryStyle}`);
+   *   for (const trait of style.traits) {
+   *     console.log(`  - ${trait.name}: ${trait.description}`);
+   *   }
+   * }
+   * ```
+   */
+  async classifyPlaystyle(
+    session: CombatSession,
+    playerName: string
+  ): Promise<PlaystyleClassification | null> {
+    const predictor = this.getMLPredictor();
+    if (!predictor.isEnabled) {
+      return null;
+    }
+    return predictor.classifyPlaystyle(session, playerName);
+  }
+
+  /**
+   * Predict expected performance based on historical sessions
+   *
+   * @param sessions - Historical combat sessions
+   * @param playerName - Name of the player
+   * @returns Performance prediction or null if ML is disabled
+   *
+   * @example
+   * ```typescript
+   * const performance = await analyzer.predictPerformance(historySessions, 'PlayerName');
+   * if (performance) {
+   *   console.log(`Expected DPS: ${performance.predictedDps}`);
+   *   console.log(`Range: ${performance.dpsRange.low} - ${performance.dpsRange.high}`);
+   * }
+   * ```
+   */
+  async predictPerformance(
+    sessions: CombatSession[],
+    playerName: string
+  ): Promise<PerformancePrediction | null> {
+    const predictor = this.getMLPredictor();
+    if (!predictor.isEnabled) {
+      return null;
+    }
+    return predictor.predictPerformance(sessions, playerName);
+  }
+
+  /**
+   * Assess threats from all enemies in a session
+   *
+   * @param session - Combat session to analyze
+   * @param selfEntity - The player entity to assess threats for
+   * @returns Array of threat assessments sorted by threat level (highest first)
+   *
+   * @example
+   * ```typescript
+   * const threats = await analyzer.assessThreats(session, playerEntity);
+   * for (const threat of threats) {
+   *   console.log(`${threat.entity.name}: ${threat.threatCategory}`);
+   *   for (const rec of threat.recommendations) {
+   *     console.log(`  - ${rec}`);
+   *   }
+   * }
+   * ```
+   */
+  async assessThreats(
+    session: CombatSession,
+    selfEntity: Entity
+  ): Promise<ThreatAssessment[]> {
+    const predictor = this.getMLPredictor();
+    if (!predictor.isEnabled) {
+      return [];
+    }
+    return predictor.assessThreats(session, selfEntity);
+  }
+
+  /**
+   * Assess threat for a single target
+   *
+   * @param session - Combat session
+   * @param selfEntity - The player
+   * @param targetEntity - The entity to assess
+   * @returns Threat assessment or null if ML is disabled
+   */
+  async assessSingleThreat(
+    session: CombatSession,
+    selfEntity: Entity,
+    targetEntity: Entity
+  ): Promise<ThreatAssessment | null> {
+    const predictor = this.getMLPredictor();
+    if (!predictor.isEnabled) {
+      return null;
+    }
+    return predictor.assessSingleThreat(session, selfEntity, targetEntity);
   }
 }

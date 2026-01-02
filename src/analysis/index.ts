@@ -1,5 +1,9 @@
 // Main analyzer
-export { CombatAnalyzer } from './CombatAnalyzer.js';
+export {
+  CombatAnalyzer,
+  type AnalysisConfigWithML,
+  type PartialAnalysisConfigWithML,
+} from './CombatAnalyzer.js';
 
 // Types
 export {

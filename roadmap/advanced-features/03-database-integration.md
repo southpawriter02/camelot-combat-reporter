@@ -1,5 +1,25 @@
 # 3. Database Integration
 
+## Status: ✅ Complete
+
+**Implementation Location:** `src/database/`
+
+**Key Components:**
+- `DatabaseAdapter` - Abstract interface for database operations
+- `SQLiteAdapter` - SQLite implementation with full query builder support
+- `EventQueryBuilder` - Fluent query API for combat events
+- `SessionQueryBuilder` - Fluent query API for combat sessions
+- `StatsQueryBuilder` - Aggregation queries for statistics and leaderboards
+- Schema with migrations support
+
+**Supported Databases:**
+- SQLite (included) - Zero-dependency local storage
+- PostgreSQL support planned via adapter pattern
+
+**Test Coverage:** Comprehensive unit tests in `tests/unit/database/`
+
+---
+
 ## Description
 
 Instead of relying on local files for storing historical data, this feature proposes integrating a proper database system. This would provide a more robust, scalable, and performant solution for data storage and retrieval.

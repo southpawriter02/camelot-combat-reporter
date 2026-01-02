@@ -89,6 +89,8 @@ export {
   type CombatSessionConfig,
   type MetricsConfig,
   type AnalysisConfig,
+  type AnalysisConfigWithML,
+  type PartialAnalysisConfigWithML,
   DEFAULT_SESSION_CONFIG,
   DEFAULT_METRICS_CONFIG,
   DEFAULT_ANALYSIS_CONFIG,
@@ -356,3 +358,73 @@ export {
   generateOpenApiSpec,
   getSchemas,
 } from './api/index.js';
+
+// Machine Learning
+export {
+  // Main Predictor
+  MLPredictor,
+  // Configuration
+  DEFAULT_ML_CONFIG,
+  MODEL_NAMES,
+  MODEL_VERSIONS,
+  // Types - Configuration
+  type MLConfig,
+  type PartialMLConfig,
+  type ModelMetadata,
+  // Types - Features
+  type FeatureVector,
+  type NormalizationStats,
+  type NormalizationConfig,
+  type CombatStateFeatures,
+  type BehaviorFeatures,
+  type PlayerHistoryFeatures,
+  // Types - Prediction Inputs
+  type FightOutcomePredictionInput,
+  type PlaystyleClassificationInput,
+  type PerformancePredictionInput,
+  type ThreatAssessmentInput,
+  // Types - Prediction Outputs
+  type PredictionFactor,
+  type FightOutcomePrediction,
+  type PlaystyleType,
+  type PlaystyleTrait,
+  type PlaystyleClassification,
+  type PerformancePrediction,
+  type ThreatCategory,
+  type ThreatFactor,
+  type ThreatAssessment,
+  // Types - Training Data
+  type FightOutcomeTrainingExample,
+  type PlaystyleTrainingExample,
+  type TrainingDataset,
+  type TrainingDatasetMetadata,
+  // Types - Events
+  type MLPredictionEvent,
+  // Feature Extraction
+  FeatureExtractor,
+  DEFAULT_FEATURE_EXTRACTOR_CONFIG,
+  type FeatureExtractorConfig,
+  Normalizer,
+  type NormalizationMethod,
+  CombatFeaturesExtractor,
+  BehaviorFeaturesExtractor,
+  // Model Management
+  ModelLoader,
+  type LoadedModel,
+  type ModelLoadOptions,
+  ModelRegistry,
+  defaultModelRegistry,
+  type ModelRegistryEntry,
+  // Individual Predictors
+  FightOutcomePredictor,
+  PlaystyleClassifier,
+  PerformancePredictor,
+  ThreatAssessor,
+  // Training Data Export
+  TrainingDataExporter,
+  resolveOutcomeByDeaths,
+  resolveOutcomeByDamageRatio,
+  type TrainingExportConfig,
+  type TrainingDataStats,
+  type OutcomeLabel,
+} from './ml/index.js';
