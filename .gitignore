@@ -36,3 +36,41 @@ yarn-error.log*
 
 # Optional eslint cache
 .eslintcache
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+[Dd]ependencies/
+[Pp]ackages/
+*.nupkg
+*.nuget.props
+*.nuget.targets
+
+# Build results
+[Bb]in/
+[Bb]uild/
+[Oo]bj/
+
+# Visual Studio files
+*.vs/
+*.sln.docstates
+
+# User-specific files
+*.user
+*.suo
+
+# Test results
+[Tt]est[Rr]esult*/
+[Cc]overage/
+*.trx
+*.coverlet.json
+
+# Tooling
+.DS_Store
+
+# Misc
+*.lock.json
+*.zip
+*.rar
+*.7z
+
