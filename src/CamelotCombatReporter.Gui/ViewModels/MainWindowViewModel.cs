@@ -5,10 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CamelotCombatReporter.Core.Exporting;
 using CamelotCombatReporter.Core.Models;
 using CamelotCombatReporter.Core.Parsing;
+using CamelotCombatReporter.Gui.Plugins.ViewModels;
+using CamelotCombatReporter.Gui.Plugins.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore;
@@ -542,6 +545,26 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (_analyzedEvents == null) return;
         GenerateCharts();
+    }
+
+    [RelayCommand]
+    private async Task ShowPluginManager()
+    {
+        var mainWindow = GetMainWindow();
+        if (mainWindow == null) return;
+
+        var pluginsDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "CamelotCombatReporter",
+            "plugins");
+
+        var viewModel = new PluginManagerViewModel(pluginsDirectory);
+        var window = new PluginManagerWindow
+        {
+            DataContext = viewModel
+        };
+
+        await window.ShowDialog(mainWindow);
     }
 
     #endregion

@@ -28,5 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CamelotCombatReporter.Core\CamelotCombatReporter.Core.csproj" />
+    <ProjectReference Include="..\CamelotCombatReporter.Plugins\CamelotCombatReporter.Plugins.csproj" />
   </ItemGroup>
 </Project>

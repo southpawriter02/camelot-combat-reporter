@@ -22,9 +22,29 @@
         <KeyBinding Gesture="Ctrl+Shift+E" Command="{Binding ExportJsonCommand}"/>
         <KeyBinding Gesture="Ctrl+R" Command="{Binding ResetFiltersCommand}"/>
         <KeyBinding Gesture="F5" Command="{Binding AnalyzeLogCommand}"/>
+        <KeyBinding Gesture="Ctrl+P" Command="{Binding ShowPluginManagerCommand}"/>
     </Window.KeyBindings>
 
-    <ScrollViewer>
+    <DockPanel>
+        <!-- Menu Bar -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open Log..." Command="{Binding SelectLogFileCommand}" InputGesture="Ctrl+O"/>
+                <Separator/>
+                <MenuItem Header="Export _CSV..." Command="{Binding ExportCsvCommand}" InputGesture="Ctrl+E"/>
+                <MenuItem Header="Export _JSON..." Command="{Binding ExportJsonCommand}" InputGesture="Ctrl+Shift+E"/>
+                <Separator/>
+                <MenuItem Header="E_xit" Click="OnExitClick"/>
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Plugin Manager..." Command="{Binding ShowPluginManagerCommand}" InputGesture="Ctrl+P"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About" Click="OnAboutClick"/>
+            </MenuItem>
+        </Menu>
+
+        <ScrollViewer>
         <StackPanel Margin="20" Spacing="15">
             <!-- Title Bar and Theme Toggle -->
             <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,10">
@@ -615,5 +635,6 @@
             </Border>
         </StackPanel>
     </ScrollViewer>
+    </DockPanel>
 
 </Window>

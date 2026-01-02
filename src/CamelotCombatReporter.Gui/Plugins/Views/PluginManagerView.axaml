@@ -1,0 +1,176 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.Plugins.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
+             x:Class="CamelotCombatReporter.Gui.Plugins.Views.PluginManagerView"
+             x:DataType="vm:PluginManagerViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="15" Background="#1E88E5">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Plugin Manager"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Foreground="White"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <Button Content="Install Plugin..."
+                            Command="{Binding InstallPluginCommand}"
+                            IsEnabled="{Binding !IsLoading}"/>
+                    <Button Content="Refresh"
+                            Command="{Binding RefreshCommand}"
+                            IsEnabled="{Binding !IsLoading}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Search/Filter -->
+        <Border Grid.Row="1" Padding="15" Background="#F5F5F5">
+            <TextBox Text="{Binding SearchFilter}"
+                     Watermark="Search plugins..."
+                     Width="300"
+                     HorizontalAlignment="Left"/>
+        </Border>
+
+        <!-- Plugin List and Details Split View -->
+        <Grid Grid.Row="2" ColumnDefinitions="350,*">
+            <!-- Plugin List -->
+            <Border BorderBrush="#CCCCCC"
+                    BorderThickness="0,0,1,0">
+                <ListBox ItemsSource="{Binding Plugins}"
+                         SelectedItem="{Binding SelectedPlugin}"
+                         SelectionMode="Single">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:PluginItemViewModel">
+                            <Grid ColumnDefinitions="Auto,*,Auto" Margin="10">
+                                <!-- Status Icon - Green for enabled, Gray for disabled -->
+                                <Ellipse Width="12" Height="12"
+                                         VerticalAlignment="Center"
+                                         Fill="{Binding IsEnabled, Converter={x:Static StringConverters.IsNotNullOrEmpty}, ConverterParameter=#4CAF50, FallbackValue=#9E9E9E}">
+                                    <Ellipse.Styles>
+                                        <Style Selector="Ellipse">
+                                            <Setter Property="Fill" Value="#9E9E9E"/>
+                                        </Style>
+                                    </Ellipse.Styles>
+                                </Ellipse>
+
+                                <!-- Name and Type -->
+                                <StackPanel Grid.Column="1" Margin="10,0">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding TypeDisplayName}"
+                                               FontSize="11"
+                                               Foreground="Gray"/>
+                                </StackPanel>
+
+                                <!-- Version -->
+                                <TextBlock Grid.Column="2"
+                                           Text="{Binding Version}"
+                                           VerticalAlignment="Center"
+                                           Foreground="Gray"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+
+            <!-- Plugin Details Panel -->
+            <ScrollViewer Grid.Column="1" Padding="20">
+                <StackPanel Spacing="15"
+                            IsVisible="{Binding SelectedPlugin, Converter={x:Static ObjectConverters.IsNotNull}}">
+
+                    <!-- Plugin Name and Version -->
+                    <StackPanel>
+                        <TextBlock Text="{Binding SelectedPlugin.Name}"
+                                   FontSize="24" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="{Binding SelectedPlugin.Version}"
+                                       Foreground="Gray"/>
+                            <Border Background="#90CAF9"
+                                    CornerRadius="3"
+                                    Padding="5,2">
+                                <TextBlock Text="{Binding SelectedPlugin.TypeDisplayName}"
+                                           FontSize="11"/>
+                            </Border>
+                            <Border Background="#FFA726"
+                                    CornerRadius="3"
+                                    Padding="5,2">
+                                <TextBlock Text="{Binding SelectedPlugin.TrustLevelDisplayName}"
+                                           FontSize="11"
+                                           Foreground="White"/>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Separator/>
+
+                    <!-- Author -->
+                    <StackPanel>
+                        <TextBlock Text="Author" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding SelectedPlugin.Author}"/>
+                    </StackPanel>
+
+                    <!-- Description -->
+                    <StackPanel>
+                        <TextBlock Text="Description" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding SelectedPlugin.Description}" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Loaded At -->
+                    <StackPanel>
+                        <TextBlock Text="Loaded At" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding SelectedPlugin.LoadedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"/>
+                    </StackPanel>
+
+                    <!-- Permissions -->
+                    <StackPanel>
+                        <TextBlock Text="Granted Permissions" FontWeight="SemiBold"/>
+                        <ItemsControl ItemsSource="{Binding SelectedPlugin.Permissions}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#E3F2FD"
+                                            CornerRadius="3"
+                                            Padding="8,4"
+                                            Margin="0,2,5,2">
+                                        <TextBlock Text="{Binding}" FontSize="12"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <Separator/>
+
+                    <!-- Actions -->
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Toggle Enable/Disable"
+                                Command="{Binding ToggleEnabledCommand}"
+                                IsEnabled="{Binding !IsLoading}"/>
+                        <Button Content="Uninstall"
+                                Command="{Binding UninstallPluginCommand}"
+                                IsEnabled="{Binding !IsLoading}"
+                                Background="#F44336"
+                                Foreground="White"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Padding="10" Background="#F5F5F5">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="{Binding StatusMessage}"/>
+                <ProgressBar Grid.Column="1"
+                             IsIndeterminate="True"
+                             Width="100"
+                             IsVisible="{Binding IsLoading}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
+using CamelotCombatReporter.Gui.Plugins.Views;
 using CamelotCombatReporter.Gui.ViewModels;
 using System.Linq;
 
@@ -44,5 +45,49 @@ public partial class MainWindow : Window
                 ? ThemeVariant.Light
                 : ThemeVariant.Dark;
         }
+    }
+
+    private void OnExitClick(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private async void OnAboutClick(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new Window
+        {
+            Title = "About Camelot Combat Reporter",
+            Width = 400,
+            Height = 200,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            Content = new StackPanel
+            {
+                Margin = new Avalonia.Thickness(20),
+                Spacing = 10,
+                Children =
+                {
+                    new TextBlock
+                    {
+                        Text = "Camelot Combat Reporter",
+                        FontSize = 20,
+                        FontWeight = Avalonia.Media.FontWeight.Bold,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                    },
+                    new TextBlock
+                    {
+                        Text = "Version 1.0.0",
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                    },
+                    new TextBlock
+                    {
+                        Text = "A combat log analyzer for Dark Age of Camelot",
+                        TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                    }
+                }
+            }
+        };
+
+        await dialog.ShowDialog(this);
     }
 }

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Description>SDK for developing Camelot Combat Reporter plugins</Description>
+    <Authors>Camelot Combat Reporter Team</Authors>
+    <PackageId>CamelotCombatReporter.PluginSdk</PackageId>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CamelotCombatReporter.Core\CamelotCombatReporter.Core.csproj" />
+    <ProjectReference Include="..\CamelotCombatReporter.Plugins\CamelotCombatReporter.Plugins.csproj" />
+  </ItemGroup>
+
+</Project>
