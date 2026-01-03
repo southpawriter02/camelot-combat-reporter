@@ -1,0 +1,122 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:CamelotCombatReporter.Gui.CrossRealm.ViewModels"
+        xmlns:models="using:CamelotCombatReporter.Core.Models"
+        mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="400"
+        x:Class="CamelotCombatReporter.Gui.CrossRealm.Views.CharacterConfigDialog"
+        x:DataType="vm:CharacterConfigViewModel"
+        Title="Character Configuration"
+        Width="450"
+        Height="420"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <Design.DataContext>
+        <vm:CharacterConfigViewModel/>
+    </Design.DataContext>
+
+    <Border Padding="20">
+        <StackPanel Spacing="15">
+            <!-- Header -->
+            <TextBlock Text="Character Configuration"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Foreground="#2196F3"
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock Text="Configure your character for cross-realm statistics tracking."
+                       TextWrapping="Wrap"
+                       Foreground="Gray"
+                       FontSize="12"
+                       HorizontalAlignment="Center"/>
+
+            <Separator Margin="0,5"/>
+
+            <!-- Character Name -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="Character Name (Optional)" FontWeight="SemiBold"/>
+                <TextBox Text="{Binding CharacterName}"
+                         Watermark="Enter your character name"/>
+            </StackPanel>
+
+            <!-- Realm Selection -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="Realm" FontWeight="SemiBold"/>
+                <ComboBox ItemsSource="{Binding AvailableRealms}"
+                          SelectedItem="{Binding SelectedRealm}"
+                          HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:Realm">
+                            <TextBlock Text="{Binding}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- Class Selection -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="Class" FontWeight="SemiBold"/>
+                <ComboBox ItemsSource="{Binding AvailableClasses}"
+                          SelectedItem="{Binding SelectedClass}"
+                          HorizontalAlignment="Stretch"
+                          IsEnabled="{Binding AvailableClasses.Count}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:CharacterClass">
+                            <TextBlock Text="{Binding}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- Level and Realm Rank Row -->
+            <Grid ColumnDefinitions="*,20,*" RowDefinitions="Auto">
+                <!-- Level -->
+                <StackPanel Grid.Column="0" Spacing="5">
+                    <TextBlock Text="Level (1-50)" FontWeight="SemiBold"/>
+                    <NumericUpDown Value="{Binding Level}"
+                                   Minimum="1"
+                                   Maximum="50"
+                                   Increment="1"
+                                   HorizontalAlignment="Stretch"/>
+                </StackPanel>
+
+                <!-- Realm Rank -->
+                <StackPanel Grid.Column="2" Spacing="5">
+                    <TextBlock Text="Realm Rank (0-14)" FontWeight="SemiBold"/>
+                    <NumericUpDown Value="{Binding RealmRank}"
+                                   Minimum="0"
+                                   Maximum="14"
+                                   Increment="1"
+                                   HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Validation Message -->
+            <Border CornerRadius="5"
+                    Padding="10"
+                    Margin="0,5">
+                <TextBlock Text="{Binding ValidationMessage}"
+                           TextWrapping="Wrap"
+                           FontSize="12"/>
+            </Border>
+
+            <!-- Buttons -->
+            <Grid ColumnDefinitions="*,Auto,10,Auto" Margin="0,10,0,0">
+                <Button Grid.Column="1"
+                        Content="Cancel"
+                        Command="{Binding CancelCommand}"
+                        Padding="20,8"
+                        Width="100"/>
+                <Button Grid.Column="3"
+                        Content="Save"
+                        Command="{Binding SaveCommand}"
+                        IsEnabled="{Binding IsValid}"
+                        Padding="20,8"
+                        Width="100"
+                        Classes="accent"/>
+            </Grid>
+        </StackPanel>
+    </Border>
+</Window>

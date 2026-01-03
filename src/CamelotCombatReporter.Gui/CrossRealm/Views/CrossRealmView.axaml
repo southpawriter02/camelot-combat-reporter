@@ -1,0 +1,306 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.CrossRealm.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="950" d:DesignHeight="800"
+             x:Class="CamelotCombatReporter.Gui.CrossRealm.Views.CrossRealmView"
+             x:DataType="vm:CrossRealmViewModel">
+
+    <Design.DataContext>
+        <vm:CrossRealmViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel>
+                    <TextBlock Text="Cross-Realm Analysis"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               Foreground="#673AB7"/>
+                    <TextBlock Text="Track and compare your combat statistics across realms and classes"
+                               Foreground="Gray"
+                               FontSize="12"/>
+                </StackPanel>
+
+                <!-- Status and Loading -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding StatusMessage}"
+                               Foreground="Gray"
+                               FontSize="11"
+                               VerticalAlignment="Center"/>
+                    <ProgressBar IsIndeterminate="True"
+                                 IsVisible="{Binding IsLoading}"
+                                 Width="100"
+                                 Height="4"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Character Configuration Card -->
+            <Border BorderBrush="#2196F3"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Character Configuration"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#2196F3"/>
+                        <TextBlock Text="{Binding CharacterDisplayText}"
+                                   FontSize="14"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1"
+                            Content="Configure"
+                            Command="{Binding ConfigureCharacterCommand}"
+                            Padding="15,8"
+                            VerticalAlignment="Center"/>
+
+                    <!-- Current Session Info -->
+                    <Border Grid.Row="1" Grid.ColumnSpan="2"
+                            Margin="0,10,0,0"
+                            Padding="10"
+                            Background="#E3F2FD"
+                            CornerRadius="5"
+                            IsVisible="{Binding HasCurrentSession}">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel>
+                                <TextBlock Text="Current Session" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding CurrentSessionSummary}" FontSize="12"/>
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Content="Save Session"
+                                    Command="{Binding SaveCurrentSessionCommand}"
+                                    Padding="10,5"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Filter and Actions Row -->
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="Realm Filter:" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding AvailableRealms}"
+                              SelectedItem="{Binding SelectedRealmFilter}"
+                              Width="120"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="5">
+                    <Button Content="Refresh" Command="{Binding RefreshStatisticsCommand}" Padding="10,5"/>
+                    <Button Content="Export JSON" Command="{Binding ExportJsonCommand}" Padding="10,5"/>
+                    <Button Content="Export CSV" Command="{Binding ExportCsvCommand}" Padding="10,5"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Realm Statistics -->
+            <Border BorderBrush="#9C27B0"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasStatistics}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Realm Statistics"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#9C27B0"/>
+
+                    <DataGrid ItemsSource="{Binding RealmStatistics}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="#CCCCCC"
+                              MaxHeight="150">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Realm" Binding="{Binding Realm}" Width="100"/>
+                            <DataGridTextColumn Header="Sessions" Binding="{Binding SessionCount}" Width="70"/>
+                            <DataGridTextColumn Header="Avg DPS" Binding="{Binding AverageDps, StringFormat=F1}" Width="80"/>
+                            <DataGridTextColumn Header="Max DPS" Binding="{Binding MaxDps, StringFormat=F1}" Width="80"/>
+                            <DataGridTextColumn Header="Avg HPS" Binding="{Binding AverageHps, StringFormat=F1}" Width="80"/>
+                            <DataGridTextColumn Header="Avg KDR" Binding="{Binding AverageKdr, StringFormat=F2}" Width="80"/>
+                            <DataGridTextColumn Header="Total Kills" Binding="{Binding TotalKills}" Width="80"/>
+                            <DataGridTextColumn Header="Total Deaths" Binding="{Binding TotalDeaths}" Width="90"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Class Statistics -->
+            <Border BorderBrush="#FF9800"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding ClassStatistics.Count}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Class Statistics"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#FF9800"/>
+
+                    <DataGrid ItemsSource="{Binding ClassStatistics}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="#CCCCCC"
+                              MaxHeight="200">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Class" Binding="{Binding Class}" Width="120"/>
+                            <DataGridTextColumn Header="Sessions" Binding="{Binding SessionCount}" Width="70"/>
+                            <DataGridTextColumn Header="Avg DPS" Binding="{Binding AverageDps, StringFormat=F1}" Width="80"/>
+                            <DataGridTextColumn Header="Median DPS" Binding="{Binding MedianDps, StringFormat=F1}" Width="90"/>
+                            <DataGridTextColumn Header="Max DPS" Binding="{Binding MaxDps, StringFormat=F1}" Width="80"/>
+                            <DataGridTextColumn Header="Avg HPS" Binding="{Binding AverageHps, StringFormat=F1}" Width="80"/>
+                            <DataGridTextColumn Header="Max HPS" Binding="{Binding MaxHps, StringFormat=F1}" Width="80"/>
+                            <DataGridTextColumn Header="Avg KDR" Binding="{Binding AverageKdr, StringFormat=F2}" Width="80"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Leaderboards Row -->
+            <Grid ColumnDefinitions="*,*" IsVisible="{Binding HasStatistics}">
+                <!-- DPS Leaderboard -->
+                <Border BorderBrush="#4CAF50"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Top DPS"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#4CAF50"/>
+
+                        <DataGrid ItemsSource="{Binding DpsLeaderboard}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="None"
+                                  BorderThickness="0"
+                                  MaxHeight="180">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="#" Binding="{Binding Rank}" Width="30"/>
+                                <DataGridTextColumn Header="Class" Binding="{Binding Character.Class}" Width="*"/>
+                                <DataGridTextColumn Header="DPS" Binding="{Binding Value, StringFormat=F1}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- HPS Leaderboard -->
+                <Border Grid.Column="1"
+                        BorderBrush="#00BCD4"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Top HPS"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#00BCD4"/>
+
+                        <DataGrid ItemsSource="{Binding HpsLeaderboard}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="None"
+                                  BorderThickness="0"
+                                  MaxHeight="180">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="#" Binding="{Binding Rank}" Width="30"/>
+                                <DataGridTextColumn Header="Class" Binding="{Binding Character.Class}" Width="*"/>
+                                <DataGridTextColumn Header="HPS" Binding="{Binding Value, StringFormat=F1}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Recent Sessions -->
+            <Border BorderBrush="#607D8B"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasStatistics}">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="Recent Sessions"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#607D8B"/>
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding TotalSessionCount, StringFormat='Total: {0} sessions'}"
+                                   Foreground="Gray"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <DataGrid ItemsSource="{Binding RecentSessions}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="#CCCCCC"
+                              MaxHeight="250">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Date" Binding="{Binding SessionStartUtc, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" Width="130"/>
+                            <DataGridTextColumn Header="Character" Binding="{Binding Character.Name}" Width="100"/>
+                            <DataGridTextColumn Header="Class" Binding="{Binding Character.Class}" Width="100"/>
+                            <DataGridTextColumn Header="Realm" Binding="{Binding Character.Realm}" Width="80"/>
+                            <DataGridTextColumn Header="Duration" Binding="{Binding DurationMinutes, StringFormat='{}{0:F1} min'}" Width="80"/>
+                            <DataGridTextColumn Header="DPS" Binding="{Binding Dps, StringFormat=F1}" Width="70"/>
+                            <DataGridTextColumn Header="HPS" Binding="{Binding Hps, StringFormat=F1}" Width="70"/>
+                            <DataGridTextColumn Header="K/D" Binding="{Binding Kills}" Width="50"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Empty State -->
+            <Border BorderBrush="#FFC107"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="20"
+                    IsVisible="{Binding !HasStatistics}">
+                <StackPanel Spacing="10" HorizontalAlignment="Center">
+                    <TextBlock Text="No Sessions Saved"
+                               FontWeight="Bold"
+                               FontSize="18"
+                               Foreground="#FFC107"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="To start tracking cross-realm statistics:"
+                               HorizontalAlignment="Center"/>
+                    <StackPanel Spacing="5" Margin="0,10">
+                        <TextBlock Text="1. Configure your character using the button above"/>
+                        <TextBlock Text="2. Analyze a combat log on the main tab"/>
+                        <TextBlock Text="3. Return here and click 'Save Session' to record it"/>
+                    </StackPanel>
+                    <TextBlock Text="Your statistics will be stored locally and can be exported for sharing."
+                               Foreground="Gray"
+                               FontSize="12"
+                               HorizontalAlignment="Center"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Advanced Options -->
+            <Expander Header="Advanced Options" IsExpanded="False">
+                <StackPanel Spacing="10" Margin="0,10,0,0">
+                    <TextBlock Text="Maintenance" FontWeight="SemiBold"/>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Rebuild Session Index"
+                                Command="{Binding RebuildIndexCommand}"
+                                Padding="10,5"/>
+                        <TextBlock Text="Use this if sessions are missing or the index appears corrupted."
+                                   Foreground="Gray"
+                                   FontSize="11"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </Expander>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

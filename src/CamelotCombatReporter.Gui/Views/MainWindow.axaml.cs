@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
+using CamelotCombatReporter.Gui.CrossRealm.ViewModels;
 using CamelotCombatReporter.Gui.Plugins.Views;
 using CamelotCombatReporter.Gui.ViewModels;
 using System.Linq;
@@ -10,9 +11,18 @@ namespace CamelotCombatReporter.Gui.Views;
 
 public partial class MainWindow : Window
 {
+    private readonly CrossRealmViewModel _crossRealmViewModel;
+
     public MainWindow()
     {
         InitializeComponent();
+
+        // Initialize CrossRealmView with its ViewModel
+        _crossRealmViewModel = new CrossRealmViewModel();
+        CrossRealmView.DataContext = _crossRealmViewModel;
+
+        // Initialize async data when loaded
+        Loaded += async (_, _) => await _crossRealmViewModel.InitializeAsync();
     }
 
     private void OnDrop(object? sender, DragEventArgs e)

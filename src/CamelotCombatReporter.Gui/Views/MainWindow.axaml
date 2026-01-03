@@ -4,6 +4,7 @@
         xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:crossrealm="using:CamelotCombatReporter.Gui.CrossRealm.Views"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
         x:Class="CamelotCombatReporter.Gui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -44,10 +45,13 @@
             </MenuItem>
         </Menu>
 
-        <ScrollViewer>
-        <StackPanel Margin="20" Spacing="15">
-            <!-- Title Bar and Theme Toggle -->
-            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,10">
+        <TabControl>
+            <!-- Combat Analysis Tab -->
+            <TabItem Header="Combat Analysis">
+                <ScrollViewer>
+                    <StackPanel Margin="20" Spacing="15">
+                        <!-- Title Bar and Theme Toggle -->
+                        <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,10">
                 <TextBlock Text="Camelot Combat Reporter"
                            FontSize="24"
                            FontWeight="Bold"
@@ -631,10 +635,17 @@
                         - Ctrl+Shift+E: Export to JSON<LineBreak/>
                         - Ctrl+R: Reset filters
                     </TextBlock>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
-            </Border>
-        </StackPanel>
-    </ScrollViewer>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- Cross-Realm Analysis Tab -->
+        <TabItem Header="Cross-Realm Analysis">
+            <crossrealm:CrossRealmView x:Name="CrossRealmView"/>
+        </TabItem>
+    </TabControl>
     </DockPanel>
 
 </Window>
