@@ -20,29 +20,78 @@ This roadmap is a living document and will be updated as the project evolves. Co
 
 | Feature | Status | Location |
 |---------|--------|----------|
-| [Log Parsing](core-features/01-log-parsing.md) | ✅ Complete | `src/parser/` |
-| [Combat Analysis](core-features/02-combat-analysis.md) | ✅ Complete | `src/analysis/` |
-| [Player Statistics](core-features/03-player-statistics.md) | ✅ Complete | `src/statistics/` |
-| [Timeline View](core-features/04-timeline-view.md) | ✅ Complete | `src/timeline/` |
+| [Log Parsing](core-features/01-log-parsing.md) | ✅ Complete | `src/CamelotCombatReporter.Core/Parsing/` |
+| [Combat Analysis](core-features/02-combat-analysis.md) | ✅ Complete | `src/CamelotCombatReporter.Core/` |
+| [Player Statistics](core-features/03-player-statistics.md) | ✅ Complete | `src/CamelotCombatReporter.Core/Models/` |
+| [Timeline View](core-features/04-timeline-view.md) | ✅ Complete | `src/CamelotCombatReporter.Gui/` (LiveCharts2) |
 
-### Advanced Features (4/4 Complete)
+### Advanced Features (3/4 Complete)
 
 | Feature | Status | Location |
 |---------|--------|----------|
 | [UI Dashboard](advanced-features/01-ui-dashboard.md) | ⏸️ Deferred | — |
-| [Real-Time Parsing](advanced-features/02-real-time-parsing.md) | ✅ Complete | `src/streaming/` |
-| [Database Integration](advanced-features/03-database-integration.md) | ✅ Complete | `src/database/` |
-| [API Exposure](advanced-features/04-api-exposure.md) | ✅ Complete | `src/api/` |
+| [Real-Time Parsing](advanced-features/02-real-time-parsing.md) | ✅ Complete | `src/streaming/` (TypeScript) |
+| [Database Integration](advanced-features/03-database-integration.md) | ✅ Complete | `src/database/` (TypeScript) |
+| [API Exposure](advanced-features/04-api-exposure.md) | ✅ Complete | `src/api/` (TypeScript) |
 
-### Future Enhancements (0/3 Complete)
+### Future Enhancements (2/3 Complete)
 
 | Feature | Status | Location |
 |---------|--------|----------|
-| [Plugin System](future-enhancements/01-plugin-system.md) | 📋 Planned | — |
-| [Machine Learning Insights](future-enhancements/02-machine-learning-insights.md) | 📋 Planned | — |
-| [Cross-Realm Analysis](future-enhancements/03-cross-realm-analysis.md) | 📋 Planned | — |
+| [Plugin System](future-enhancements/01-plugin-system.md) | ✅ Complete | `src/CamelotCombatReporter.Plugins/`, `src/CamelotCombatReporter.PluginSdk/` |
+| [Machine Learning Insights](future-enhancements/02-machine-learning-insights.md) | 📋 Planned | `src/ml/` (TypeScript prototype) |
+| [Cross-Realm Analysis](future-enhancements/03-cross-realm-analysis.md) | ✅ Phase 1 | `src/CamelotCombatReporter.Core/CrossRealm/` |
 
 **Legend:**
 - ✅ Complete - Feature fully implemented and tested
+- ✅ Phase 1 - Initial implementation complete, future phases planned
 - ⏸️ Deferred - Implementation postponed (library-first approach)
 - 📋 Planned - Not yet started
+
+---
+
+## Recent Completions
+
+### Plugin System (January 2025)
+Full plugin extensibility framework with:
+- Plugin SDK for third-party developers
+- Sandboxed execution with permission-based security
+- Plugin Manager UI in the desktop application
+- Comprehensive documentation and examples
+
+See [Plugin Documentation](../docs/plugins/README.md) for details.
+
+### Cross-Realm Analysis Phase 1 (January 2025)
+Local-first cross-realm statistics tracking:
+- Character configuration (realm, class, level, realm rank)
+- Session saving with character context
+- Local leaderboards and aggregated statistics
+- JSON/CSV export for community sharing
+
+Future phases will add central server support and public leaderboards.
+
+---
+
+## What's Next
+
+### Machine Learning Insights
+The only remaining planned feature. Will include:
+- Combat pattern recognition
+- Predictive performance analysis
+- Personalized improvement suggestions
+- Anomaly detection
+
+### Cross-Realm Analysis Phase 2
+- Central server for community statistics
+- Public leaderboards
+- Auto-detection of character class from logs
+- Opt-in anonymous data sharing
+
+---
+
+## Related Documentation
+
+- [Architecture Overview](../ARCHITECTURE.md)
+- [Contributing Guide](../CONTRIBUTING.md)
+- [Changelog](../CHANGELOG.md)
+- [Plugin Developer Guide](../docs/plugins/getting-started.md)

@@ -3,8 +3,33 @@ using CamelotCombatReporter.Core.Models;
 
 namespace CamelotCombatReporter.Core.Exporting;
 
+/// <summary>
+/// Exports combat statistics and events to CSV format.
+/// </summary>
+/// <remarks>
+/// The generated CSV contains two sections:
+/// <list type="bullet">
+///   <item><description>Combat Statistics summary with aggregated metrics</description></item>
+///   <item><description>Combat Log with individual event details</description></item>
+/// </list>
+/// </remarks>
 public class CsvExporter
 {
+    /// <summary>
+    /// Generates a CSV string from combat statistics and events.
+    /// </summary>
+    /// <param name="stats">Aggregated combat statistics.</param>
+    /// <param name="events">Collection of combat events to include in the log section.</param>
+    /// <returns>
+    /// A CSV-formatted string with statistics summary and detailed event log.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// var exporter = new CsvExporter();
+    /// var csv = exporter.GenerateCsv(statistics, events);
+    /// File.WriteAllText("combat-report.csv", csv);
+    /// </code>
+    /// </example>
     public string GenerateCsv(CombatStatistics stats, IEnumerable<LogEvent> events)
     {
         var sb = new StringBuilder();

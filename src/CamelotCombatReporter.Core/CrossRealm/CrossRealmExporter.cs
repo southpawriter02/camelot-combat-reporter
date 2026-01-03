@@ -8,6 +8,25 @@ namespace CamelotCombatReporter.Core.CrossRealm;
 /// <summary>
 /// Options for exporting cross-realm statistics.
 /// </summary>
+/// <param name="RealmFilter">
+/// Filter exports to a specific realm. When null, includes all realms.
+/// </param>
+/// <param name="ClassFilter">
+/// Filter exports to a specific character class. When null, includes all classes.
+/// </param>
+/// <param name="Since">
+/// Only include sessions starting on or after this date. When null, no start date filter.
+/// </param>
+/// <param name="Until">
+/// Only include sessions ending on or before this date. When null, no end date filter.
+/// </param>
+/// <param name="IncludeCharacterNames">
+/// Whether to include character names in the export. Defaults to false for privacy.
+/// </param>
+/// <param name="AggregateOnly">
+/// When true, only exports aggregated statistics. When false, includes individual session data.
+/// Defaults to true.
+/// </param>
 public record ExportOptions(
     Realm? RealmFilter = null,
     CharacterClass? ClassFilter = null,
