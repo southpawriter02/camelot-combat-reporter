@@ -212,9 +212,48 @@ Compare sessions and track trends:
 
 ---
 
+## Plugin Ideas
+
+The plugin system enables third-party extensibility. Below are 10 plugin concepts with full specifications that demonstrate the SDK's capabilities and serve as inspiration for community developers.
+
+See [Plugin Ideas](plugin-ideas/README.md) for the complete list and detailed specifications.
+
+### Data Analysis Plugins
+
+| Plugin | Description | Complexity |
+|--------|-------------|------------|
+| [Combat Style Optimizer](plugin-ideas/01-combat-style-optimizer.md) | Analyze melee style chains and recommend optimal rotations | Medium |
+| [Realm Points Calculator](plugin-ideas/02-realm-points-calculator.md) | Track RP gains, rank progression, and time-to-next projections | Medium |
+| [Group Performance Analyzer](plugin-ideas/03-group-performance-analyzer.md) | Measure individual contributions within group combat | Medium-High |
+| [Heal Efficiency Tracker](plugin-ideas/09-heal-efficiency-tracker.md) | Track effective healing, overhealing, and reaction times | Medium |
+| [PvP Matchup Analyzer](plugin-ideas/10-pvp-matchup-analyzer.md) | Win/loss tracking by class and player with tactical insights | Medium-High |
+
+### Export Plugins
+
+| Plugin | Description | Complexity |
+|--------|-------------|------------|
+| [HTML Report Exporter](plugin-ideas/04-html-report-exporter.md) | Generate shareable HTML reports with charts and tables | Medium |
+| [Discord Bot Integration](plugin-ideas/08-discord-bot-integration.md) | Post combat summaries to Discord via webhooks | Low-Medium |
+
+### UI Plugins
+
+| Plugin | Description | Complexity |
+|--------|-------------|------------|
+| [Damage Breakdown Chart](plugin-ideas/05-damage-breakdown-chart.md) | Interactive sunburst/treemap visualization | Medium |
+| [Enemy Encounter Database](plugin-ideas/06-enemy-encounter-database.md) | Historical database of enemy encounters | Medium-High |
+
+### Utility Plugins
+
+| Plugin | Description | Complexity |
+|--------|-------------|------------|
+| [Combat Log Merger](plugin-ideas/07-combat-log-merger.md) | Merge multiple log files into unified timeline | Medium |
+
+---
+
 ## Related Documentation
 
 - [Architecture Overview](../ARCHITECTURE.md)
 - [Contributing Guide](../CONTRIBUTING.md)
 - [Changelog](../CHANGELOG.md)
 - [Plugin Developer Guide](../docs/plugins/getting-started.md)
+- [Plugin SDK Reference](../docs/plugins/sdk-reference.md)
