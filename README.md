@@ -1,51 +1,78 @@
-# camelot-combat-reporter
+# Camelot Combat Reporter
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![.NET 9.0](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/download/dotnet/9.0)
+
 A cross-platform tool that allows players to analyze their `chat.log` file and receive a detailed, visualized breakdown of their combat encounters. It parses the log, identifies individual fights, and presents statistics like damage dealt, healing done, crowd control used, and other key metrics for performance analysis.
 
-## Available Interfaces
+## Features
 
-### GUI Application (NEW!)
-A user-friendly graphical interface built with Avalonia UI for Windows, macOS, and Linux.
+- **Combat Log Parsing** — Parse and analyze Dark Age of Camelot combat logs
+- **Cross-Platform GUI** — Desktop application for Windows, macOS, and Linux
+- **Real-Time Statistics** — DPS, HPS, damage breakdowns, and more
+- **Charts & Visualization** — Timeline charts, damage distribution, and trends
+- **Cross-Realm Analysis** — Track statistics by realm and character class
+- **Plugin System** — Extend functionality with custom plugins
+- **Export Options** — Export to JSON and CSV formats
+
+## Installation
+
+### Download Pre-Built Releases
+
+Download the latest release for your platform from the [Releases](https://github.com/southpawriter02/camelot-combat-reporter/releases) page:
+
+- **Windows**: `CamelotCombatReporter-win-x64.zip`
+- **macOS (Intel)**: `CamelotCombatReporter-osx-x64.zip`
+- **macOS (Apple Silicon)**: `CamelotCombatReporter-osx-arm64.zip`
+- **Linux**: `CamelotCombatReporter-linux-x64.zip`
+
+Extract and run the executable — no .NET runtime installation required.
+
+### Build from Source
+
+Requires [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) or later.
+
+```bash
+git clone https://github.com/southpawriter02/camelot-combat-reporter.git
+cd camelot-combat-reporter
+dotnet build
+```
+
+## Usage
+
+### GUI Application
 
 ```bash
 dotnet run --project src/CamelotCombatReporter.Gui
 ```
 
-Features:
-- File picker for easy log selection
-- Real-time combat statistics
-- Colorful, visual display of metrics
-- Cross-platform support
-
-See [GUI README](src/CamelotCombatReporter.Gui/README.md) for more details.
-
 ### Command-Line Interface
-A simple CLI for quick analysis from the terminal.
 
 ```bash
 dotnet run --project src/CamelotCombatReporter.Cli -- <path_to_log_file> [combatant_name]
-```
 
-Example:
-```bash
+# Example:
 dotnet run --project src/CamelotCombatReporter.Cli -- data/sample.log
 ```
 
 ## Project Structure
 
-- `src/CamelotCombatReporter.Core` - Core parsing and analysis library
-- `src/CamelotCombatReporter.Cli` - Command-line interface
-- `src/CamelotCombatReporter.Gui` - Graphical user interface (Avalonia UI)
-- `tests/CamelotCombatReporter.Core.Tests` - Unit tests
+| Directory | Description |
+|-----------|-------------|
+| `src/CamelotCombatReporter.Core` | Core parsing and analysis library |
+| `src/CamelotCombatReporter.Cli` | Command-line interface |
+| `src/CamelotCombatReporter.Gui` | Graphical user interface (Avalonia UI) |
+| `src/CamelotCombatReporter.Plugins` | Plugin host infrastructure |
+| `src/CamelotCombatReporter.PluginSdk` | Plugin development SDK |
+| `tests/` | Unit tests |
 
-## Requirements
+## Documentation
 
-- .NET 9.0 SDK or later
-
-## Building
-
-```bash
-dotnet build
-```
+- [Architecture Overview](ARCHITECTURE.md) — System design and data flow
+- [Contributing Guide](CONTRIBUTING.md) — Development setup and guidelines
+- [Changelog](CHANGELOG.md) — Version history and release notes
+- [Plugin Development](docs/plugins/README.md) — Build custom plugins
+- [Feature Roadmap](roadmap/README.md) — Planned features and status
 
 ## Testing
 
@@ -53,3 +80,6 @@ dotnet build
 dotnet test
 ```
 
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

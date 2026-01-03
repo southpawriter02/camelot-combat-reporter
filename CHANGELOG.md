@@ -153,6 +153,7 @@ The TypeScript implementation follows the same feature set as the C# version but
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| 1.3.0 | 2025-01-02 | Cross-realm analysis, documentation improvements |
 | 1.2.0 | 2025-01-02 | Plugin system with SDK and security |
 | 1.1.0 | 2025-01-02 | GUI enhancements, filtering, charts |
 | 1.0.0 | 2025-01-01 | Avalonia GUI, core features complete |

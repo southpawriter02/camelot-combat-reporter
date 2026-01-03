@@ -4,7 +4,7 @@ This document outlines the feature roadmap for Camelot Combat Reporter. The proj
 
 ---
 
-## Current Version: v1.0.0
+## Current Version: v1.3.0
 
 Released: January 2025
 
@@ -212,4 +212,4 @@ The plugin system enables third-party extensibility. See [Plugin Ideas](plugin-i
 - [Contributing Guide](../CONTRIBUTING.md)
 - [Changelog](../CHANGELOG.md)
 - [Plugin Developer Guide](../docs/plugins/getting-started.md)
-- [Plugin SDK Reference](../docs/plugins/sdk-reference.md)
+- [Plugin SDK Reference](../docs/plugins/api-reference.md)
