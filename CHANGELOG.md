@@ -11,6 +11,45 @@ No unreleased changes.
 
 ---
 
+## [1.0.2] - 2025-01-03
+
+### Fixed
+- **Log Parsing Accuracy**
+  - Fixed damage patterns to match actual game log formats (removed incorrect "points of" requirement)
+  - Fixed damage taken pattern to correctly parse "hits you" and "hits your torso" formats
+  - Added support for damage modifiers in parentheses (e.g., `+28` or `-9`)
+  - Added body part capture for incoming damage (e.g., "hits your torso")
+
+### Added
+- **New Combat Event Types**
+  - `CriticalHitEvent` - Parse critical hit lines with optional percentage display
+  - `PetDamageEvent` - Track damage dealt by player pets (e.g., "Your wolf sage attacks...")
+  - `DeathEvent` - Track mob deaths and kills (e.g., "The swamp rat dies!")
+  - `ResistEvent` - Track spell/effect resists
+  - `CrowdControlEvent` - Track stun applied/recovered events
+
+- **New Damage Patterns**
+  - Melee attack pattern: "You attack X with your weapon and hit for N damage!"
+  - Ranged attack pattern: "You shot X with your bow and hit for N damage!"
+  - Alternate damage taken: "You are hit for N damage."
+
+- **Enhanced DamageEvent Model**
+  - `Modifier` property - Captures (+N) or (-N) damage modifiers
+  - `BodyPart` property - Captures hit location (torso, head, etc.)
+  - `WeaponUsed` property - Captures weapon used for melee/ranged attacks
+
+- **Test Coverage**
+  - Added 28 new tests for v1.0.2 patterns using real log samples from roadmap/logs
+  - Total test count increased from 54 to 82
+
+### Technical Details
+- All 82 tests passing (62 Core + 20 GUI)
+- New event types in `CombatEvents.cs`
+- 12 new regex patterns in `LogParser.cs`
+- Full backwards compatibility with existing damage parsing
+
+---
+
 ## [1.0.1] - 2025-01-03
 
 ### Added
@@ -183,6 +222,7 @@ The TypeScript implementation follows the same feature set as the C# version but
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| 1.0.2 | 2025-01-03 | Log parsing fixes, new event types (crit, pet, death, CC) |
 | 1.0.1 | 2025-01-03 | Logging infrastructure, bug fixes, IDisposable |
 | 1.0.0 | 2025-01-02 | Full feature release: GUI, plugins, cross-realm, loot tracking |
 | 0.2.0 | 2024-12-31 | Enhanced statistics, damage taken |

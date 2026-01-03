@@ -102,7 +102,7 @@ public partial class MainWindow : Window
                     },
                     new TextBlock
                     {
-                        Text = "Version 1.0.1",
+                        Text = "Version 1.0.2",
                         HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
                     },
                     new TextBlock

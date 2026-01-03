@@ -4,6 +4,10 @@ using Xunit;
 
 namespace CamelotCombatReporter.Core.Tests;
 
+/// <summary>
+/// Tests for the LogParser class including v1.0.2 real log format validation.
+/// </summary>
+
 public class LogParserTests
 {
     [Fact]
@@ -571,10 +575,13 @@ public class LogParserTests
         // Act
         var events = parser.Parse().ToList();
 
-        // Assert - should have: 1 damage, 2 bonus currency, 1 currency drop, 1 item drop, 1 reward, 1 item receive = 7 events
-        // (bag of coins is skipped, "dies!" is not parsed)
-        // Actually 6 events since we aren't parsing damage without type
-        Assert.Equal(6, events.Count);
+        // Assert - should have: 1 damage, 1 death, 2 bonus currency, 1 currency drop, 1 item drop, 1 reward, 1 item receive = 8 events
+        // (bag of coins is skipped)
+        Assert.Equal(8, events.Count);
+
+        // Verify we got damage and death events (new in v1.0.2)
+        Assert.Single(events.OfType<DamageEvent>());
+        Assert.Single(events.OfType<DeathEvent>());
 
         // Verify we got all the loot types
         Assert.Equal(2, events.OfType<BonusCurrencyEvent>().Count());
@@ -611,6 +618,370 @@ public class LogParserTests
         var itemReceive = events.OfType<ItemReceiveEvent>().First(r => r.SourceName != "Reward");
         Assert.Equal("Aurora Corpse", itemReceive.ItemName);
         Assert.Equal("Kvasir", itemReceive.SourceName);
+
+        // Verify the new damage event
+        var damageEvent = events.OfType<DamageEvent>().First();
+        Assert.Equal("You", damageEvent.Source);
+        Assert.Equal("bright aurora", damageEvent.Target);
+        Assert.Equal(432, damageEvent.DamageAmount);
+
+        // Verify the new death event
+        var deathEvent = events.OfType<DeathEvent>().First();
+        Assert.Equal("bright aurora", deathEvent.Target);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    #endregion
+
+    #region v1.0.2 Real Log Format Tests
+
+    // Tests using actual log lines from roadmap/logs sample files to validate regex patterns
+
+    [Theory]
+    [InlineData("[21:15:08] You hit the swamp rat for 208 damage!", "swamp rat", 208, null)]
+    [InlineData("[13:19:51] You hit the faerie drake for 480 damage!", "faerie drake", 480, null)]
+    [InlineData("[04:25:25] You hit the Forged Servant Mark I for 597 (+28) damage!", "Forged Servant Mark I", 597, 28)]
+    [InlineData("[04:25:27] You hit the Forged Servant Mark I for 422 (+20) damage!", "Forged Servant Mark I", 422, 20)]
+    public void Parse_DamageDealt_RealLogFormats(string line, string expectedTarget, int expectedAmount, int? expectedModifier)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var damageEvent = Assert.IsType<DamageEvent>(events.First());
+        Assert.Equal("You", damageEvent.Source);
+        Assert.Equal(expectedTarget, damageEvent.Target);
+        Assert.Equal(expectedAmount, damageEvent.DamageAmount);
+        Assert.Equal(expectedModifier, damageEvent.Modifier);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Theory]
+    [InlineData("[21:15:50] The swamp rat hits your torso for 47 (+2) damage!", "The swamp rat", 47, 2, "torso")]
+    [InlineData("[00:17:30] The tomte thug hits your torso for 25 (-1) damage!", "The tomte thug", 25, -1, "torso")]
+    [InlineData("[04:33:54] The siabra mireguard hits your torso for 35 (-9) damage!", "The siabra mireguard", 35, -9, "torso")]
+    public void Parse_DamageTaken_RealLogFormatsWithBodyPart(string line, string expectedSource, int expectedAmount, int expectedModifier, string expectedBodyPart)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var damageEvent = Assert.IsType<DamageEvent>(events.First());
+        Assert.Equal(expectedSource, damageEvent.Source);
+        Assert.Equal("You", damageEvent.Target);
+        Assert.Equal(expectedAmount, damageEvent.DamageAmount);
+        Assert.Equal(expectedModifier, damageEvent.Modifier);
+        Assert.Equal(expectedBodyPart, damageEvent.BodyPart);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Theory]
+    [InlineData("[00:17:33] You attack the tomte thug with your staff and hit for 23 (+1) damage!", "tomte thug", "staff", 23, 1)]
+    [InlineData("[04:33:51] You attack the siabra mireguard with your sword and hit for 103 damage!", "siabra mireguard", "sword", 103, null)]
+    [InlineData("[22:40:17] You attack the nightmare with your hammer and hit for 73 (+7) damage!", "nightmare", "hammer", 73, 7)]
+    public void Parse_MeleeAttack_RealLogFormats(string line, string expectedTarget, string expectedWeapon, int expectedAmount, int? expectedModifier)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var damageEvent = Assert.IsType<DamageEvent>(events.First());
+        Assert.Equal("You", damageEvent.Source);
+        Assert.Equal(expectedTarget, damageEvent.Target);
+        Assert.Equal(expectedAmount, damageEvent.DamageAmount);
+        Assert.Equal(expectedWeapon, damageEvent.WeaponUsed);
+        Assert.Equal(expectedModifier, damageEvent.Modifier);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Theory]
+    [InlineData("[20:44:28] You shot Paladintest with your bow and hit for 311 (-68) damage!", "Paladintest", "bow", 311, -68)]
+    public void Parse_RangedAttack_RealLogFormats(string line, string expectedTarget, string expectedWeapon, int expectedAmount, int? expectedModifier)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var damageEvent = Assert.IsType<DamageEvent>(events.First());
+        Assert.Equal("You", damageEvent.Source);
+        Assert.Equal(expectedTarget, damageEvent.Target);
+        Assert.Equal(expectedAmount, damageEvent.DamageAmount);
+        Assert.Equal(expectedWeapon, damageEvent.WeaponUsed);
+        Assert.Equal(expectedModifier, damageEvent.Modifier);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Theory]
+    [InlineData("[04:37:06] You critical hit for an additional 168 damage!", null, 168, null)]
+    [InlineData("[20:55:51] You critical hit for an additional 16 damage!", null, 16, null)]
+    [InlineData("[21:07:00] You critical hit Merctest for an additional 74 damage! (20%)", "Merctest", 74, 20)]
+    public void Parse_CriticalHit_RealLogFormats(string line, string? expectedTarget, int expectedAmount, int? expectedPercent)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var critEvent = Assert.IsType<CriticalHitEvent>(events.First());
+        Assert.Equal(expectedTarget, critEvent.Target);
+        Assert.Equal(expectedAmount, critEvent.DamageAmount);
+        Assert.Equal(expectedPercent, critEvent.CritPercent);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Theory]
+    [InlineData("[04:36:56] Your spirit warrior attacks the giant snowcrab and hits for 47 damage!", "spirit warrior", "giant snowcrab", 47, null)]
+    [InlineData("[04:33:44] Your wolf sage attacks the siabra mireguard and hits for 191 damage!", "wolf sage", "siabra mireguard", 191, null)]
+    [InlineData("[10:29:29] Your bear sage attacks the greater stone sheerie and hits for 230 (+30) damage!", "bear sage", "greater stone sheerie", 230, 30)]
+    public void Parse_PetDamage_RealLogFormats(string line, string expectedPet, string expectedTarget, int expectedAmount, int? expectedModifier)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var petEvent = Assert.IsType<PetDamageEvent>(events.First());
+        Assert.Equal(expectedPet, petEvent.PetName);
+        Assert.Equal(expectedTarget, petEvent.Target);
+        Assert.Equal(expectedAmount, petEvent.DamageAmount);
+        Assert.Equal(expectedModifier, petEvent.Modifier);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Theory]
+    [InlineData("[21:15:19] The swamp rat dies!", "swamp rat")]
+    [InlineData("[00:17:41] The tomte thug dies!", "tomte thug")]
+    [InlineData("[04:34:00] The siabra mireguard dies!", "siabra mireguard")]
+    public void Parse_Death_RealLogFormats(string line, string expectedTarget)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var deathEvent = Assert.IsType<DeathEvent>(events.First());
+        Assert.Equal(expectedTarget, deathEvent.Target);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Theory]
+    [InlineData("[04:34:00] The wolf sage kills the siabra mireguard!", "wolf sage", "siabra mireguard")]
+    public void Parse_Kill_RealLogFormats(string line, string expectedKiller, string expectedTarget)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var deathEvent = Assert.IsType<DeathEvent>(events.First());
+        Assert.Equal(expectedTarget, deathEvent.Target);
+        Assert.Equal(expectedKiller, deathEvent.Killer);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Theory]
+    [InlineData("[21:15:14] The swamp rat resists the effect!", "swamp rat")]
+    [InlineData("[04:36:59] The giant snowcrab resists the effect!", "giant snowcrab")]
+    public void Parse_Resist_RealLogFormats(string line, string expectedTarget)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var resistEvent = Assert.IsType<ResistEvent>(events.First());
+        Assert.Equal(expectedTarget, resistEvent.Target);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Theory]
+    [InlineData("[04:37:04] The giant snowcrab is stunned!", "giant snowcrab", true)]
+    [InlineData("[04:33:46] The siabra mireguard is stunned!", "siabra mireguard", true)]
+    public void Parse_StunApplied_RealLogFormats(string line, string expectedTarget, bool expectedIsApplied)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var ccEvent = Assert.IsType<CrowdControlEvent>(events.First());
+        Assert.Equal(expectedTarget, ccEvent.Target);
+        Assert.Equal("stun", ccEvent.EffectType);
+        Assert.Equal(expectedIsApplied, ccEvent.IsApplied);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Theory]
+    [InlineData("[04:37:09] The giant snowcrab recovers from the stun.", "giant snowcrab")]
+    public void Parse_StunRecovered_RealLogFormats(string line, string expectedTarget)
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, line);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var ccEvent = Assert.IsType<CrowdControlEvent>(events.First());
+        Assert.Equal(expectedTarget, ccEvent.Target);
+        Assert.Equal("stun", ccEvent.EffectType);
+        Assert.False(ccEvent.IsApplied);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Fact]
+    public void Parse_AlternateDamageTaken_RealLogFormat()
+    {
+        // Arrange
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, "[20:55:45] You are hit for 40 damage.");
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Single(events);
+        var damageEvent = Assert.IsType<DamageEvent>(events.First());
+        Assert.Equal("Unknown", damageEvent.Source);
+        Assert.Equal("You", damageEvent.Target);
+        Assert.Equal(40, damageEvent.DamageAmount);
+
+        // Clean up
+        File.Delete(logFilePath);
+    }
+
+    [Fact]
+    public void Parse_ComplexCombatSequence_RealLogFormats()
+    {
+        // Arrange - a realistic combat sequence from roadmap/logs
+        var logContent = """
+            [04:33:44] Your wolf sage attacks the siabra mireguard and hits for 191 damage!
+            [04:33:46] The siabra mireguard is stunned!
+            [04:33:48] You hit the siabra mireguard for 118 damage!
+            [04:33:51] You attack the siabra mireguard with your sword and hit for 103 damage!
+            [04:33:54] The siabra mireguard hits your torso for 35 (-9) damage!
+            [04:34:00] The wolf sage kills the siabra mireguard!
+            """;
+
+        var logFilePath = Path.GetTempFileName();
+        File.WriteAllText(logFilePath, logContent);
+        var parser = new LogParser(logFilePath);
+
+        // Act
+        var events = parser.Parse().ToList();
+
+        // Assert
+        Assert.Equal(6, events.Count);
+        Assert.IsType<PetDamageEvent>(events[0]);
+        Assert.IsType<CrowdControlEvent>(events[1]);
+        Assert.IsType<DamageEvent>(events[2]);
+        Assert.IsType<DamageEvent>(events[3]);
+        Assert.IsType<DamageEvent>(events[4]);
+        Assert.IsType<DeathEvent>(events[5]);
+
+        // Verify pet damage
+        var petDamage = (PetDamageEvent)events[0];
+        Assert.Equal("wolf sage", petDamage.PetName);
+
+        // Verify stun
+        var stun = (CrowdControlEvent)events[1];
+        Assert.True(stun.IsApplied);
+
+        // Verify melee attack with weapon
+        var meleeAttack = (DamageEvent)events[3];
+        Assert.Equal("sword", meleeAttack.WeaponUsed);
+
+        // Verify damage taken with body part
+        var damageTaken = (DamageEvent)events[4];
+        Assert.Equal("torso", damageTaken.BodyPart);
+        Assert.Equal(-9, damageTaken.Modifier);
+
+        // Verify kill event
+        var kill = (DeathEvent)events[5];
+        Assert.Equal("wolf sage", kill.Killer);
+        Assert.Equal("siabra mireguard", kill.Target);
 
         // Clean up
         File.Delete(logFilePath);

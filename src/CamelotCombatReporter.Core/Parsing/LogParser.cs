@@ -55,14 +55,70 @@ public class LogParser
     private const int BuiltInPriority = -100;
 
     // Regex to capture damage dealt by the player.
-    // Note the change from Python's (?P<name>...) to .NET's (?<name>...).
+    // Supports: "You hit X for N damage!" and "You hit X for N (+M) damage!" and "You hit X for N points of type damage!"
     private static readonly Regex DamageDealtPattern = new(
-        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You hit (the )?(?<target>.+?) for (?<amount>\d+) points of(?: (?<type>\w+))? damage[!.]?$",
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You hit (?:the )?(?<target>.+?) for (?<amount>\d+)(?:\s*\((?<modifier>[+-]?\d+)\))?(?:\s+points of)?(?: (?<type>\w+))? damage[!.]?$",
         RegexOptions.Compiled);
 
     // Regex to capture damage taken by the player.
+    // Supports: "X hits you for N points of type damage!" and "X hits your torso for N (+M) damage!"
     private static readonly Regex DamageTakenPattern = new(
-        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<source>.+?) hits you for (?<amount>\d+) points of(?: (?<type>\w+))? damage[.!]?$",
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<source>.+?) hits (?:you|your (?<bodypart>\w+)) for (?<amount>\d+)(?:\s*\((?<modifier>[+-]?\d+)\))?(?:\s+points of)?(?: (?<type>\w+))? damage[!.]?$",
+        RegexOptions.Compiled);
+
+    // Alternate damage taken: "You are hit for N damage."
+    private static readonly Regex AlternateDamageTakenPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You are hit for (?<amount>\d+) damage\.$",
+        RegexOptions.Compiled);
+
+    // Melee attack: "You attack X with your weapon and hit for N damage!"
+    private static readonly Regex MeleeAttackPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You attack (?:the )?(?<target>.+?) with your (?<weapon>.+?) and hit for (?<amount>\d+)(?:\s*\((?<modifier>[+-]?\d+)\))? damage[!.]?$",
+        RegexOptions.Compiled);
+
+    // Ranged attack: "You shot X with your bow and hit for N damage!"
+    private static readonly Regex RangedAttackPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You shot (?<target>.+?) with your (?<weapon>.+?) and hit for (?<amount>\d+)(?:\s*\((?<modifier>[+-]?\d+)\))? damage[!.]?$",
+        RegexOptions.Compiled);
+
+    // Critical hit: "You critical hit for an additional N damage!" or "You critical hit Target for an additional N damage! (20%)"
+    private static readonly Regex CriticalHitPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You critical hit(?: (?<target>.+?))? for an additional (?<amount>\d+) damage!(?:\s*\((?<percent>\d+)%\))?$",
+        RegexOptions.Compiled);
+
+    // Pet damage: "Your spirit warrior attacks X and hits for N damage!"
+    private static readonly Regex PetDamagePattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+Your (?<pet>.+?) attacks (?:the )?(?<target>.+?) and hits for (?<amount>\d+)(?:\s*\((?<modifier>[+-]?\d+)\))? damage[!.]?$",
+        RegexOptions.Compiled);
+
+    // Pet extra damage: "Your pet hits target for N extra damage!"
+    private static readonly Regex PetExtraDamagePattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+Your pet hits (?<target>.+?) for (?<amount>\d+) extra damage!$",
+        RegexOptions.Compiled);
+
+    // Death event: "The swamp rat dies!" or "X kills Y!"
+    private static readonly Regex DeathPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) dies!$",
+        RegexOptions.Compiled);
+
+    // Kill event: "The wolf sage kills the siabra mireguard!"
+    private static readonly Regex KillPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<killer>.+?) kills (?:the )?(?<target>.+?)!$",
+        RegexOptions.Compiled);
+
+    // Resist event: "The swamp rat resists the effect!"
+    private static readonly Regex ResistPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) resists the effect!$",
+        RegexOptions.Compiled);
+
+    // Stun applied: "The giant snowcrab is stunned!"
+    private static readonly Regex StunAppliedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) is stunned!$",
+        RegexOptions.Compiled);
+
+    // Stun recovered: "The giant snowcrab recovers from the stun."
+    private static readonly Regex StunRecoveredPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) recovers from the stun\.$",
         RegexOptions.Compiled);
 
     // Regex to capture combat styles used by the player.
@@ -195,6 +251,57 @@ public class LogParser
             }
 
             // Fall back to built-in patterns
+
+            // Melee attack pattern: "You attack X with your weapon and hit for N damage!"
+            var meleeMatch = MeleeAttackPattern.Match(line);
+            if (meleeMatch.Success)
+            {
+                var groups = meleeMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+                var weapon = groups["weapon"].Value.Trim();
+                var amount = int.Parse(groups["amount"].Value);
+                int? modifier = groups["modifier"].Success ? int.Parse(groups["modifier"].Value) : null;
+
+                var evt = new DamageEvent(
+                    Timestamp: timestamp,
+                    Source: "You",
+                    Target: target,
+                    DamageAmount: amount,
+                    DamageType: "Unknown",
+                    Modifier: modifier,
+                    WeaponUsed: weapon
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Ranged attack pattern: "You shot X with your bow and hit for N damage!"
+            var rangedMatch = RangedAttackPattern.Match(line);
+            if (rangedMatch.Success)
+            {
+                var groups = rangedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+                var weapon = groups["weapon"].Value.Trim();
+                var amount = int.Parse(groups["amount"].Value);
+                int? modifier = groups["modifier"].Success ? int.Parse(groups["modifier"].Value) : null;
+
+                var evt = new DamageEvent(
+                    Timestamp: timestamp,
+                    Source: "You",
+                    Target: target,
+                    DamageAmount: amount,
+                    DamageType: "Unknown",
+                    Modifier: modifier,
+                    WeaponUsed: weapon
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
             var dealtMatch = DamageDealtPattern.Match(line);
             if (dealtMatch.Success)
             {
@@ -204,13 +311,15 @@ public class LogParser
                 var target = groups["target"].Value.Trim();
                 var amount = int.Parse(groups["amount"].Value);
                 var damageType = groups["type"].Success ? groups["type"].Value.Trim() : "Unknown";
+                int? modifier = groups["modifier"].Success ? int.Parse(groups["modifier"].Value) : null;
 
                 var evt = new DamageEvent(
                     Timestamp: timestamp,
                     Source: "You",
                     Target: target,
                     DamageAmount: amount,
-                    DamageType: damageType
+                    DamageType: damageType,
+                    Modifier: modifier
                 );
                 AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
                 yield return evt;
@@ -225,13 +334,192 @@ public class LogParser
                 var source = groups["source"].Value.Trim();
                 var amount = int.Parse(groups["amount"].Value);
                 var damageType = groups["type"].Success ? groups["type"].Value.Trim() : "Unknown";
+                int? modifier = groups["modifier"].Success ? int.Parse(groups["modifier"].Value) : null;
+                string? bodyPart = groups["bodypart"].Success ? groups["bodypart"].Value.Trim() : null;
 
                 var evt = new DamageEvent(
                     Timestamp: timestamp,
                     Source: source,
                     Target: "You",
                     DamageAmount: amount,
-                    DamageType: damageType
+                    DamageType: damageType,
+                    Modifier: modifier,
+                    BodyPart: bodyPart
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Alternate damage taken: "You are hit for N damage."
+            var altTakenMatch = AlternateDamageTakenPattern.Match(line);
+            if (altTakenMatch.Success)
+            {
+                var groups = altTakenMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var amount = int.Parse(groups["amount"].Value);
+
+                var evt = new DamageEvent(
+                    Timestamp: timestamp,
+                    Source: "Unknown",
+                    Target: "You",
+                    DamageAmount: amount,
+                    DamageType: "Unknown"
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Critical hit pattern
+            var critMatch = CriticalHitPattern.Match(line);
+            if (critMatch.Success)
+            {
+                var groups = critMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var amount = int.Parse(groups["amount"].Value);
+                string? target = groups["target"].Success ? groups["target"].Value.Trim() : null;
+                int? percent = groups["percent"].Success ? int.Parse(groups["percent"].Value) : null;
+
+                var evt = new CriticalHitEvent(
+                    Timestamp: timestamp,
+                    Target: target,
+                    DamageAmount: amount,
+                    CritPercent: percent
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Pet damage pattern
+            var petDamageMatch = PetDamagePattern.Match(line);
+            if (petDamageMatch.Success)
+            {
+                var groups = petDamageMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var petName = groups["pet"].Value.Trim();
+                var target = groups["target"].Value.Trim();
+                var amount = int.Parse(groups["amount"].Value);
+                int? modifier = groups["modifier"].Success ? int.Parse(groups["modifier"].Value) : null;
+
+                var evt = new PetDamageEvent(
+                    Timestamp: timestamp,
+                    PetName: petName,
+                    Target: target,
+                    DamageAmount: amount,
+                    Modifier: modifier
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Pet extra damage pattern
+            var petExtraMatch = PetExtraDamagePattern.Match(line);
+            if (petExtraMatch.Success)
+            {
+                var groups = petExtraMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+                var amount = int.Parse(groups["amount"].Value);
+
+                var evt = new PetDamageEvent(
+                    Timestamp: timestamp,
+                    PetName: "pet",
+                    Target: target,
+                    DamageAmount: amount
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Kill event: "The wolf sage kills the siabra mireguard!"
+            var killMatch = KillPattern.Match(line);
+            if (killMatch.Success)
+            {
+                var groups = killMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var killer = groups["killer"].Value.Trim();
+                var target = groups["target"].Value.Trim();
+
+                var evt = new DeathEvent(
+                    Timestamp: timestamp,
+                    Target: target,
+                    Killer: killer
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Death pattern: "The swamp rat dies!"
+            var deathMatch = DeathPattern.Match(line);
+            if (deathMatch.Success)
+            {
+                var groups = deathMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+
+                var evt = new DeathEvent(
+                    Timestamp: timestamp,
+                    Target: target
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Resist pattern
+            var resistMatch = ResistPattern.Match(line);
+            if (resistMatch.Success)
+            {
+                var groups = resistMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+
+                var evt = new ResistEvent(
+                    Timestamp: timestamp,
+                    Target: target
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Stun applied pattern
+            var stunAppliedMatch = StunAppliedPattern.Match(line);
+            if (stunAppliedMatch.Success)
+            {
+                var groups = stunAppliedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+
+                var evt = new CrowdControlEvent(
+                    Timestamp: timestamp,
+                    Target: target,
+                    EffectType: "stun",
+                    IsApplied: true
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Stun recovered pattern
+            var stunRecoveredMatch = StunRecoveredPattern.Match(line);
+            if (stunRecoveredMatch.Success)
+            {
+                var groups = stunRecoveredMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+
+                var evt = new CrowdControlEvent(
+                    Timestamp: timestamp,
+                    Target: target,
+                    EffectType: "stun",
+                    IsApplied: false
                 );
                 AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
                 yield return evt;
