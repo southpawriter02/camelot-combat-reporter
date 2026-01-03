@@ -161,8 +161,8 @@ dotnet build -c Release
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-repo/discussions)
+- **Issues**: [GitHub Issues](https://github.com/southpawriter02/camelot-combat-reporter/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/southpawriter02/camelot-combat-reporter/discussions)
 
 ## License
 
