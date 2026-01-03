@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Product>Camelot Combat Reporter</Product>
+    <Authors>Camelot Combat Reporter Contributors</Authors>
+    <Copyright>Copyright © 2025</Copyright>
+    <RepositoryUrl>https://github.com/southpawriter02/camelot-combat-reporter</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+</Project>
