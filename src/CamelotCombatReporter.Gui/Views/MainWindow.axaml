@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:crossrealm="using:CamelotCombatReporter.Gui.CrossRealm.Views"
+        xmlns:loottracking="using:CamelotCombatReporter.Gui.LootTracking.Views"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
         x:Class="CamelotCombatReporter.Gui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -644,6 +645,11 @@
         <!-- Cross-Realm Analysis Tab -->
         <TabItem Header="Cross-Realm Analysis">
             <crossrealm:CrossRealmView x:Name="CrossRealmView"/>
+        </TabItem>
+
+        <!-- Loot Tracking Tab -->
+        <TabItem Header="Loot Tracking">
+            <loottracking:LootTrackingView x:Name="LootTrackingView"/>
         </TabItem>
     </TabControl>
     </DockPanel>

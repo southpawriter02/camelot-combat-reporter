@@ -67,7 +67,7 @@ public class LogParser
 
     // Regex to capture combat styles used by the player.
     private static readonly Regex CombatStylePattern = new(
-        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You use (?<style>.+?) on (?<target>.+?)[.!]?$",
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You use (?<style>.+?) on (?:the )?(?<target>.+?)[.!]?$",
         RegexOptions.Compiled);
 
     // Regex to capture spells cast by the player.
@@ -84,6 +84,44 @@ public class LogParser
     private static readonly Regex HealingReceivedPattern = new(
         @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<source>.+?) heals you for (?<amount>\d+) hit points[.!]?$",
         RegexOptions.Compiled);
+
+    // Loot patterns
+
+    // Item drops from mobs: "[HH:mm:ss] The bright aurora drops a crystalline orb, which you pick up."
+    private static readonly Regex ItemDropPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The\s+)?(?<mob>.+?)\s+drops\s+(?<article>a|an|the)\s+(?<item>.+?),\s+which you pick up\.$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Currency pickup: "[HH:mm:ss] You pick up 1 gold, 48 silver and 98 copper pieces."
+    // Handles various formats: "1 gold, 48 silver and 98 copper", "1 gold and 15 silver", "75 silver and 90 copper"
+    private static readonly Regex CurrencyPickupPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You pick up\s+(?:(?<gold>\d+)\s+gold)?(?:,?\s+|\s+and\s+)?(?:(?<silver>\d+)\s+silver)?(?:,?\s+|\s+and\s+)?(?:(?<copper>\d+)\s+copper)?\s*pieces?\.$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Item receive from NPC/source: "[HH:mm:ss] You receive the Biting Wind Eye from the biting wind!"
+    private static readonly Regex ItemReceivePattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You receive\s+(?:the\s+)?(?<item>.+?)\s+from\s+(?<source>.+?)!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Reward receive with quantity: "[HH:mm:ss] You received 23 Soil of Albion as your reward!"
+    private static readonly Regex RewardReceivePattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You received\s+(?<qty>\d+)\s+(?<item>.+?)\s+as your reward!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Currency receive (without pieces): "[HH:mm:ss] You receive 1 gold, 3 silver, 76 copper"
+    private static readonly Regex CurrencyReceivePattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You receive\s+(?:(?<gold>\d+)\s+gold)?(?:,?\s*)?(?:(?<silver>\d+)\s+silver)?(?:,?\s*)?(?:(?<copper>\d+)\s+copper)?$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Bonus currency from outposts: "[HH:mm:ss] You find an additional 8 copper pieces thanks to your realm owning outposts!"
+    private static readonly Regex BonusCurrencyOutpostPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You find an additional\s+(?:(?<gold>\d+)\s+gold)?(?:,?\s*)?(?:(?<silver>\d+)\s+silver)?(?:\s+and\s+)?(?:(?<copper>\d+)\s+copper)?\s*pieces?\s+thanks to your realm owning outposts!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Bonus currency from area: "[HH:mm:ss] You gain an additional 4 silver and 53 copper pieces for adventuring in this area!"
+    private static readonly Regex BonusCurrencyAreaPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You gain an additional\s+(?:(?<gold>\d+)\s+gold)?(?:,?\s*)?(?:(?<silver>\d+)\s+silver)?(?:\s+and\s+)?(?:(?<copper>\d+)\s+copper)?\s*pieces?\s+for adventuring in this area!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public LogParser(string logFilePath)
     {
@@ -275,7 +313,181 @@ public class LogParser
                 yield return evt;
                 continue;
             }
+
+            // Loot parsing
+
+            // Item drop from mob
+            var itemDropMatch = ItemDropPattern.Match(line);
+            if (itemDropMatch.Success)
+            {
+                var groups = itemDropMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var mob = groups["mob"].Value.Trim();
+                var article = groups["article"].Value.ToLowerInvariant();
+                var item = groups["item"].Value.Trim();
+
+                // Skip "bag of coins" as a regular item - currency is handled separately
+                if (!item.Equals("bag of coins", StringComparison.OrdinalIgnoreCase))
+                {
+                    var evt = new ItemDropEvent(
+                        Timestamp: timestamp,
+                        MobName: mob,
+                        ItemName: item,
+                        IsNamedItem: article == "the"
+                    );
+                    AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                    yield return evt;
+                }
+                continue;
+            }
+
+            // Currency pickup
+            var currencyPickupMatch = CurrencyPickupPattern.Match(line);
+            if (currencyPickupMatch.Success)
+            {
+                var groups = currencyPickupMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var gold = groups["gold"].Success ? int.Parse(groups["gold"].Value) : 0;
+                var silver = groups["silver"].Success ? int.Parse(groups["silver"].Value) : 0;
+                var copper = groups["copper"].Success ? int.Parse(groups["copper"].Value) : 0;
+
+                // Try to find the mob from recent events (look for a recent death or item drop)
+                string? mobName = FindRecentMobName(recentEvents);
+
+                var evt = new CurrencyDropEvent(
+                    Timestamp: timestamp,
+                    MobName: mobName,
+                    Gold: gold,
+                    Silver: silver,
+                    Copper: copper
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Currency receive (alternative format without "pieces")
+            var currencyReceiveMatch = CurrencyReceivePattern.Match(line);
+            if (currencyReceiveMatch.Success)
+            {
+                var groups = currencyReceiveMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var gold = groups["gold"].Success ? int.Parse(groups["gold"].Value) : 0;
+                var silver = groups["silver"].Success ? int.Parse(groups["silver"].Value) : 0;
+                var copper = groups["copper"].Success ? int.Parse(groups["copper"].Value) : 0;
+
+                var evt = new CurrencyDropEvent(
+                    Timestamp: timestamp,
+                    MobName: null,
+                    Gold: gold,
+                    Silver: silver,
+                    Copper: copper
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Item receive from NPC/source
+            var itemReceiveMatch = ItemReceivePattern.Match(line);
+            if (itemReceiveMatch.Success)
+            {
+                var groups = itemReceiveMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var item = groups["item"].Value.Trim();
+                var source = groups["source"].Value.Trim();
+
+                var evt = new ItemReceiveEvent(
+                    Timestamp: timestamp,
+                    ItemName: item,
+                    SourceName: source,
+                    Quantity: null
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Reward receive with quantity
+            var rewardReceiveMatch = RewardReceivePattern.Match(line);
+            if (rewardReceiveMatch.Success)
+            {
+                var groups = rewardReceiveMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var qty = int.Parse(groups["qty"].Value);
+                var item = groups["item"].Value.Trim();
+
+                var evt = new ItemReceiveEvent(
+                    Timestamp: timestamp,
+                    ItemName: item,
+                    SourceName: "Reward",
+                    Quantity: qty
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Bonus currency from outposts
+            var bonusOutpostMatch = BonusCurrencyOutpostPattern.Match(line);
+            if (bonusOutpostMatch.Success)
+            {
+                var groups = bonusOutpostMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var gold = groups["gold"].Success ? int.Parse(groups["gold"].Value) : 0;
+                var silver = groups["silver"].Success ? int.Parse(groups["silver"].Value) : 0;
+                var copper = groups["copper"].Success ? int.Parse(groups["copper"].Value) : 0;
+
+                var evt = new BonusCurrencyEvent(
+                    Timestamp: timestamp,
+                    Gold: gold,
+                    Silver: silver,
+                    Copper: copper,
+                    BonusSource: "outpost"
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Bonus currency from area
+            var bonusAreaMatch = BonusCurrencyAreaPattern.Match(line);
+            if (bonusAreaMatch.Success)
+            {
+                var groups = bonusAreaMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var gold = groups["gold"].Success ? int.Parse(groups["gold"].Value) : 0;
+                var silver = groups["silver"].Success ? int.Parse(groups["silver"].Value) : 0;
+                var copper = groups["copper"].Success ? int.Parse(groups["copper"].Value) : 0;
+
+                var evt = new BonusCurrencyEvent(
+                    Timestamp: timestamp,
+                    Gold: gold,
+                    Silver: silver,
+                    Copper: copper,
+                    BonusSource: "area"
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
         }
+    }
+
+    /// <summary>
+    /// Attempts to find the name of a recently killed mob from the event history.
+    /// </summary>
+    private static string? FindRecentMobName(List<LogEvent> recentEvents)
+    {
+        // Look backwards through recent events for an ItemDropEvent (currency often follows item drops)
+        for (var i = recentEvents.Count - 1; i >= 0; i--)
+        {
+            if (recentEvents[i] is ItemDropEvent itemDrop)
+            {
+                return itemDrop.MobName;
+            }
+        }
+        return null;
     }
 
     private static void AddToRecentEvents(List<LogEvent> recentEvents, LogEvent evt, int maxCount)

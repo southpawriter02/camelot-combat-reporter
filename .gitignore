@@ -74,3 +74,5 @@ yarn-error.log*
 *.rar
 *.7z
 
+# logs
+roadmap/logs

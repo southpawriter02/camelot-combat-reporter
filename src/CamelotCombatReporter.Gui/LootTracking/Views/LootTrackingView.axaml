@@ -1,0 +1,329 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.LootTracking.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="CamelotCombatReporter.Gui.LootTracking.Views.LootTrackingView"
+             x:DataType="vm:LootTrackingViewModel">
+
+    <Design.DataContext>
+        <vm:LootTrackingViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Loot Drop Rate Tracking"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <Button Content="Import Log" Command="{Binding ImportLogFileCommand}"/>
+                    <Button Content="Refresh" Command="{Binding RefreshDataCommand}"/>
+                    <Button Content="Export CSV" Command="{Binding ExportToCsvCommand}"/>
+                    <Button Content="Export JSON" Command="{Binding ExportToJsonCommand}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Status Bar -->
+            <Border Background="#E3F2FD" CornerRadius="5" Padding="10">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{Binding StatusMessage}"
+                               VerticalAlignment="Center"/>
+                    <ProgressBar Grid.Column="1"
+                                 IsIndeterminate="{Binding IsLoading}"
+                                 IsVisible="{Binding IsLoading}"
+                                 Width="100"/>
+                </Grid>
+            </Border>
+
+            <!-- Session Summary (when data is loaded) -->
+            <Border BorderBrush="#4CAF50"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasSessionData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Last Import Summary"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#4CAF50"/>
+                    <Grid ColumnDefinitions="*,*,*,*">
+                        <StackPanel>
+                            <TextBlock Text="Item Drops" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding SessionItemDrops}"
+                                       FontSize="20"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Currency" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding SessionCurrency}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#FFC107"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Unique Mobs" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding SessionUniqueMobs}"
+                                       FontSize="20"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3">
+                            <TextBlock Text="Unique Items" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding SessionUniqueItems}"
+                                       FontSize="20"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Overall Statistics -->
+            <Border BorderBrush="#2196F3"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Overall Statistics"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#2196F3"/>
+                    <Grid ColumnDefinitions="*,*,*,*,*">
+                        <StackPanel>
+                            <TextBlock Text="Sessions" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalSessions}"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Mobs Tracked" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalMobsTracked}"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Items Tracked" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalItemsTracked}"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3">
+                            <TextBlock Text="Total Kills" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalKills}"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Total Currency" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalCurrencyEarned}"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#FFC107"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Main Content: Mob Browser and Item Table -->
+            <Grid ColumnDefinitions="*,2*" RowDefinitions="Auto,*" MinHeight="400">
+                <!-- Mob Search -->
+                <Border Grid.Column="0" Grid.Row="0"
+                        BorderBrush="#9C27B0"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,7,10">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Search Mobs" FontWeight="Bold" Foreground="#9C27B0"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBox Text="{Binding MobSearchQuery}"
+                                     Watermark="Search by mob name..."/>
+                            <Button Grid.Column="1"
+                                    Content="Search"
+                                    Command="{Binding SearchMobsCommand}"
+                                    Margin="5,0,0,0"/>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Sort by:" VerticalAlignment="Center"/>
+                            <ComboBox SelectedItem="{Binding MobSortBy}" Width="100">
+                                <ComboBoxItem Content="kills" Tag="kills"/>
+                                <ComboBoxItem Content="name" Tag="name"/>
+                                <ComboBoxItem Content="lastseen" Tag="lastseen"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Selected Mob Info Header -->
+                <Border Grid.Column="1" Grid.Row="0"
+                        BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="7,0,0,10"
+                        IsVisible="{Binding SelectedMob, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding SelectedMob.MobName}"
+                                   FontWeight="Bold"
+                                   FontSize="18"
+                                   Foreground="#FF9800"/>
+                        <StackPanel Orientation="Horizontal" Spacing="20">
+                            <TextBlock>
+                                <Run Text="Kills: " Foreground="Gray"/>
+                                <Run Text="{Binding SelectedMob.TotalKills}" FontWeight="SemiBold"/>
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="Items: " Foreground="Gray"/>
+                                <Run Text="{Binding SelectedMob.ItemCount}" FontWeight="SemiBold"/>
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="Avg Currency: " Foreground="Gray"/>
+                                <Run Text="{Binding SelectedMob.CurrencyInfo}" FontWeight="SemiBold"/>
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="Last Seen: " Foreground="Gray"/>
+                                <Run Text="{Binding SelectedMob.LastEncounter}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Mob List -->
+                <Border Grid.Column="0" Grid.Row="1"
+                        BorderBrush="#9C27B0"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Mob Loot Tables" FontWeight="Bold" Foreground="#9C27B0"/>
+                        <DataGrid ItemsSource="{Binding Mobs}"
+                                  SelectedItem="{Binding SelectedMob}"
+                                  Height="300"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Mob" Binding="{Binding MobName}" Width="*"/>
+                                <DataGridTextColumn Header="Kills" Binding="{Binding TotalKills}" Width="60"/>
+                                <DataGridTextColumn Header="Items" Binding="{Binding ItemCount}" Width="50"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Item Drop Table -->
+                <Border Grid.Column="1" Grid.Row="1"
+                        BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Item Drop Rates" FontWeight="Bold" Foreground="#FF9800"/>
+                        <DataGrid ItemsSource="{Binding Items}"
+                                  SelectedItem="{Binding SelectedItem}"
+                                  Height="300"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Item Name" Binding="{Binding ItemName}" Width="*"/>
+                                <DataGridTextColumn Header="Drops" Binding="{Binding TotalDrops}" Width="60"/>
+                                <DataGridTextColumn Header="Kills" Binding="{Binding TotalKills}" Width="60"/>
+                                <DataGridTextColumn Header="Rate" Binding="{Binding DropRateDisplay}" Width="70"/>
+                                <DataGridTextColumn Header="95% CI" Binding="{Binding ConfidenceInterval}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Drop Rate Chart -->
+            <Border BorderBrush="#00BCD4"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding SelectedMob, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Drop Rate Distribution"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#00BCD4"/>
+                    <lvc:CartesianChart Series="{Binding DropRateSeries}"
+                                        Height="200"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Recent Sessions -->
+            <Border BorderBrush="#607D8B"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <Expander Header="Recent Sessions" IsExpanded="False">
+                    <DataGrid ItemsSource="{Binding RecentSessions}"
+                              Height="150"
+                              Margin="0,10,0,0"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="#CCCCCC">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Date" Binding="{Binding SessionDate}" Width="150"/>
+                            <DataGridTextColumn Header="Duration" Binding="{Binding Duration}" Width="80"/>
+                            <DataGridTextColumn Header="Items" Binding="{Binding ItemDrops}" Width="60"/>
+                            <DataGridTextColumn Header="Currency" Binding="{Binding Currency}" Width="100"/>
+                            <DataGridTextColumn Header="Mobs" Binding="{Binding UniqueMobs}" Width="60"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Expander>
+            </Border>
+
+            <!-- Instructions (when no data) -->
+            <Border BorderBrush="#FFC107"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding !HasSessionData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Getting Started with Loot Tracking"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#FFC107"/>
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">How to use:</Run>
+                        <LineBreak/>
+                        1. Click "Import Log" to select a DAoC combat log file
+                        <LineBreak/>
+                        2. The system will parse all loot drop messages from the log
+                        <LineBreak/>
+                        3. Drop rates are calculated with 95% confidence intervals
+                        <LineBreak/>
+                        4. Use "Export CSV" or "Export JSON" to share your data
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Supported log messages:</Run>
+                        <LineBreak/>
+                        - Item drops: "[time] MobName drops a ItemName, which you pick up."
+                        <LineBreak/>
+                        - Currency: "[time] You pick up X gold, Y silver and Z copper pieces."
+                        <LineBreak/>
+                        - Bonus currency from outposts and area bonuses
+                        <LineBreak/>
+                        - Item rewards and NPC trades
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>
