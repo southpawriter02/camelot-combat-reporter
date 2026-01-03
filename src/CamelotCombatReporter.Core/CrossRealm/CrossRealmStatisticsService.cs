@@ -1,17 +1,23 @@
+using System.Diagnostics;
 using System.Text.Json;
+using CamelotCombatReporter.Core.Logging;
 using CamelotCombatReporter.Core.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CamelotCombatReporter.Core.CrossRealm;
 
 /// <summary>
 /// Service for managing cross-realm combat statistics with local JSON storage.
 /// </summary>
-public class CrossRealmStatisticsService : ICrossRealmStatisticsService
+public class CrossRealmStatisticsService : ICrossRealmStatisticsService, IDisposable
 {
     private readonly string _sessionsDirectory;
     private readonly string _indexPath;
     private readonly SemaphoreSlim _indexLock = new(1, 1);
+    private readonly ILogger<CrossRealmStatisticsService> _logger;
     private SessionIndex? _cachedIndex;
+    private bool _disposed;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -22,27 +28,34 @@ public class CrossRealmStatisticsService : ICrossRealmStatisticsService
     /// <summary>
     /// Creates a new CrossRealmStatisticsService with default storage location.
     /// </summary>
-    public CrossRealmStatisticsService()
+    /// <param name="logger">Optional logger instance.</param>
+    public CrossRealmStatisticsService(ILogger<CrossRealmStatisticsService>? logger = null)
         : this(Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "CamelotCombatReporter",
-            "cross-realm"))
+            "cross-realm"), logger)
     {
     }
 
     /// <summary>
     /// Creates a new CrossRealmStatisticsService with custom storage location.
     /// </summary>
-    public CrossRealmStatisticsService(string baseDirectory)
+    /// <param name="baseDirectory">Custom base directory for storage.</param>
+    /// <param name="logger">Optional logger instance.</param>
+    public CrossRealmStatisticsService(string baseDirectory, ILogger<CrossRealmStatisticsService>? logger = null)
     {
+        _logger = logger ?? NullLogger<CrossRealmStatisticsService>.Instance;
         _sessionsDirectory = Path.Combine(baseDirectory, "sessions");
         _indexPath = Path.Combine(baseDirectory, "sessions-index.json");
         EnsureDirectoryExists();
+        _logger.LogServiceInitializing(nameof(CrossRealmStatisticsService));
     }
 
     public async Task SaveSessionAsync(ExtendedCombatStatistics stats, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(stats);
+
+        _logger.LogSavingCrossRealmSession(stats.Character.Name, stats.Character.Realm.ToString());
 
         var fileName = GenerateSessionFileName(stats);
         var filePath = Path.Combine(_sessionsDirectory, fileName);
@@ -70,6 +83,8 @@ public class CrossRealmStatisticsService : ICrossRealmStatisticsService
         {
             _indexLock.Release();
         }
+
+        _logger.LogCrossRealmSessionSaved(stats.Id);
     }
 
     public async Task<IReadOnlyList<CombatSessionSummary>> GetSessionsAsync(
@@ -79,6 +94,7 @@ public class CrossRealmStatisticsService : ICrossRealmStatisticsService
         int? limit = null,
         CancellationToken cancellationToken = default)
     {
+        _logger.LogLoadingCrossRealmSessions(realm?.ToString(), characterClass?.ToString());
         var index = await LoadIndexAsync(cancellationToken);
 
         var query = index.Sessions.AsEnumerable();
@@ -285,6 +301,8 @@ public class CrossRealmStatisticsService : ICrossRealmStatisticsService
             }
 
             var files = Directory.GetFiles(_sessionsDirectory, "*.json");
+            _logger.LogIndexRebuildStarted(files.Length);
+
             foreach (var file in files)
             {
                 try
@@ -298,9 +316,9 @@ public class CrossRealmStatisticsService : ICrossRealmStatisticsService
                         newIndex.Sessions.Add(entry);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Skip corrupted files
+                    _logger.LogCorruptedSessionFile(file, ex);
                 }
             }
 
@@ -345,8 +363,9 @@ public class CrossRealmStatisticsService : ICrossRealmStatisticsService
             _cachedIndex = JsonSerializer.Deserialize<SessionIndex>(json, JsonOptions) ?? SessionIndex.Empty();
             return _cachedIndex;
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogIndexLoadFailed(_indexPath, ex);
             _cachedIndex = SessionIndex.Empty();
             return _cachedIndex;
         }
@@ -371,8 +390,9 @@ public class CrossRealmStatisticsService : ICrossRealmStatisticsService
             var json = await File.ReadAllTextAsync(filePath, cancellationToken);
             return JsonSerializer.Deserialize<ExtendedCombatStatistics>(json, JsonOptions);
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogCrossRealmSessionLoadError(filePath, ex);
             return null;
         }
     }
@@ -464,6 +484,36 @@ public class CrossRealmStatisticsService : ICrossRealmStatisticsService
     {
         var session = await LoadSessionFromFileAsync(entry.FileName, cancellationToken);
         return session?.TotalHealingDone ?? 0;
+    }
+
+    #endregion
+
+    #region IDisposable
+
+    /// <summary>
+    /// Disposes resources used by the service.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Disposes resources used by the service.
+    /// </summary>
+    /// <param name="disposing">True if called from Dispose, false if from finalizer.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed) return;
+
+        if (disposing)
+        {
+            _logger.LogServiceDisposing(nameof(CrossRealmStatisticsService));
+            _indexLock.Dispose();
+        }
+
+        _disposed = true;
     }
 
     #endregion

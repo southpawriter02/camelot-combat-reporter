@@ -1,10 +1,13 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
+using CamelotCombatReporter.Core.Logging;
 using CamelotCombatReporter.Gui.CrossRealm.ViewModels;
 using CamelotCombatReporter.Gui.Plugins.Views;
 using CamelotCombatReporter.Gui.ViewModels;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 
 namespace CamelotCombatReporter.Gui.Views;
@@ -12,22 +15,36 @@ namespace CamelotCombatReporter.Gui.Views;
 public partial class MainWindow : Window
 {
     private readonly CrossRealmViewModel _crossRealmViewModel;
+    private readonly ILogger<MainWindow> _logger;
 
     public MainWindow()
     {
         InitializeComponent();
+        _logger = App.CreateLogger<MainWindow>();
 
         // Initialize CrossRealmView with its ViewModel
         _crossRealmViewModel = new CrossRealmViewModel();
         CrossRealmView.DataContext = _crossRealmViewModel;
 
-        // Initialize async data when loaded
-        Loaded += async (_, _) => await _crossRealmViewModel.InitializeAsync();
+        // Initialize async data when loaded with proper error handling
+        Loaded += async (_, _) =>
+        {
+            try
+            {
+                await _crossRealmViewModel.InitializeAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogUnexpectedError("CrossRealmViewModel initialization", ex);
+            }
+        };
     }
 
     private void OnDrop(object? sender, DragEventArgs e)
     {
+#pragma warning disable CS0618 // Keep using Data for now; DataTransfer.GetFiles() requires IDataObject
         var files = e.Data.GetFiles();
+#pragma warning restore CS0618
         if (files != null)
         {
             var file = files.FirstOrDefault();
@@ -85,7 +102,7 @@ public partial class MainWindow : Window
                     },
                     new TextBlock
                     {
-                        Text = "Version 1.0.0",
+                        Text = "Version 1.0.1",
                         HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
                     },
                     new TextBlock

@@ -1,28 +1,40 @@
+using System.Diagnostics;
 using System.Text.Json;
+using CamelotCombatReporter.Core.Logging;
 using CamelotCombatReporter.Core.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CamelotCombatReporter.Core.LootTracking;
 
 /// <summary>
 /// Implementation of loot tracking service with JSON file storage.
 /// </summary>
-public class LootTrackingService : ILootTrackingService
+public class LootTrackingService : ILootTrackingService, IDisposable
 {
     private readonly string _dataDirectory;
     private readonly string _sessionsDirectory;
     private readonly string _indexPath;
     private readonly JsonSerializerOptions _jsonOptions;
+    private readonly ILogger<LootTrackingService> _logger;
 
     private SessionIndex? _sessionIndex;
     private readonly SemaphoreSlim _lock = new(1, 1);
+    private bool _disposed;
 
     // Aggregated data caches
     private Dictionary<string, MobAggregateData> _mobData = new(StringComparer.OrdinalIgnoreCase);
     private Dictionary<string, ItemAggregateData> _itemData = new(StringComparer.OrdinalIgnoreCase);
     private bool _isInitialized;
 
-    public LootTrackingService(string? dataDirectory = null)
+    /// <summary>
+    /// Creates a new LootTrackingService with optional data directory and logger.
+    /// </summary>
+    /// <param name="dataDirectory">Custom data directory, or null for default.</param>
+    /// <param name="logger">Optional logger instance.</param>
+    public LootTrackingService(string? dataDirectory = null, ILogger<LootTrackingService>? logger = null)
     {
+        _logger = logger ?? NullLogger<LootTrackingService>.Instance;
         _dataDirectory = dataDirectory ?? GetDefaultDataDirectory();
         _sessionsDirectory = Path.Combine(_dataDirectory, "sessions");
         _indexPath = Path.Combine(_dataDirectory, "index.json");
@@ -36,6 +48,8 @@ public class LootTrackingService : ILootTrackingService
         // Ensure directories exist
         Directory.CreateDirectory(_dataDirectory);
         Directory.CreateDirectory(_sessionsDirectory);
+
+        _logger.LogServiceInitializing(nameof(LootTrackingService));
     }
 
     private static string GetDefaultDataDirectory()
@@ -53,9 +67,12 @@ public class LootTrackingService : ILootTrackingService
         {
             if (_isInitialized) return;
 
+            var sw = Stopwatch.StartNew();
             await LoadIndexAsync(ct);
             await RebuildCachesAsync(ct);
             _isInitialized = true;
+            sw.Stop();
+            _logger.LogServiceInitialized(nameof(LootTrackingService), sw.ElapsedMilliseconds);
         }
         finally
         {
@@ -89,6 +106,9 @@ public class LootTrackingService : ILootTrackingService
 
         if (_sessionIndex == null) return;
 
+        var sw = Stopwatch.StartNew();
+        _logger.LogCacheRebuildStarted(_sessionIndex.Sessions.Count);
+
         foreach (var entry in _sessionIndex.Sessions)
         {
             var sessionPath = GetSessionPath(entry.Id);
@@ -103,11 +123,14 @@ public class LootTrackingService : ILootTrackingService
                     ProcessSessionForCaches(sessionData);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Skip corrupted session files
+                _logger.LogCorruptedSessionFile(sessionPath, ex);
             }
         }
+
+        sw.Stop();
+        _logger.LogCacheRebuildCompleted(sw.ElapsedMilliseconds);
     }
 
     private void ProcessSessionForCaches(LootSessionData session)
@@ -177,6 +200,7 @@ public class LootTrackingService : ILootTrackingService
     {
         await EnsureInitializedAsync(ct);
 
+        _logger.LogSavingLootSession(events.Count, logFilePath);
         var sessionId = Guid.NewGuid();
         var now = DateTime.Now;
 
@@ -247,6 +271,9 @@ public class LootTrackingService : ILootTrackingService
         {
             _lock.Release();
         }
+
+        var currencyStr = $"{summary.TotalCurrencyCopper / 10000}g {summary.TotalCurrencyCopper % 10000 / 100}s {summary.TotalCurrencyCopper % 100}c";
+        _logger.LogLootSessionSaved(sessionId, summary.TotalItemDrops, currencyStr);
 
         return summary;
     }
@@ -624,6 +651,36 @@ public class LootTrackingService : ILootTrackingService
                 FirstSeen,
                 LastSeen);
         }
+    }
+
+    #endregion
+
+    #region IDisposable
+
+    /// <summary>
+    /// Disposes resources used by the service.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Disposes resources used by the service.
+    /// </summary>
+    /// <param name="disposing">True if called from Dispose, false if from finalizer.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed) return;
+
+        if (disposing)
+        {
+            _logger.LogServiceDisposing(nameof(LootTrackingService));
+            _lock.Dispose();
+        }
+
+        _disposed = true;
     }
 
     #endregion

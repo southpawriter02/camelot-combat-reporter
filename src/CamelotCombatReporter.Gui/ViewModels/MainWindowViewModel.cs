@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CamelotCombatReporter.Core.Exporting;
+using CamelotCombatReporter.Core.Logging;
 using CamelotCombatReporter.Core.Models;
 using CamelotCombatReporter.Core.Parsing;
 using CamelotCombatReporter.Gui.Plugins.ViewModels;
@@ -17,12 +18,14 @@ using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using Microsoft.Extensions.Logging;
 using SkiaSharp;
 
 namespace CamelotCombatReporter.Gui.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
+    private readonly ILogger<MainWindowViewModel> _logger;
     #region File Selection Properties
 
     [ObservableProperty]
@@ -302,6 +305,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
+        _logger = App.CreateLogger<MainWindowViewModel>();
         LoadPreferences();
     }
 
@@ -360,44 +364,56 @@ public partial class MainWindowViewModel : ViewModelBase
         if (string.IsNullOrEmpty(SelectedLogFile) || SelectedLogFile == "No file selected")
             return;
 
-        await Task.Run(() =>
+        _logger.LogAnalyzingFile(SelectedLogFile);
+
+        try
         {
-            var logParser = new LogParser(SelectedLogFile);
-            var events = logParser.Parse().ToList();
-
-            if (events.Count == 0)
+            await Task.Run(() =>
             {
-                HasAnalyzedData = false;
-                return;
-            }
+                var logParser = new LogParser(SelectedLogFile);
+                var events = logParser.Parse().ToList();
 
-            _analyzedEvents = events;
-            _firstEventTime = events.First().Timestamp;
-            _lastEventTime = events.Last().Timestamp;
+                if (events.Count == 0)
+                {
+                    HasAnalyzedData = false;
+                    return;
+                }
 
-            // Set time range to full log duration
-            LogStartTime = _firstEventTime.ToTimeSpan();
-            LogEndTime = _lastEventTime.ToTimeSpan();
-            TimeRangeStart = LogStartTime;
-            TimeRangeEnd = LogEndTime;
-            TimeRangeStartText = _firstEventTime.ToString("HH:mm:ss");
-            TimeRangeEndText = _lastEventTime.ToString("HH:mm:ss");
+                _analyzedEvents = events;
+                _firstEventTime = events.First().Timestamp;
+                _lastEventTime = events.Last().Timestamp;
 
-            // Populate filters
-            PopulateFilters(events);
+                // Set time range to full log duration
+                LogStartTime = _firstEventTime.ToTimeSpan();
+                LogEndTime = _lastEventTime.ToTimeSpan();
+                TimeRangeStart = LogStartTime;
+                TimeRangeEnd = LogEndTime;
+                TimeRangeStartText = _firstEventTime.ToString("HH:mm:ss");
+                TimeRangeEndText = _lastEventTime.ToString("HH:mm:ss");
 
-            // Parse comparison file if in comparison mode
-            if (IsComparisonMode && !string.IsNullOrEmpty(ComparisonLogFile) && ComparisonLogFile != "No file selected")
-            {
-                var compParser = new LogParser(ComparisonLogFile);
-                _comparisonEvents = compParser.Parse().ToList();
-            }
+                // Populate filters
+                PopulateFilters(events);
 
-            // Analyze and update UI
-            RefreshAnalysis();
+                // Parse comparison file if in comparison mode
+                if (IsComparisonMode && !string.IsNullOrEmpty(ComparisonLogFile) && ComparisonLogFile != "No file selected")
+                {
+                    var compParser = new LogParser(ComparisonLogFile);
+                    _comparisonEvents = compParser.Parse().ToList();
+                }
 
-            HasAnalyzedData = true;
-        });
+                // Analyze and update UI
+                RefreshAnalysis();
+
+                HasAnalyzedData = true;
+
+                _logger.LogAnalysisCompleted(events.Count, LogDuration, DamagePerSecond);
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogAnalysisError(SelectedLogFile, ex);
+            HasAnalyzedData = false;
+        }
 
         SavePreferences();
     }
@@ -1100,6 +1116,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void LoadPreferences()
     {
+        _logger.LogLoadingPreferences(PreferencesPath);
         try
         {
             if (File.Exists(PreferencesPath))
@@ -1118,9 +1135,9 @@ public partial class MainWindowViewModel : ViewModelBase
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Ignore preferences loading errors
+            _logger.LogPreferencesLoadFailed(ex);
         }
     }
 
@@ -1145,9 +1162,9 @@ public partial class MainWindowViewModel : ViewModelBase
             var json = JsonSerializer.Serialize(prefs, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(PreferencesPath, json);
         }
-        catch
+        catch (Exception ex)
         {
-            // Ignore preferences saving errors
+            _logger.LogPreferencesSaveFailed(ex);
         }
     }
 

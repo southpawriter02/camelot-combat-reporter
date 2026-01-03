@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
+using CamelotCombatReporter.Core.Logging;
 using CamelotCombatReporter.Gui.ViewModels;
 using CamelotCombatReporter.Plugins.Loading;
 using CamelotCombatReporter.Plugins.Registry;
 using CamelotCombatReporter.Plugins.Security;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 
 namespace CamelotCombatReporter.Gui.Plugins.ViewModels;
 
@@ -19,7 +21,7 @@ namespace CamelotCombatReporter.Gui.Plugins.ViewModels;
 public partial class PluginManagerViewModel : ViewModelBase
 {
     private readonly PluginLoaderService _loaderService;
-    private readonly bool _ownsLoaderService;
+    private readonly ILogger<PluginManagerViewModel> _logger;
 
     [ObservableProperty]
     private ObservableCollection<PluginItemViewModel> _plugins = new();
@@ -41,17 +43,31 @@ public partial class PluginManagerViewModel : ViewModelBase
 
     public PluginManagerViewModel(string pluginsDirectory)
     {
+        _logger = App.CreateLogger<PluginManagerViewModel>();
         var auditLogger = new SecurityAuditLogger(pluginsDirectory);
         _loaderService = new PluginLoaderService(pluginsDirectory, auditLogger);
-        _ownsLoaderService = true;
-        _ = InitializeAsync();
+        _ = InitializeWithErrorHandlingAsync();
     }
 
     public PluginManagerViewModel(PluginLoaderService loaderService)
     {
+        _logger = App.CreateLogger<PluginManagerViewModel>();
         _loaderService = loaderService;
-        _ownsLoaderService = false;
         LoadPlugins();
+    }
+
+    private async Task InitializeWithErrorHandlingAsync()
+    {
+        try
+        {
+            await InitializeAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogUnexpectedError("PluginManagerViewModel initialization", ex);
+            StatusMessage = "Error loading plugins. Check logs for details.";
+            IsLoading = false;
+        }
     }
 
     private async Task InitializeAsync()
