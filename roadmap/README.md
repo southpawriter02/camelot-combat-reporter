@@ -4,11 +4,11 @@ This document outlines the feature roadmap for Camelot Combat Reporter. The proj
 
 ---
 
-## Current Version: v1.3.0
+## Current Version: v1.0.2
 
 Released: January 2025
 
-### What's in v1.0.0
+### What's in v1.0.x
 
 **Core Parsing & Analysis**
 - Full combat log parsing with regex-based event extraction
@@ -16,6 +16,7 @@ Released: January 2025
 - Healing done/received analysis
 - Player statistics aggregation (DPS, HPS, K/D ratios)
 - Timeline visualization with LiveCharts2
+- Critical hit, pet damage, death, resist, and CC event parsing (v1.0.2)
 
 **GUI Application**
 - Cross-platform desktop app (Windows, macOS, Linux) using Avalonia
@@ -72,26 +73,26 @@ Released: January 2025
 
 ### Future Enhancements (4/18 Complete)
 
-| Feature | Status | Version | Location |
-|---------|--------|---------|----------|
+| Feature | Status | Target | Location |
+|---------|--------|--------|----------|
 | [Plugin System](future-enhancements/01-plugin-system.md) | ✅ Complete | v1.0.0 | `src/CamelotCombatReporter.Plugins/`, `src/CamelotCombatReporter.PluginSdk/` |
-| [Machine Learning Insights](future-enhancements/02-machine-learning-insights.md) | 📋 Planned | — | — |
+| [Machine Learning Insights](future-enhancements/02-machine-learning-insights.md) | 📋 Planned | v2.0.0 | — |
 | [Cross-Realm Analysis](future-enhancements/03-cross-realm-analysis.md) | ✅ Phase 1 | v1.0.0 | `src/CamelotCombatReporter.Core/CrossRealm/`, `src/CamelotCombatReporter.Gui/CrossRealm/` |
 | [Loot Drop Rate Tracking](future-enhancements/04-loot-drop-tracking.md) | ✅ Complete | v1.0.0 | `src/CamelotCombatReporter.Core/LootTracking/`, `src/CamelotCombatReporter.Gui/LootTracking/` |
-| [Realm Ability Tracking](future-enhancements/05-realm-ability-tracking.md) | 📋 Planned | — | — |
-| [Server Type Filters](future-enhancements/06-server-type-filters.md) | 📋 Planned | — | — |
+| [Realm Ability Tracking](future-enhancements/05-realm-ability-tracking.md) | 📋 Planned | v1.2.0 | — |
+| [Server Type Filters](future-enhancements/06-server-type-filters.md) | 📋 Planned | v1.1.0 | — |
 | [Distribution Builds](future-enhancements/07-distribution-builds.md) | ✅ Phase 1 | v1.0.0 | `.github/workflows/`, `Directory.Build.props` |
-| [Chat Filtering](future-enhancements/08-chat-filtering.md) | 📋 Planned | — | — |
-| [Group Composition Analysis](future-enhancements/09-group-composition-analysis.md) | 📋 Planned | — | — |
-| [Keep and Siege Tracking](future-enhancements/10-keep-siege-tracking.md) | 📋 Planned | — | — |
-| [Combat Replay System](future-enhancements/11-combat-replay.md) | 📋 Planned | — | — |
-| [Voice Chat Integration](future-enhancements/12-voice-integration.md) | 📋 Planned | — | — |
-| [In-Game Overlay HUD](future-enhancements/13-overlay-hud.md) | 📋 Planned | — | — |
-| [Death Analysis](future-enhancements/14-death-analysis.md) | 📋 Planned | — | — |
-| [Buff/Debuff Tracking](future-enhancements/15-buff-debuff-tracking.md) | 📋 Planned | — | — |
-| [Crowd Control Analysis](future-enhancements/16-crowd-control-analysis.md) | 📋 Planned | — | — |
-| [Combat Alerts](future-enhancements/17-combat-alerts.md) | 📋 Planned | — | — |
-| [Session Comparison](future-enhancements/18-session-comparison.md) | 📋 Planned | — | — |
+| [Chat Filtering](future-enhancements/08-chat-filtering.md) | 📋 Planned | v1.1.0 | — |
+| [Group Composition Analysis](future-enhancements/09-group-composition-analysis.md) | 📋 Planned | v1.4.0 | — |
+| [Keep and Siege Tracking](future-enhancements/10-keep-siege-tracking.md) | 📋 Planned | v1.5.0 | — |
+| [Combat Replay System](future-enhancements/11-combat-replay.md) | 📋 Planned | v2.0.0 | — |
+| [Voice Chat Integration](future-enhancements/12-voice-integration.md) | 📋 Planned | v2.0.0 | — |
+| [In-Game Overlay HUD](future-enhancements/13-overlay-hud.md) | 📋 Planned | v2.0.0 | — |
+| [Death Analysis](future-enhancements/14-death-analysis.md) | 📋 Planned | v1.1.0 | — |
+| [Buff/Debuff Tracking](future-enhancements/15-buff-debuff-tracking.md) | 📋 Planned | v1.2.0 | — |
+| [Crowd Control Analysis](future-enhancements/16-crowd-control-analysis.md) | 📋 Planned | v1.1.0 | — |
+| [Combat Alerts](future-enhancements/17-combat-alerts.md) | 📋 Planned | v1.3.0 | — |
+| [Session Comparison](future-enhancements/18-session-comparison.md) | 📋 Planned | v1.3.0 | — |
 
 **Legend:**
 - ✅ Complete - Feature fully implemented and tested
@@ -101,72 +102,168 @@ Released: January 2025
 
 ---
 
+## Release Schedule
+
+### v1.1.0 - Combat Intelligence
+
+**Focus:** Death and crowd control analysis (builds on v1.0.2 events)
+
+| Item | Type | Description |
+|------|------|-------------|
+| [Death Analysis](future-enhancements/14-death-analysis.md) | Feature | Pre-death analysis, killing blow breakdown |
+| [Crowd Control Analysis](future-enhancements/16-crowd-control-analysis.md) | Feature | CC chains, diminishing returns tracking |
+| [Server Type Filters](future-enhancements/06-server-type-filters.md) | Feature | Classic, SI, ToA, Live server profiles |
+| [Chat Filtering](future-enhancements/08-chat-filtering.md) | Feature | Pre-parse filtering for non-combat messages |
+| Death Report UI | Feature | Visual death timeline and recommendations |
+| Bug Fixes | Maintenance | Address issues from v1.0.x community feedback |
+
+**Dependencies:** Uses DeathEvent, CrowdControlEvent, ResistEvent from v1.0.2
+
+---
+
+### v1.2.0 - Realm Abilities & Buffs
+
+**Focus:** Advanced combat tracking
+
+| Item | Type | Description |
+|------|------|-------------|
+| [Realm Ability Tracking](future-enhancements/05-realm-ability-tracking.md) | Feature | RA usage statistics and cooldown tracking |
+| [Buff/Debuff Tracking](future-enhancements/15-buff-debuff-tracking.md) | Feature | Buff uptime, debuff effectiveness |
+| RA Database | Feature | Complete RA data for all three realms |
+| Buff Timeline Widget | Feature | Visual buff bar with duration tracking |
+| Bug Fixes | Maintenance | Monthly bug fix cycle |
+
+---
+
+### v1.3.0 - Alerts & Comparison
+
+**Focus:** Proactive feedback and historical analysis
+
+| Item | Type | Description |
+|------|------|-------------|
+| [Combat Alerts](future-enhancements/17-combat-alerts.md) | Feature | Real-time alert engine with configurable triggers |
+| [Session Comparison](future-enhancements/18-session-comparison.md) | Feature | Side-by-side session analysis, trend visualization |
+| Audio Notifications | Feature | Sound effects and TTS alerts |
+| Goal Tracking | Feature | Personal goals with progress tracking |
+| Personal Best Tracking | Feature | Automatic PB detection and celebration |
+| Bug Fixes | Maintenance | Monthly bug fix cycle |
+
+---
+
+### v1.4.0 - Group Analysis
+
+**Focus:** Group and team performance
+
+| Item | Type | Description |
+|------|------|-------------|
+| [Group Composition Analysis](future-enhancements/09-group-composition-analysis.md) | Feature | Group member detection and role analysis |
+| Team Performance Metrics | Feature | Coordinated damage/healing tracking |
+| Role Distribution | Feature | Tank, healer, DPS role classification |
+| Performance Correlation | Feature | Link composition to success rates |
+| Bug Fixes | Maintenance | Monthly bug fix cycle |
+
+---
+
+### v1.5.0 - RvR Features
+
+**Focus:** Realm vs Realm combat tracking
+
+| Item | Type | Description |
+|------|------|-------------|
+| [Keep and Siege Tracking](future-enhancements/10-keep-siege-tracking.md) | Feature | Door/structure damage, siege scoring |
+| Keep Capture History | Feature | Track keep take participation |
+| Relic Tracking | Feature | Relic raid contribution metrics |
+| Battleground Statistics | Feature | BG-specific performance tracking |
+| Bug Fixes | Maintenance | Monthly bug fix cycle |
+
+---
+
+### v1.6.0 - Distribution & Community
+
+**Focus:** Improved installers and community features
+
+| Item | Type | Description |
+|------|------|-------------|
+| Distribution Builds Phase 2 | Feature | Windows MSI installer, macOS DMG with notarization |
+| Linux Packages | Feature | AppImage, .deb, .rpm package support |
+| Auto-Update | Feature | In-app update checking and installation |
+| Cross-Realm Analysis Phase 2 | Feature | Central server for community statistics |
+| Public Leaderboards | Feature | Opt-in anonymous leaderboard participation |
+| Bug Fixes | Maintenance | Monthly bug fix cycle |
+
+---
+
+### v1.7.0 - Polish & Preparation
+
+**Focus:** Stability and v2.0 preparation
+
+| Item | Type | Description |
+|------|------|-------------|
+| Performance Audit | Maintenance | Full performance optimization pass |
+| UX Improvements | Enhancement | UI/UX refinements based on feedback |
+| Documentation Update | Maintenance | Comprehensive docs for all v1.x features |
+| API Stabilization | Maintenance | Lock down public API for v2.0 compatibility |
+| Bug Fixes | Maintenance | Final v1.x bug fixes |
+
+---
+
+### v2.0.0 - Next Generation
+
+**Focus:** Major new capabilities
+
+| Item | Type | Description |
+|------|------|-------------|
+| [Combat Replay System](future-enhancements/11-combat-replay.md) | Feature | Full combat reconstruction and playback |
+| [In-Game Overlay HUD](future-enhancements/13-overlay-hud.md) | Feature | Real-time overlay during gameplay |
+| [Voice Chat Integration](future-enhancements/12-voice-integration.md) | Feature | Voice comms sync with combat events |
+| [Machine Learning Insights](future-enhancements/02-machine-learning-insights.md) | Feature | AI-powered performance predictions |
+| Mobile Companion App | Feature | View stats on mobile devices |
+
+---
+
+## Maintenance Schedule
+
+### Bug Fix Releases (x.x.1, x.x.2, etc.)
+
+Bug fix releases occur as needed between feature releases:
+
+- **Critical bugs:** Patch release within 1-2 days
+- **High priority bugs:** Next scheduled patch (weekly if needed)
+- **Low priority bugs:** Bundled with next minor release
+
+### Long-Term Support
+
+- **v1.x Series:** Supported until 6 months after v2.0.0 release
+- **Security patches:** Provided for 12 months after major version EOL
+
+---
+
 ## Version History
+
+### v1.0.2 (January 2025)
+
+**Log Parsing Accuracy:**
+- Fixed damage patterns to match actual game formats
+- Added damage modifiers, body parts, weapon tracking
+- New events: CriticalHit, PetDamage, Death, Resist, CrowdControl
+
+### v1.0.1 (January 2025)
+
+**Quality Improvements:**
+- Comprehensive logging infrastructure
+- Async/await bug fixes
+- IDisposable resource management
+- Error handling improvements
 
 ### v1.0.0 (January 2025)
 
-**New Features:**
-- Loot Drop Rate Tracking with statistical analysis
-- Distribution builds via GitHub Actions
-- Cross-platform publish profiles (Windows, macOS, Linux)
-- Centralized version management with Directory.Build.props
-
-**Core Components:**
+**Initial Release:**
 - Full combat log parsing engine
 - GUI application with Avalonia
 - Plugin system with SDK
 - Cross-realm analysis (Phase 1)
-
-**Infrastructure:**
-- CI/CD pipeline for build and test
-- Release workflow for multi-platform distribution
-- Self-contained executables (~107MB)
-
----
-
-## What's Next
-
-### v1.1.0 Candidates
-
-#### Distribution Builds Phase 2
-- Windows MSI installer with WiX Toolset
-- macOS DMG with notarization
-- Linux AppImage, .deb, .rpm packages
-- Auto-update mechanism
-
-#### Cross-Realm Analysis Phase 2
-- Central server for community statistics
-- Public leaderboards
-- Auto-detection of character class from logs
-- Opt-in anonymous data sharing
-
-#### Realm Ability Tracking
-- Track RA activations and cooldowns
-- Measure damage/healing contribution per RA
-- Monitor realm point progression
-- RA spec optimization suggestions
-
-### Future Releases
-
-#### Server Type Filters
-- Support for Classic, SI, ToA, and Live servers
-- Filter classes and abilities by era
-- Custom profiles for private servers
-
-#### Chat Filtering
-- Pre-parse filtering for performance
-- Configurable channel filters
-- Privacy-safe export options
-
-#### Group Composition Analysis
-- Detect group members and their classes
-- Role distribution analysis
-- Performance correlation with composition
-
-#### Keep and Siege Tracking
-- Door and structure damage tracking
-- Siege contribution scoring
-- Keep capture history
+- Loot drop rate tracking
+- CI/CD pipeline for multi-platform releases
 
 ---
 
@@ -203,6 +300,41 @@ The plugin system enables third-party extensibility. See [Plugin Ideas](plugin-i
 | Plugin | Description | Complexity |
 |--------|-------------|------------|
 | [Combat Log Merger](plugin-ideas/07-combat-log-merger.md) | Merge multiple log files into unified timeline | Medium |
+
+---
+
+## Feature Dependencies
+
+```
+v1.0.2 (Events Foundation)
+    │
+    ├── v1.1.0 Death Analysis ──────────┐
+    │       └── Uses: DeathEvent        │
+    │                                   │
+    ├── v1.1.0 CC Analysis ─────────────┤
+    │       └── Uses: CrowdControlEvent │
+    │                                   │
+    └── v1.2.0 Buff/Debuff ─────────────┤
+            └── Uses: ResistEvent       │
+                                        │
+                                        ▼
+                              v1.3.0 Combat Alerts
+                                  └── Uses: All events
+                                        │
+                                        ▼
+                              v2.0.0 Combat Replay
+                                  └── Full event reconstruction
+```
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on:
+- Submitting bug reports
+- Proposing new features
+- Contributing code
+- Writing documentation
 
 ---
 
