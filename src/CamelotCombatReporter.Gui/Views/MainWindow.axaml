@@ -10,6 +10,8 @@
         xmlns:ccanalysis="using:CamelotCombatReporter.Gui.CrowdControlAnalysis.Views"
         xmlns:realmabilities="using:CamelotCombatReporter.Gui.RealmAbilities.Views"
         xmlns:bufftracking="using:CamelotCombatReporter.Gui.BuffTracking.Views"
+        xmlns:alerts="using:CamelotCombatReporter.Gui.Alerts.Views"
+        xmlns:comparison="using:CamelotCombatReporter.Gui.Comparison.Views"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
         x:Class="CamelotCombatReporter.Gui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -676,6 +678,16 @@
         <!-- Buff Tracking Tab -->
         <TabItem Header="Buff Tracking">
             <bufftracking:BuffTrackingView x:Name="BuffTrackingView"/>
+        </TabItem>
+
+        <!-- Alerts Tab -->
+        <TabItem Header="Alerts">
+            <alerts:AlertsView x:Name="AlertsView"/>
+        </TabItem>
+
+        <!-- Session Comparison Tab -->
+        <TabItem Header="Session Comparison">
+            <comparison:SessionComparisonView x:Name="SessionComparisonView"/>
         </TabItem>
     </TabControl>
     </DockPanel>

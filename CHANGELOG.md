@@ -11,6 +11,102 @@ No unreleased changes.
 
 ---
 
+## [1.3.0] - 2026-01-05
+
+### Added
+- **Real-Time Combat Alerts System**
+  - Extensible AlertEngine with condition-based rule evaluation
+  - 6 built-in alert conditions:
+    - `HealthBelowCondition` - Triggers when health drops below threshold
+    - `DamageInWindowCondition` - Detects burst damage situations
+    - `KillStreakCondition` - Tracks kill streak milestones
+    - `EnemyClassCondition` - Alerts when targeting specific classes
+    - `AbilityUsedCondition` - Tracks realm ability usage (self or enemy)
+    - `DebuffAppliedCondition` - Monitors active debuffs
+  - 4 notification types:
+    - `SoundNotification` - Priority-based audio alerts
+    - `ScreenFlashNotification` - Visual screen flash with color coding
+    - `TtsNotification` - Text-to-speech announcements
+    - `DiscordWebhookNotification` - Post alerts to Discord channels
+  - Rule management with AND/OR condition logic
+  - Per-rule cooldowns and max triggers per session
+  - Combat state tracking (health, streaks, debuffs, damage windows)
+  - Alert configuration persistence (JSON)
+  - New "Alerts" tab in main window with preset rules
+
+- **Session Comparison & Analytics**
+  - `SessionComparisonService` for side-by-side session analysis
+  - Metric delta calculations with direction indicators (Improved/Declined/Unchanged)
+  - Categorized metrics: Damage, Healing, Combat, General, Custom
+  - Significance thresholds for filtering minor changes
+  - Human-readable comparison summaries
+
+- **Trend Analysis**
+  - `TrendAnalysisService` with statistical analysis
+  - Linear regression for trend direction (slope, intercept, R-squared)
+  - Rolling average calculations for data smoothing
+  - Standard deviation, mean, median, min/max statistics
+  - Trend interpretation with predicted next values
+  - LiveCharts2 trend visualization
+
+- **Goal Tracking**
+  - `GoalTracker` for performance goals
+  - Goal types: DPS, HPS, K/D Ratio, Kills/Deaths per session, Buff uptime, Custom metrics
+  - Goal statuses: NotStarted, InProgress, Achieved, Failed, Expired
+  - Progress history tracking with session association
+  - Automatic status updates as goals are achieved
+  - JSON persistence for goals
+
+- **Personal Best Tracking**
+  - `PersonalBestTracker` with automatic PB detection
+  - Improvement percentage calculation
+  - PB history per metric
+  - `NewPersonalBest` event for notifications
+  - JSON persistence for current bests and history
+
+- **New Core Services**
+  - `AlertEngine` - Real-time event processing and alert evaluation
+  - `IAlertCondition` / `INotification` - Extensible interfaces
+  - `IAudioService` / `ITtsService` - Platform-agnostic audio interfaces
+  - `AlertConfigurationService` - Rule serialization and persistence
+  - `ISessionComparisonService` / `SessionComparisonService`
+  - `ITrendAnalysisService` / `TrendAnalysisService`
+  - `IGoalTracker` / `GoalTracker`
+  - `IPersonalBestTracker` / `PersonalBestTracker`
+
+- **New GUI Components**
+  - `AlertsView` with rule management DataGrid
+  - Priority color coding (Critical=Red, High=Orange, Medium=Yellow, Low=Green)
+  - Quick preset buttons for common alert rules
+  - Alert trigger history with timestamps
+  - `SessionComparisonView` with session selector dropdowns
+  - Comparison results DataGrid with delta indicators
+  - Trend chart with LiveCharts2 line series
+  - Goal progress cards with completion percentage
+  - Personal best notifications panel
+
+- **New Data Models**
+  - `AlertEnums.cs` - AlertPriority, ConditionLogic, AlertRuleState
+  - `AlertRule` record with conditions, notifications, cooldown
+  - `AlertContext` and `AlertTrigger` records
+  - `CombatState` - Real-time state tracking with damage/healing queues
+  - `ComparisonModels.cs` - ChangeDirection, MetricDelta, SessionSummary, SessionComparison
+  - `TrendModels.cs` - TrendDataPoint, TrendStatistics, TrendAnalysis
+  - `GoalModels.cs` - GoalType, GoalStatus, PerformanceGoal, GoalProgress, PersonalBest
+
+### Changed
+- MainWindow now includes Alerts and Session Comparison tabs
+- All 101 tests passing
+
+### Technical Details
+- 40+ new files added across Core and GUI projects
+- New namespaces: `Alerts`, `Alerts.Models`, `Alerts.Conditions`, `Alerts.Notifications`, `Alerts.Services`, `Comparison`, `Comparison.Models`
+- Full MVVM implementation with CommunityToolkit.Mvvm source generators
+- LiveCharts2 integration for trend visualization
+- JSON-based configuration and data persistence
+
+---
+
 ## [1.2.0] - 2026-01-05
 
 ### Added

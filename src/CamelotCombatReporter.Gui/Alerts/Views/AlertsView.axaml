@@ -1,0 +1,253 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.Alerts.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="CamelotCombatReporter.Gui.Alerts.Views.AlertsView"
+             x:DataType="vm:AlertsViewModel">
+
+    <Design.DataContext>
+        <vm:AlertsViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Text="Combat Alerts"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"/>
+
+                <!-- Quick Stats -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="20" Margin="30,0">
+                    <Border Background="#1E88E5" CornerRadius="5" Padding="10,5">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <TextBlock Text="Active Rules:" Foreground="White"/>
+                            <TextBlock Text="{Binding ActiveRulesCount}" Foreground="White" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="#4CAF50" CornerRadius="5" Padding="10,5">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <TextBlock Text="Triggers Today:" Foreground="White"/>
+                            <TextBlock Text="{Binding TotalTriggersToday}" Foreground="White" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Global Controls -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10">
+                    <CheckBox Content="Enable Alerts" IsChecked="{Binding IsAlertsEnabled}"/>
+                    <CheckBox Content="Mute All" IsChecked="{Binding IsGlobalMuted}"/>
+                    <CheckBox Content="TTS" IsChecked="{Binding IsTtsEnabled}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Status Bar -->
+            <Border Background="#E3F2FD" CornerRadius="3" Padding="10,5">
+                <TextBlock Text="{Binding StatusMessage}" Foreground="#1565C0"/>
+            </Border>
+
+            <!-- Main Content Grid -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,*">
+                <!-- Rules Section -->
+                <Border Grid.Column="0" Grid.RowSpan="2"
+                        BorderBrush="#2196F3"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,10,0">
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Alert Rules"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Foreground="#2196F3"
+                                       VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                                <Button Content="+" Command="{Binding AddRuleCommand}" ToolTip.Tip="Add new rule" Width="30"/>
+                                <Button Content="-" Command="{Binding RemoveRuleCommand}" ToolTip.Tip="Remove selected" Width="30"/>
+                                <Button Content="Copy" Command="{Binding DuplicateRuleCommand}" ToolTip.Tip="Duplicate selected"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Rules List -->
+                        <DataGrid ItemsSource="{Binding Rules}"
+                                  SelectedItem="{Binding SelectedRule}"
+                                  Height="250"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="On" Width="40">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding IsActive}"
+                                                      HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="P" Width="30">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Ellipse Width="12" Height="12"
+                                                     Fill="{Binding PriorityColor}"
+                                                     HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                                <DataGridTextColumn Header="Conditions" Binding="{Binding ConditionsSummary}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- Preset Buttons -->
+                        <Expander Header="Quick Presets" IsExpanded="False">
+                            <WrapPanel Margin="0,10,0,0">
+                                <Button Content="Low Health" Command="{Binding AddLowHealthPresetCommand}"
+                                        Margin="0,0,5,5" Padding="8,4"/>
+                                <Button Content="Kill Streak" Command="{Binding AddKillStreakPresetCommand}"
+                                        Margin="0,0,5,5" Padding="8,4"/>
+                                <Button Content="Burst Damage" Command="{Binding AddBurstDamagePresetCommand}"
+                                        Margin="0,0,5,5" Padding="8,4"/>
+                            </WrapPanel>
+                        </Expander>
+
+                        <!-- Selected Rule Details -->
+                        <Border BorderBrush="#E0E0E0"
+                                BorderThickness="1"
+                                CornerRadius="5"
+                                Padding="10"
+                                IsVisible="{Binding SelectedRule, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Rule Details" FontWeight="SemiBold"/>
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" Margin="0,5,0,0">
+                                    <TextBlock Text="Name:" Grid.Row="0" Margin="0,0,10,5"/>
+                                    <TextBlock Text="{Binding SelectedRule.Name}" Grid.Row="0" Grid.Column="1"/>
+
+                                    <TextBlock Text="Description:" Grid.Row="1" Margin="0,0,10,5"/>
+                                    <TextBlock Text="{Binding SelectedRule.Description}" Grid.Row="1" Grid.Column="1"
+                                               TextWrapping="Wrap"/>
+
+                                    <TextBlock Text="Priority:" Grid.Row="2" Margin="0,0,10,5"/>
+                                    <TextBlock Text="{Binding SelectedRule.Priority}" Grid.Row="2" Grid.Column="1"/>
+
+                                    <TextBlock Text="Cooldown:" Grid.Row="3" Margin="0,0,10,5"/>
+                                    <TextBlock Grid.Row="3" Grid.Column="1">
+                                        <Run Text="{Binding SelectedRule.Cooldown.TotalSeconds}"/>
+                                        <Run Text="s"/>
+                                    </TextBlock>
+                                </Grid>
+
+                                <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,5,0,0">
+                                    <Button Content="Test Alert" Command="{Binding TestRuleCommand}" Padding="8,4"/>
+                                    <Button Content="Toggle" Command="{Binding ToggleRuleCommand}"
+                                            CommandParameter="{Binding SelectedRule}" Padding="8,4"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Recent Triggers Section -->
+                <Border Grid.Column="1" Grid.Row="0"
+                        BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="10,0,0,10">
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Recent Triggers"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Foreground="#FF9800"
+                                       VerticalAlignment="Center"/>
+                            <Button Grid.Column="1" Content="Clear" Command="{Binding ClearHistoryCommand}"/>
+                        </Grid>
+
+                        <DataGrid ItemsSource="{Binding RecentTriggers}"
+                                  Height="200"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Time" Binding="{Binding Timestamp}" Width="70"/>
+                                <DataGridTemplateColumn Header="P" Width="30">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Ellipse Width="10" Height="10"
+                                                     Fill="{Binding PriorityColor}"
+                                                     HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Rule" Binding="{Binding RuleName}" Width="*"/>
+                                <DataGridTextColumn Header="Reason" Binding="{Binding Reason}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Configuration Section -->
+                <Border Grid.Column="1" Grid.Row="1"
+                        BorderBrush="#4CAF50"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="10,0,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Configuration"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#4CAF50"/>
+
+                        <!-- Volume Control -->
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Master Volume"/>
+                            <Grid ColumnDefinitions="*,50">
+                                <Slider Value="{Binding MasterVolume}"
+                                        Minimum="0" Maximum="1"
+                                        TickFrequency="0.1"
+                                        IsSnapToTickEnabled="True"/>
+                                <TextBlock Grid.Column="1" HorizontalAlignment="Right">
+                                    <Run Text="{Binding MasterVolume, StringFormat={}{0:P0}}"/>
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
+
+                        <Separator/>
+
+                        <!-- Save/Load -->
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Content="Save Configuration"
+                                    Command="{Binding SaveConfigurationCommand}"
+                                    Padding="10,5"/>
+                            <Button Content="Load Configuration"
+                                    Command="{Binding LoadConfigurationCommand}"
+                                    Padding="10,5"/>
+                        </StackPanel>
+
+                        <!-- Info Box -->
+                        <Border Background="#E8F5E9" CornerRadius="5" Padding="10" Margin="0,10,0,0">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="How Alerts Work" FontWeight="SemiBold" Foreground="#2E7D32"/>
+                                <TextBlock TextWrapping="Wrap" Foreground="#1B5E20" FontSize="11">
+                                    Alerts monitor your combat state in real-time and trigger when conditions are met.
+                                    Use presets for common scenarios or create custom rules.
+                                    Notifications can include sounds, screen flashes, and TTS announcements.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,298 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.Comparison.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="800"
+             x:Class="CamelotCombatReporter.Gui.Comparison.Views.SessionComparisonView"
+             x:DataType="vm:SessionComparisonViewModel">
+
+    <Design.DataContext>
+        <vm:SessionComparisonViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Text="Session Comparison &amp; Analytics"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"/>
+
+                <TextBlock Grid.Column="2"
+                           Text="{Binding StatusMessage}"
+                           Foreground="Gray"
+                           VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- Session Selection -->
+            <Border BorderBrush="#2196F3"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="Session Selection"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#2196F3"/>
+                        <Button Grid.Column="1"
+                                Content="Load Sessions"
+                                Command="{Binding LoadSessionsCommand}"
+                                Padding="10,5"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,50,*,Auto" RowDefinitions="Auto,Auto">
+                        <!-- Base Session -->
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Base Session" FontWeight="SemiBold"/>
+                            <ComboBox ItemsSource="{Binding AvailableSessions}"
+                                      SelectedItem="{Binding BaseSession}"
+                                      HorizontalAlignment="Stretch">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="{Binding FormattedDate}"/>
+                                            <TextBlock Text="|" Foreground="Gray"/>
+                                            <TextBlock Text="{Binding Duration}"/>
+                                            <TextBlock Text="|" Foreground="Gray"/>
+                                            <TextBlock Text="{Binding DpsDisplay}" Foreground="#FF9800"/>
+                                            <TextBlock Text="DPS" Foreground="Gray" FontSize="10"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <TextBlock Grid.Column="1"
+                                   Text="vs"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+
+                        <!-- Compare Session -->
+                        <StackPanel Grid.Column="2" Spacing="5">
+                            <TextBlock Text="Compare Session" FontWeight="SemiBold"/>
+                            <ComboBox ItemsSource="{Binding AvailableSessions}"
+                                      SelectedItem="{Binding CompareSession}"
+                                      HorizontalAlignment="Stretch">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="{Binding FormattedDate}"/>
+                                            <TextBlock Text="|" Foreground="Gray"/>
+                                            <TextBlock Text="{Binding Duration}"/>
+                                            <TextBlock Text="|" Foreground="Gray"/>
+                                            <TextBlock Text="{Binding DpsDisplay}" Foreground="#FF9800"/>
+                                            <TextBlock Text="DPS" Foreground="Gray" FontSize="10"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <Button Grid.Column="3"
+                                Content="Compare"
+                                Command="{Binding CompareSelectedSessionsCommand}"
+                                Padding="15,5"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Bottom"/>
+                    </Grid>
+
+                    <!-- Comparison Summary -->
+                    <Border Background="#E3F2FD" CornerRadius="5" Padding="10"
+                            IsVisible="{Binding HasComparison}">
+                        <TextBlock Text="{Binding ComparisonSummary}"
+                                   TextWrapping="Wrap"
+                                   Foreground="#1565C0"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Comparison Results -->
+            <Border BorderBrush="#4CAF50"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasComparison}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Metric Comparison"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#4CAF50"/>
+
+                    <DataGrid ItemsSource="{Binding Deltas}"
+                              Height="250"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="#CCCCCC">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="100"/>
+                            <DataGridTextColumn Header="Metric" Binding="{Binding MetricName}" Width="*"/>
+                            <DataGridTextColumn Header="Base" Binding="{Binding BaseValue}" Width="100"/>
+                            <DataGridTextColumn Header="Compare" Binding="{Binding CompareValue}" Width="100"/>
+                            <DataGridTemplateColumn Header="Change" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ChangeDisplay}"
+                                                   Foreground="{Binding DirectionColor}"
+                                                   FontWeight="SemiBold"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Direction" Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DirectionIcon}"
+                                                   Foreground="{Binding DirectionColor}"
+                                                   HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Trend Analysis -->
+            <Border BorderBrush="#9C27B0"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto,Auto">
+                        <TextBlock Text="Trend Analysis"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#9C27B0"
+                                   VerticalAlignment="Center"/>
+
+                        <ComboBox Grid.Column="1"
+                                  ItemsSource="{Binding TrendMetricOptions}"
+                                  SelectedItem="{Binding SelectedTrendMetric}"
+                                  Width="150"
+                                  Margin="0,0,10,0"/>
+
+                        <Button Grid.Column="2"
+                                Content="Update Chart"
+                                Command="{Binding UpdateTrendChartCommand}"
+                                Padding="10,5"/>
+                    </Grid>
+
+                    <!-- Trend Chart -->
+                    <lvc:CartesianChart Series="{Binding TrendChartSeries}"
+                                        XAxes="{Binding TrendChartXAxes}"
+                                        YAxes="{Binding TrendChartYAxes}"
+                                        Height="250"
+                                        LegendPosition="Right"/>
+
+                    <!-- Trend Interpretation -->
+                    <Border Background="#F3E5F5" CornerRadius="5" Padding="10"
+                            IsVisible="{Binding TrendInterpretation, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                        <TextBlock Text="{Binding TrendInterpretation}"
+                                   TextWrapping="Wrap"
+                                   Foreground="#7B1FA2"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Goals and Personal Bests Row -->
+            <Grid ColumnDefinitions="*,*">
+                <!-- Active Goals -->
+                <Border BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Performance Goals"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#FF9800"/>
+
+                        <ItemsControl ItemsSource="{Binding ActiveGoals}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#FFF3E0" CornerRadius="5" Padding="10" Margin="0,0,0,5">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <TextBlock Text="{Binding Type}" Foreground="Gray" FontSize="11"/>
+                                                    <TextBlock Text="|" Foreground="Gray"/>
+                                                    <TextBlock Text="{Binding Status}"
+                                                               Foreground="{Binding StatusColor}"
+                                                               FontSize="11"/>
+                                                </StackPanel>
+                                                <ProgressBar Value="{Binding ProgressPercent}"
+                                                             Maximum="100"
+                                                             Height="8"
+                                                             Margin="0,5,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding ProgressDisplay}"
+                                                       FontSize="18"
+                                                       FontWeight="Bold"
+                                                       VerticalAlignment="Center"
+                                                       Margin="10,0,0,0"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="No active goals"
+                                   Foreground="Gray"
+                                   FontStyle="Italic"
+                                   IsVisible="{Binding !ActiveGoals.Count}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Personal Bests -->
+                <Border Grid.Column="1"
+                        BorderBrush="#E91E63"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Personal Bests"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#E91E63"/>
+
+                        <DataGrid ItemsSource="{Binding RecentPbs}"
+                                  Height="200"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Metric" Binding="{Binding MetricName}" Width="*"/>
+                                <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="80"/>
+                                <DataGridTextColumn Header="Improvement" Binding="{Binding ImprovementDisplay}" Width="100"/>
+                                <DataGridTextColumn Header="Date" Binding="{Binding AchievedAt}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <TextBlock Text="No personal bests recorded"
+                                   Foreground="Gray"
+                                   FontStyle="Italic"
+                                   IsVisible="{Binding !RecentPbs.Count}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Save Button -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                <Button Content="Save Data" Command="{Binding SaveDataCommand}" Padding="15,8"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

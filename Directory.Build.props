@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <Version>1.2.0</Version>
-    <FileVersion>1.2.0.0</FileVersion>
-    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <Version>1.3.0</Version>
+    <FileVersion>1.3.0.0</FileVersion>
+    <AssemblyVersion>1.3.0.0</AssemblyVersion>
     <Product>Camelot Combat Reporter</Product>
     <Authors>Camelot Combat Reporter Contributors</Authors>
     <Copyright>Copyright © 2026</Copyright>
