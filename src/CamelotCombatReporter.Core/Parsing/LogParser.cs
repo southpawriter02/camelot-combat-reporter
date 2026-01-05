@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using CamelotCombatReporter.Core.Models;
+using CamelotCombatReporter.Core.RealmAbilities.Models;
 
 namespace CamelotCombatReporter.Core.Parsing;
 
@@ -149,6 +150,36 @@ public class LogParser
     // Snare recovered: "The goblin is no longer snared."
     private static readonly Regex SnareRecoveredPattern = new(
         @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) is no longer snared\.$",
+        RegexOptions.Compiled);
+
+    // Realm Ability patterns
+
+    // RA activation by player: "You activate Purge!"
+    // Note: "You use X on Y!" is handled by CombatStylePattern, so we only match "activate" here
+    // or "use" when NOT followed by "on" (i.e., RA use without a target)
+    private static readonly Regex RealmAbilityActivatePattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You activate (?<ability>.+?)!$",
+        RegexOptions.Compiled);
+
+    // RA effect damage: "Your Volcanic Pillar hits X for N damage!" or "Your Volcanic Pillar hits X for N fire damage!"
+    private static readonly Regex RealmAbilityDamagePattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+Your (?<ability>.+?) hits (?:the )?(?<target>.+?) for (?<amount>\d+)(?: (?<type>\w+))? damage[!.]?$",
+        RegexOptions.Compiled);
+
+    // RA healing: "Your Gift of Perizor heals your group for N hit points!" or "Your First Aid heals you for N hit points!"
+    private static readonly Regex RealmAbilityHealPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+Your (?<ability>.+?) heals (?<target>.+?) for (?<amount>\d+) hit points[!.]?$",
+        RegexOptions.Compiled);
+
+    // RA ready: "Purge is ready to use." or "Volcanic Pillar is now ready!"
+    private static readonly Regex RealmAbilityReadyPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<ability>.+?) is (?:ready to use|now ready)[.!]?$",
+        RegexOptions.Compiled);
+
+    // Enemy RA activation: "Enemyname activates Purge!"
+    // Note: We only match "activates" to avoid conflicts with combat style messages
+    private static readonly Regex EnemyRealmAbilityPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<source>.+?) activates (?<ability>.+?)!$",
         RegexOptions.Compiled);
 
     // Regex to capture combat styles used by the player.
@@ -676,6 +707,115 @@ public class LogParser
                 AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
                 yield return evt;
                 continue;
+            }
+
+            // Realm Ability activation by player: "You activate Purge!"
+            var raActivateMatch = RealmAbilityActivatePattern.Match(line);
+            if (raActivateMatch.Success)
+            {
+                var groups = raActivateMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var ability = groups["ability"].Value.Trim();
+
+                var evt = new RealmAbilityEvent(
+                    Timestamp: timestamp,
+                    AbilityName: ability,
+                    SourceName: "You",
+                    IsActivation: true
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // RA damage effect: "Your Volcanic Pillar hits X for N damage!"
+            var raDamageMatch = RealmAbilityDamagePattern.Match(line);
+            if (raDamageMatch.Success)
+            {
+                var groups = raDamageMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var ability = groups["ability"].Value.Trim();
+                var target = groups["target"].Value.Trim();
+                var amount = int.Parse(groups["amount"].Value);
+                var damageType = groups["type"].Success ? groups["type"].Value.Trim() : null;
+
+                var evt = new RealmAbilityEvent(
+                    Timestamp: timestamp,
+                    AbilityName: ability,
+                    SourceName: "You",
+                    TargetName: target,
+                    EffectValue: amount,
+                    EffectType: damageType ?? "damage",
+                    IsActivation: false
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // RA healing: "Your Gift of Perizor heals your group for N hit points!"
+            var raHealMatch = RealmAbilityHealPattern.Match(line);
+            if (raHealMatch.Success)
+            {
+                var groups = raHealMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var ability = groups["ability"].Value.Trim();
+                var target = groups["target"].Value.Trim();
+                var amount = int.Parse(groups["amount"].Value);
+
+                var evt = new RealmAbilityEvent(
+                    Timestamp: timestamp,
+                    AbilityName: ability,
+                    SourceName: "You",
+                    TargetName: target,
+                    EffectValue: amount,
+                    EffectType: "healing",
+                    IsActivation: false
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // RA ready notification: "Purge is ready to use."
+            var raReadyMatch = RealmAbilityReadyPattern.Match(line);
+            if (raReadyMatch.Success)
+            {
+                var groups = raReadyMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var ability = groups["ability"].Value.Trim();
+
+                var evt = new RealmAbilityReadyEvent(
+                    Timestamp: timestamp,
+                    AbilityName: ability
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Enemy RA activation: "Enemyname activates Purge!"
+            var enemyRaMatch = EnemyRealmAbilityPattern.Match(line);
+            if (enemyRaMatch.Success)
+            {
+                var groups = enemyRaMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var source = groups["source"].Value.Trim();
+                var ability = groups["ability"].Value.Trim();
+
+                // Skip if source is "You" (already handled by player pattern)
+                if (!source.Equals("You", StringComparison.OrdinalIgnoreCase))
+                {
+                    var evt = new RealmAbilityEvent(
+                        Timestamp: timestamp,
+                        AbilityName: ability,
+                        SourceName: source,
+                        IsActivation: true
+                    );
+                    AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                    yield return evt;
+                    continue;
+                }
             }
 
             var styleMatch = CombatStylePattern.Match(line);

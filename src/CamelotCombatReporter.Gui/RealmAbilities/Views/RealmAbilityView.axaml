@@ -1,0 +1,270 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.RealmAbilities.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="CamelotCombatReporter.Gui.RealmAbilities.Views.RealmAbilityView"
+             x:DataType="vm:RealmAbilityViewModel">
+
+    <Design.DataContext>
+        <vm:RealmAbilityViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Realm Abilities"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <Button Content="Analyze Log File"
+                            Command="{Binding AnalyzeFromFileCommand}"
+                            CommandParameter="{Binding $parent[Window]}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Statistics Summary (visible when data is loaded) -->
+            <Border BorderBrush="#9C27B0"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Realm Ability Statistics"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#9C27B0"/>
+                    <Grid ColumnDefinitions="*,*,*,*,*,*">
+                        <StackPanel>
+                            <TextBlock Text="Total Activations" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalActivations}"
+                                       FontSize="20"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Unique RAs Used" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding UniqueAbilitiesUsed}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Most Used" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding MostUsedAbility}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="#4CAF50"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3">
+                            <TextBlock Text="Highest Damage" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding HighestDamageAbility}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="CD Efficiency" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding OverallCooldownEfficiency}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#FF9800"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="5">
+                            <TextBlock Text="Session Duration" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding SessionDuration}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#607D8B"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Main Content -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,*" MinHeight="400" IsVisible="{Binding HasData}">
+                <!-- Type Distribution Chart -->
+                <Border Grid.Column="0" Grid.Row="0"
+                        BorderBrush="#9C27B0"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,7,10">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Usage by Type" FontWeight="Bold" Foreground="#9C27B0"/>
+                        <lvc:PieChart Series="{Binding TypeDistributionSeries}"
+                                      Height="150"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Timeline Chart -->
+                <Border Grid.Column="1" Grid.Row="0"
+                        BorderBrush="#2196F3"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="7,0,0,10">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Activation Timeline" FontWeight="Bold" Foreground="#2196F3"/>
+                        <lvc:CartesianChart Series="{Binding TimelineSeries}"
+                                            XAxes="{Binding TimelineXAxes}"
+                                            YAxes="{Binding TimelineYAxes}"
+                                            Height="150"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Usage Statistics Table -->
+                <Border Grid.Column="0" Grid.Row="1"
+                        BorderBrush="#4CAF50"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Per-Ability Statistics" FontWeight="Bold" Foreground="#4CAF50"/>
+                        <DataGrid ItemsSource="{Binding UsageStats}"
+                                  Height="280"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Ability" Binding="{Binding AbilityName}" Width="120"/>
+                                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="80"/>
+                                <DataGridTextColumn Header="Uses" Binding="{Binding TotalActivations}" Width="50"/>
+                                <DataGridTextColumn Header="Damage" Binding="{Binding TotalDamage}" Width="70"/>
+                                <DataGridTextColumn Header="Healing" Binding="{Binding TotalHealing}" Width="70"/>
+                                <DataGridTextColumn Header="CD Eff." Binding="{Binding CooldownEfficiency}" Width="60"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Activation Log -->
+                <Border Grid.Column="1" Grid.Row="1"
+                        BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Activation Log" FontWeight="Bold" Foreground="#FF9800"/>
+                        <DataGrid ItemsSource="{Binding Activations}"
+                                  SelectedItem="{Binding SelectedActivation}"
+                                  Height="280"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Time" Binding="{Binding Timestamp}" Width="75"/>
+                                <DataGridTextColumn Header="Ability" Binding="{Binding AbilityName}" Width="120"/>
+                                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="80"/>
+                                <DataGridTextColumn Header="Effect" Binding="{Binding EffectSummary}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Cooldown States (visible when data is loaded) -->
+            <Border BorderBrush="#607D8B"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Cooldown Status (End of Session)"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#607D8B"/>
+                    <ItemsControl ItemsSource="{Binding CooldownStates}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CooldownStateViewModel">
+                                <Border Margin="5"
+                                        CornerRadius="5"
+                                        Padding="10,5"
+                                        BorderThickness="2"
+                                        BorderBrush="{Binding StatusColor}">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock Text="{Binding AbilityName}"
+                                                   FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding StatusText}"
+                                                   Foreground="{Binding StatusColor}"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Instructions (when no data) -->
+            <Border BorderBrush="#FFC107"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding !HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Getting Started with Realm Ability Tracking"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#FFC107"/>
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">How to use:</Run>
+                        <LineBreak/>
+                        1. Click "Analyze Log File" to select a DAoC combat log file
+                        <LineBreak/>
+                        2. The system will identify all realm ability activations
+                        <LineBreak/>
+                        3. View usage statistics, cooldown efficiency, and damage/healing totals
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Tracked Abilities:</Run>
+                        <LineBreak/>
+                        The system tracks 100+ realm abilities organized by realm:
+                        <LineBreak/>
+                        • Universal abilities available to all realms
+                        <LineBreak/>
+                        • Realm-specific abilities for Albion, Midgard, and Hibernia
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Ability Types:</Run>
+                        <LineBreak/>
+                        • Damage: Direct damage abilities (Volcanic Pillar, Wrath of Champions)
+                        <LineBreak/>
+                        • Crowd Control: CC abilities (Static Tempest, Dazzling Array)
+                        <LineBreak/>
+                        • Defensive: Protection abilities (Soldier's Barricade, Ignore Pain)
+                        <LineBreak/>
+                        • Healing: Health restoration (First Aid, Gift of Perizor)
+                        <LineBreak/>
+                        • Utility: Utility effects (Purge, Charge, Speed of Sound)
+                        <LineBreak/>
+                        • Passive: Stat bonuses (Augmented Strength, Mastery of Arms)
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Cooldown Efficiency:</Run>
+                        <LineBreak/>
+                        Measures how well you're using abilities when they come off cooldown.
+                        Higher efficiency means less wasted cooldown time.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

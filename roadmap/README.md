@@ -4,9 +4,27 @@ This document outlines the feature roadmap for Camelot Combat Reporter. The proj
 
 ---
 
-## Current Version: v1.1.0
+## Current Version: v1.2.0
 
-Released: January 2025
+Released: January 2026
+
+### What's in v1.2.x
+
+**Realm Ability Tracking** (New in v1.2.0)
+- Comprehensive database with 100+ realm abilities organized by realm (Albion, Midgard, Hibernia, Universal)
+- Era-based ability gating (Classic through Live)
+- Activation tracking with cooldown management
+- Statistics: total activations, cooldown efficiency, damage/healing totals
+- Per-ability usage statistics with effectiveness metrics
+- Timeline visualization and type distribution charts
+
+**Buff/Debuff Tracking** (New in v1.2.0)
+- Buff state tracker with timer-based expiry estimation
+- 40+ buff/debuff definitions across 9 categories
+- Uptime calculations per buff with gap detection
+- Critical gap identification for expected buffs
+- Timeline visualization and distribution charts
+- Category distribution and uptime bar charts
 
 ### What's in v1.1.x
 
@@ -105,7 +123,7 @@ Released: January 2025
 | [Database Integration](advanced-features/03-database-integration.md) | ✅ Complete | v1.0.0 | `src/database/` (TypeScript) |
 | [API Exposure](advanced-features/04-api-exposure.md) | ✅ Complete | v1.0.0 | `src/api/` (TypeScript) |
 
-### Future Enhancements (8/18 Complete)
+### Future Enhancements (10/18 Complete)
 
 | Feature | Status | Target | Location |
 |---------|--------|--------|----------|
@@ -113,7 +131,7 @@ Released: January 2025
 | [Machine Learning Insights](future-enhancements/02-machine-learning-insights.md) | 📋 Planned | v2.0.0 | — |
 | [Cross-Realm Analysis](future-enhancements/03-cross-realm-analysis.md) | ✅ Phase 1 | v1.0.0 | `src/CamelotCombatReporter.Core/CrossRealm/`, `src/CamelotCombatReporter.Gui/CrossRealm/` |
 | [Loot Drop Rate Tracking](future-enhancements/04-loot-drop-tracking.md) | ✅ Complete | v1.0.0 | `src/CamelotCombatReporter.Core/LootTracking/`, `src/CamelotCombatReporter.Gui/LootTracking/` |
-| [Realm Ability Tracking](future-enhancements/05-realm-ability-tracking.md) | 📋 Planned | v1.2.0 | — |
+| [Realm Ability Tracking](future-enhancements/05-realm-ability-tracking.md) | ✅ Complete | v1.2.0 | `src/CamelotCombatReporter.Core/RealmAbilities/`, `src/CamelotCombatReporter.Gui/RealmAbilities/` |
 | [Server Type Filters](future-enhancements/06-server-type-filters.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/ServerProfiles/`, `src/CamelotCombatReporter.Gui/Settings/` |
 | [Distribution Builds](future-enhancements/07-distribution-builds.md) | ✅ Phase 1 | v1.0.0 | `.github/workflows/`, `Directory.Build.props` |
 | [Chat Filtering](future-enhancements/08-chat-filtering.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/ChatFiltering/`, `src/CamelotCombatReporter.Gui/Settings/` |
@@ -123,7 +141,7 @@ Released: January 2025
 | [Voice Chat Integration](future-enhancements/12-voice-integration.md) | 📋 Planned | v2.0.0 | — |
 | [In-Game Overlay HUD](future-enhancements/13-overlay-hud.md) | 📋 Planned | v2.0.0 | — |
 | [Death Analysis](future-enhancements/14-death-analysis.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/DeathAnalysis/`, `src/CamelotCombatReporter.Gui/DeathAnalysis/` |
-| [Buff/Debuff Tracking](future-enhancements/15-buff-debuff-tracking.md) | 📋 Planned | v1.2.0 | — |
+| [Buff/Debuff Tracking](future-enhancements/15-buff-debuff-tracking.md) | ✅ Complete | v1.2.0 | `src/CamelotCombatReporter.Core/BuffTracking/`, `src/CamelotCombatReporter.Gui/BuffTracking/` |
 | [Crowd Control Analysis](future-enhancements/16-crowd-control-analysis.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/CrowdControlAnalysis/`, `src/CamelotCombatReporter.Gui/CrowdControlAnalysis/` |
 | [Combat Alerts](future-enhancements/17-combat-alerts.md) | 📋 Planned | v1.3.0 | — |
 | [Session Comparison](future-enhancements/18-session-comparison.md) | 📋 Planned | v1.3.0 | — |
@@ -156,17 +174,19 @@ Released: January 2025
 
 ---
 
-### v1.2.0 - Realm Abilities & Buffs
+### v1.2.0 - Realm Abilities & Buffs ✅ RELEASED
 
+**Released:** January 2026
 **Focus:** Advanced combat tracking
 
-| Item | Type | Description |
-|------|------|-------------|
-| [Realm Ability Tracking](future-enhancements/05-realm-ability-tracking.md) | Feature | RA usage statistics and cooldown tracking |
-| [Buff/Debuff Tracking](future-enhancements/15-buff-debuff-tracking.md) | Feature | Buff uptime, debuff effectiveness |
-| RA Database | Feature | Complete RA data for all three realms |
-| Buff Timeline Widget | Feature | Visual buff bar with duration tracking |
-| Bug Fixes | Maintenance | Monthly bug fix cycle |
+| Item | Type | Status | Description |
+|------|------|--------|-------------|
+| [Realm Ability Tracking](future-enhancements/05-realm-ability-tracking.md) | Feature | ✅ Complete | RA usage statistics and cooldown tracking |
+| [Buff/Debuff Tracking](future-enhancements/15-buff-debuff-tracking.md) | Feature | ✅ Complete | Buff uptime, debuff effectiveness |
+| RA Database | Feature | ✅ Complete | 100+ RA data for all three realms + universal |
+| Buff Timeline Widget | Feature | ✅ Complete | Visual buff events with uptime charts |
+| Realm Abilities Tab | Feature | ✅ Complete | New tab in MainWindow |
+| Buff Tracking Tab | Feature | ✅ Complete | New tab in MainWindow |
 
 ---
 
@@ -274,6 +294,18 @@ Bug fix releases occur as needed between feature releases:
 ---
 
 ## Version History
+
+### v1.2.0 (January 2026)
+
+**Realm Abilities & Buffs Release:**
+- Realm Ability Tracking with 100+ abilities organized by realm
+- Era-based ability gating (Classic through Live)
+- Activation tracking with cooldown management and effectiveness analysis
+- Buff/Debuff Tracking with timer-based expiry estimation
+- 40+ buff/debuff definitions across 9 categories
+- Uptime calculations with gap detection for expected buffs
+- New Realm Abilities and Buff Tracking tabs in main window
+- Timeline and distribution visualizations for both features
 
 ### v1.1.0 (January 2025)
 

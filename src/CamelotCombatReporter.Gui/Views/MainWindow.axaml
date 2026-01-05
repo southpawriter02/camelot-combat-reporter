@@ -8,6 +8,8 @@
         xmlns:loottracking="using:CamelotCombatReporter.Gui.LootTracking.Views"
         xmlns:deathanalysis="using:CamelotCombatReporter.Gui.DeathAnalysis.Views"
         xmlns:ccanalysis="using:CamelotCombatReporter.Gui.CrowdControlAnalysis.Views"
+        xmlns:realmabilities="using:CamelotCombatReporter.Gui.RealmAbilities.Views"
+        xmlns:bufftracking="using:CamelotCombatReporter.Gui.BuffTracking.Views"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
         x:Class="CamelotCombatReporter.Gui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -664,6 +666,16 @@
         <!-- CC Analysis Tab -->
         <TabItem Header="CC Analysis">
             <ccanalysis:CCAnalysisView x:Name="CCAnalysisView"/>
+        </TabItem>
+
+        <!-- Realm Abilities Tab -->
+        <TabItem Header="Realm Abilities">
+            <realmabilities:RealmAbilityView x:Name="RealmAbilityView"/>
+        </TabItem>
+
+        <!-- Buff Tracking Tab -->
+        <TabItem Header="Buff Tracking">
+            <bufftracking:BuffTrackingView x:Name="BuffTrackingView"/>
         </TabItem>
     </TabControl>
     </DockPanel>

@@ -11,6 +11,63 @@ No unreleased changes.
 
 ---
 
+## [1.2.0] - 2026-01-05
+
+### Added
+- **Realm Ability Tracking System**
+  - Comprehensive database with 100+ realm abilities organized by realm (Albion, Midgard, Hibernia, Universal)
+  - Era-based ability gating (Classic, Shrouded Isles, Trials of Atlantis, New Frontiers, Catacombs, Darkness Rising, Labyrinth, Live)
+  - Activation tracking with cooldown management
+  - Statistics calculations: total activations, cooldown efficiency, damage/healing totals
+  - Per-ability usage statistics with effectiveness metrics
+  - Timeline visualization of RA activations by minute
+  - Type distribution charts (Damage, CC, Defensive, Healing, Utility, Passive)
+  - Cooldown state tracking at session end
+  - New "Realm Abilities" tab in main window
+
+- **Buff/Debuff Tracking System**
+  - Buff state tracker following DRTracker pattern with timer-based expiry estimation
+  - Comprehensive buff database with 40+ buff/debuff types
+  - Categories: Stat Buffs, Armor Buffs, Resistance Buffs, Damage/Speed, Regeneration, Debuffs, DoT Effects
+  - Uptime calculations per buff with gap detection
+  - Critical gap identification for expected buffs (stat buffs, damage add)
+  - Timeline visualization of buff events
+  - Category distribution and uptime bar charts
+  - New "Buff Tracking" tab in main window
+
+- **New Core Services**
+  - `IRealmAbilityService` / `RealmAbilityService` - RA activation tracking and statistics
+  - `IRealmAbilityDatabase` / `RealmAbilityDatabase` - JSON-based RA database with indexing
+  - `IBuffTrackingService` / `BuffTrackingService` - Buff event extraction and statistics
+  - `BuffStateTracker` - Active buff state management with expiry estimation
+
+- **Log Parsing Enhancements**
+  - RA activation patterns: "You activate [ability]!"
+  - RA damage/healing effect patterns
+  - RA ready notifications
+  - Enemy RA activation detection
+
+- **New Data Models**
+  - `RealmAbility` record with level costs, cooldown, prerequisites, and era gating
+  - `RealmAbilityEvent` and `RealmAbilityReadyEvent` log events
+  - `RealmAbilityActivation`, `RealmAbilityUsageStats`, `RealmAbilitySessionStats`
+  - `BuffDefinition` with category, duration, stacking rules, concentration type
+  - `BuffEvent`, `ActiveBuff`, `BuffGap`, `BuffUptimeStats`, `BuffStatistics`
+
+### Changed
+- MainWindow now includes Realm Abilities and Buff Tracking tabs
+- About dialog updated to show version 1.2.0
+
+### Technical Details
+- 27 new files added across Core and GUI projects
+- New namespaces: `RealmAbilities`, `RealmAbilities.Models`, `BuffTracking`, `BuffTracking.Models`
+- JSON database at `data/realm-abilities/realm-abilities.json`
+- Full MVVM implementation with CommunityToolkit.Mvvm source generators
+- LiveCharts2 integration for timeline and distribution charts
+- All 82 tests passing
+
+---
+
 ## [1.1.0] - 2025-01-05
 
 ### Added
@@ -298,6 +355,7 @@ The TypeScript implementation follows the same feature set as the C# version but
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| 1.2.0 | 2026-01-05 | Realm Ability Tracking (100+ abilities), Buff/Debuff Tracking with uptime analysis |
 | 1.1.0 | 2025-01-05 | Death Analysis, CC Analysis with DR tracking, Server Profiles, Chat Filtering |
 | 1.0.2 | 2025-01-03 | Log parsing fixes, new event types (crit, pet, death, CC) |
 | 1.0.1 | 2025-01-03 | Logging infrastructure, bug fixes, IDisposable |

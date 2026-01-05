@@ -1,0 +1,2175 @@
+{
+  "version": "1.2.0",
+  "description": "Comprehensive realm ability database for Dark Age of Camelot",
+  "abilities": [
+    {
+      "id": "aug_str",
+      "name": "Augmented Strength",
+      "internalName": "Augmented Strength",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases Strength stat.",
+      "effectDescriptions": {
+        "1": "+4 STR",
+        "2": "+8 STR",
+        "3": "+12 STR",
+        "4": "+16 STR",
+        "5": "+20 STR"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "aug_con",
+      "name": "Augmented Constitution",
+      "internalName": "Augmented Constitution",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases Constitution stat.",
+      "effectDescriptions": {
+        "1": "+4 CON",
+        "2": "+8 CON",
+        "3": "+12 CON",
+        "4": "+16 CON",
+        "5": "+20 CON"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "aug_dex",
+      "name": "Augmented Dexterity",
+      "internalName": "Augmented Dexterity",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases Dexterity stat.",
+      "effectDescriptions": {
+        "1": "+4 DEX",
+        "2": "+8 DEX",
+        "3": "+12 DEX",
+        "4": "+16 DEX",
+        "5": "+20 DEX"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "aug_qui",
+      "name": "Augmented Quickness",
+      "internalName": "Augmented Quickness",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases Quickness stat.",
+      "effectDescriptions": {
+        "1": "+4 QUI",
+        "2": "+8 QUI",
+        "3": "+12 QUI",
+        "4": "+16 QUI",
+        "5": "+20 QUI"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "aug_acu",
+      "name": "Augmented Acuity",
+      "internalName": "Augmented Acuity",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases primary casting stat (INT/PIE/EMP/CHA).",
+      "effectDescriptions": {
+        "1": "+4 casting stat",
+        "2": "+8 casting stat",
+        "3": "+12 casting stat",
+        "4": "+16 casting stat",
+        "5": "+20 casting stat"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "toughness",
+      "name": "Toughness",
+      "internalName": "Toughness",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases maximum hit points.",
+      "effectDescriptions": {
+        "1": "+25 HP",
+        "2": "+50 HP",
+        "3": "+75 HP",
+        "4": "+100 HP",
+        "5": "+125 HP"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "long_wind",
+      "name": "Long Wind",
+      "internalName": "Long Wind",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases maximum endurance.",
+      "effectDescriptions": {
+        "1": "+4% max endurance",
+        "2": "+8% max endurance",
+        "3": "+12% max endurance",
+        "4": "+16% max endurance",
+        "5": "+20% max endurance"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "serenity",
+      "name": "Serenity",
+      "internalName": "Serenity",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases maximum power pool.",
+      "effectDescriptions": {
+        "1": "+4% max power",
+        "2": "+8% max power",
+        "3": "+12% max power",
+        "4": "+16% max power",
+        "5": "+20% max power"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "ethereal_bond",
+      "name": "Ethereal Bond",
+      "internalName": "Ethereal Bond",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases power pool size.",
+      "effectDescriptions": {
+        "1": "+4% power pool",
+        "2": "+8% power pool",
+        "3": "+12% power pool",
+        "4": "+16% power pool",
+        "5": "+20% power pool"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "mastery_of_arms",
+      "name": "Mastery of Arms",
+      "internalName": "Mastery of Arms",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 9,
+      "realmPointCosts": [3, 6, 8, 10, 14, 14, 14, 14, 14],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases melee attack speed.",
+      "effectDescriptions": {
+        "1": "+0.5% melee speed",
+        "2": "+1.0% melee speed",
+        "3": "+1.5% melee speed",
+        "4": "+2.0% melee speed",
+        "5": "+2.5% melee speed",
+        "6": "+3.0% melee speed",
+        "7": "+3.5% melee speed",
+        "8": "+4.0% melee speed",
+        "9": "+4.5% melee speed"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "mastery_of_blocking",
+      "name": "Mastery of Blocking",
+      "internalName": "Mastery of Blocking",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 9,
+      "realmPointCosts": [3, 6, 8, 10, 14, 14, 14, 14, 14],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases shield block chance.",
+      "effectDescriptions": {
+        "1": "+2% block",
+        "2": "+4% block",
+        "3": "+6% block",
+        "4": "+8% block",
+        "5": "+10% block",
+        "6": "+12% block",
+        "7": "+14% block",
+        "8": "+16% block",
+        "9": "+18% block"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "mastery_of_parrying",
+      "name": "Mastery of Parrying",
+      "internalName": "Mastery of Parrying",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 9,
+      "realmPointCosts": [3, 6, 8, 10, 14, 14, 14, 14, 14],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases parry chance.",
+      "effectDescriptions": {
+        "1": "+2% parry",
+        "2": "+4% parry",
+        "3": "+6% parry",
+        "4": "+8% parry",
+        "5": "+10% parry",
+        "6": "+12% parry",
+        "7": "+14% parry",
+        "8": "+16% parry",
+        "9": "+18% parry"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "mastery_of_stealth",
+      "name": "Mastery of Stealth",
+      "internalName": "Mastery of Stealth",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 9,
+      "realmPointCosts": [3, 6, 8, 10, 14, 14, 14, 14, 14],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases stealth effectiveness and detection.",
+      "effectDescriptions": {
+        "1": "+3% stealth",
+        "2": "+6% stealth",
+        "3": "+9% stealth",
+        "4": "+12% stealth",
+        "5": "+15% stealth",
+        "6": "+18% stealth",
+        "7": "+21% stealth",
+        "8": "+24% stealth",
+        "9": "+27% stealth"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "mastery_of_focus",
+      "name": "Mastery of Focus",
+      "internalName": "Mastery of Focus",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 9,
+      "realmPointCosts": [3, 6, 8, 10, 14, 14, 14, 14, 14],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Reduces spell interrupt chance.",
+      "effectDescriptions": {
+        "1": "-3% interrupt",
+        "2": "-6% interrupt",
+        "3": "-9% interrupt",
+        "4": "-12% interrupt",
+        "5": "-15% interrupt",
+        "6": "-18% interrupt",
+        "7": "-21% interrupt",
+        "8": "-24% interrupt",
+        "9": "-27% interrupt"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "mastery_of_pain",
+      "name": "Mastery of Pain",
+      "internalName": "Mastery of Pain",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 9,
+      "realmPointCosts": [3, 6, 8, 10, 14, 14, 14, 14, 14],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases critical hit damage.",
+      "effectDescriptions": {
+        "1": "+3% crit damage",
+        "2": "+6% crit damage",
+        "3": "+9% crit damage",
+        "4": "+12% crit damage",
+        "5": "+15% crit damage",
+        "6": "+18% crit damage",
+        "7": "+21% crit damage",
+        "8": "+24% crit damage",
+        "9": "+27% crit damage"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "mastery_of_magery",
+      "name": "Mastery of Magery",
+      "internalName": "Mastery of Magery",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 9,
+      "realmPointCosts": [3, 6, 8, 10, 14, 14, 14, 14, 14],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases spell damage.",
+      "effectDescriptions": {
+        "1": "+2% spell damage",
+        "2": "+4% spell damage",
+        "3": "+6% spell damage",
+        "4": "+8% spell damage",
+        "5": "+10% spell damage",
+        "6": "+12% spell damage",
+        "7": "+14% spell damage",
+        "8": "+16% spell damage",
+        "9": "+18% spell damage"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "mastery_of_concentration",
+      "name": "Mastery of Concentration",
+      "internalName": "Mastery of Concentration",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Reduces quickcast reuse timer.",
+      "effectDescriptions": {
+        "1": "-10% quickcast reuse",
+        "2": "-20% quickcast reuse",
+        "3": "-30% quickcast reuse",
+        "4": "-40% quickcast reuse",
+        "5": "-50% quickcast reuse"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "avoidance_of_magic",
+      "name": "Avoidance of Magic",
+      "internalName": "Avoidance of Magic",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 9,
+      "realmPointCosts": [3, 6, 8, 10, 14, 14, 14, 14, 14],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases magic resistance.",
+      "effectDescriptions": {
+        "1": "+2% magic resist",
+        "2": "+4% magic resist",
+        "3": "+6% magic resist",
+        "4": "+8% magic resist",
+        "5": "+10% magic resist",
+        "6": "+12% magic resist",
+        "7": "+14% magic resist",
+        "8": "+16% magic resist",
+        "9": "+18% magic resist"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "wild_power",
+      "name": "Wild Power",
+      "internalName": "Wild Power",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases critical spell chance.",
+      "effectDescriptions": {
+        "1": "+4% spell crit",
+        "2": "+8% spell crit",
+        "3": "+12% spell crit",
+        "4": "+16% spell crit",
+        "5": "+20% spell crit"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "wild_healing",
+      "name": "Wild Healing",
+      "internalName": "Wild Healing",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases critical heal chance.",
+      "effectDescriptions": {
+        "1": "+4% heal crit",
+        "2": "+8% heal crit",
+        "3": "+12% heal crit",
+        "4": "+16% heal crit",
+        "5": "+20% heal crit"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "wild_minion",
+      "name": "Wild Minion",
+      "internalName": "Wild Minion",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases pet critical chance.",
+      "effectDescriptions": {
+        "1": "+4% pet crit",
+        "2": "+8% pet crit",
+        "3": "+12% pet crit",
+        "4": "+16% pet crit",
+        "5": "+20% pet crit"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "physical_defense",
+      "name": "Physical Defense",
+      "internalName": "Physical Defense",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Reduces melee damage taken.",
+      "effectDescriptions": {
+        "1": "+2% melee reduction",
+        "2": "+4% melee reduction",
+        "3": "+6% melee reduction",
+        "4": "+8% melee reduction",
+        "5": "+10% melee reduction"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "determination",
+      "name": "Determination",
+      "internalName": "Determination",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Reduces crowd control duration.",
+      "effectDescriptions": {
+        "1": "-4% CC duration",
+        "2": "-8% CC duration",
+        "3": "-12% CC duration",
+        "4": "-16% CC duration",
+        "5": "-20% CC duration"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "lifter",
+      "name": "Lifter",
+      "internalName": "Lifter",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases encumbrance capacity.",
+      "effectDescriptions": {
+        "1": "+20 encumbrance",
+        "2": "+40 encumbrance",
+        "3": "+60 encumbrance",
+        "4": "+80 encumbrance",
+        "5": "+100 encumbrance"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "purge",
+      "name": "Purge",
+      "internalName": "Purge",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:05:00",
+      "prerequisites": [],
+      "description": "Removes all negative effects from yourself.",
+      "effectDescriptions": {
+        "1": "Remove all debuffs, CC effects, and DoTs"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "second_wind",
+      "name": "Second Wind",
+      "internalName": "Second Wind",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Instantly restores endurance.",
+      "effectDescriptions": {
+        "1": "Restore 100% endurance"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "mystic_crystal_lore",
+      "name": "Mystic Crystal Lore",
+      "internalName": "Mystic Crystal Lore",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [6],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Allows identification of magical items.",
+      "effectDescriptions": {
+        "1": "Identify magic items"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "charge",
+      "name": "Charge",
+      "internalName": "Charge",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": "00:05:00",
+      "prerequisites": [],
+      "description": "Sprint rapidly toward a target.",
+      "effectDescriptions": {
+        "1": "500 range charge",
+        "2": "1000 range charge",
+        "3": "1500 range charge"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "prevent_flight",
+      "name": "Prevent Flight",
+      "internalName": "Prevent Flight",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": "00:05:00",
+      "prerequisites": [],
+      "description": "Prevents target from sprinting.",
+      "effectDescriptions": {
+        "1": "5 second prevent sprint",
+        "2": "10 second prevent sprint",
+        "3": "15 second prevent sprint"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "speed_of_sound",
+      "name": "Speed of Sound",
+      "internalName": "Speed of Sound",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:05:00",
+      "prerequisites": [],
+      "description": "Instantly grants maximum movement speed.",
+      "effectDescriptions": {
+        "1": "Max speed for 30 seconds"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "vanish",
+      "name": "Vanish",
+      "internalName": "Vanish",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Stealth classes: instantly re-enter stealth.",
+      "effectDescriptions": {
+        "1": "Instant stealth, breaks combat"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "see_hidden",
+      "name": "See Hidden",
+      "internalName": "See Hidden",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [8],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Passively detect stealthed enemies.",
+      "effectDescriptions": {
+        "1": "Detect hidden enemies"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "tireless",
+      "name": "Tireless",
+      "internalName": "Tireless",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Reduces endurance consumption.",
+      "effectDescriptions": {
+        "1": "-5% endurance use",
+        "2": "-10% endurance use",
+        "3": "-15% endurance use"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "ignore_pain",
+      "name": "Ignore Pain",
+      "internalName": "Ignore Pain",
+      "realmAvailability": "All",
+      "type": "Defensive",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 14],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Absorbs damage from next hit.",
+      "effectDescriptions": {
+        "1": "Absorb 25% of next hit",
+        "2": "Absorb 50% of next hit",
+        "3": "Absorb 75% of next hit"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "the_empty_mind",
+      "name": "The Empty Mind",
+      "internalName": "The Empty Mind",
+      "realmAvailability": "All",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Grants CC immunity.",
+      "effectDescriptions": {
+        "1": "CC immunity for 20 seconds"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "soldiers_barricade",
+      "name": "Soldier's Barricade",
+      "internalName": "Soldier's Barricade",
+      "realmAvailability": "All",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Increases armor and absorption.",
+      "effectDescriptions": {
+        "1": "+50 AF, +10% absorb for 30s"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "juggernaut",
+      "name": "Juggernaut",
+      "internalName": "Juggernaut",
+      "realmAvailability": "All",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "CC immunity with damage boost.",
+      "effectDescriptions": {
+        "1": "CC immunity + 25% damage for 20s"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "strike_prediction",
+      "name": "Strike Prediction",
+      "internalName": "Strike Prediction",
+      "realmAvailability": "All",
+      "type": "Defensive",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Evade next attacks.",
+      "effectDescriptions": {
+        "1": "Evade next 1 attack",
+        "2": "Evade next 2 attacks",
+        "3": "Evade next 3 attacks"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "dodger",
+      "name": "Dodger",
+      "internalName": "Dodger",
+      "realmAvailability": "All",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Significantly increases evade chance.",
+      "effectDescriptions": {
+        "1": "+25% evade for 30 seconds"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "first_aid",
+      "name": "First Aid",
+      "internalName": "First Aid",
+      "realmAvailability": "All",
+      "type": "Healing",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Self heal.",
+      "effectDescriptions": {
+        "1": "Heal 25% HP",
+        "2": "Heal 50% HP",
+        "3": "Heal 75% HP"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "raging_power",
+      "name": "Raging Power",
+      "internalName": "Raging Power",
+      "realmAvailability": "All",
+      "type": "Healing",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Restores full power pool.",
+      "effectDescriptions": {
+        "1": "Restore 100% power"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "ameliorating_melodies",
+      "name": "Ameliorating Melodies",
+      "internalName": "Ameliorating Melodies",
+      "realmAvailability": "All",
+      "type": "Healing",
+      "maxLevel": 3,
+      "realmPointCosts": [10, 15, 20],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Group heal over time.",
+      "effectDescriptions": {
+        "1": "Small group HoT for 30s",
+        "2": "Medium group HoT for 30s",
+        "3": "Large group HoT for 30s"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "concentration",
+      "name": "Concentration",
+      "internalName": "Concentration",
+      "realmAvailability": "All",
+      "type": "Healing",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Restores power.",
+      "effectDescriptions": {
+        "1": "Restore 25% power",
+        "2": "Restore 50% power",
+        "3": "Restore 75% power"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "viper",
+      "name": "Viper",
+      "internalName": "Viper",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": "00:00:30",
+      "prerequisites": [],
+      "description": "Poison attack dealing damage over time.",
+      "effectDescriptions": {
+        "1": "Light poison DoT",
+        "2": "Medium poison DoT",
+        "3": "Heavy poison DoT"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "dual_threat",
+      "name": "Dual Threat",
+      "internalName": "Dual Threat",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 1,
+      "realmPointCosts": [8],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Dual wield damage bonus.",
+      "effectDescriptions": {
+        "1": "Improved dual wield effectiveness"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "negative_maelstrom",
+      "name": "Negative Maelstrom",
+      "internalName": "Negative Maelstrom",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "PBAoE energy damage.",
+      "effectDescriptions": {
+        "1": "Point blank AoE energy damage"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "whirling_dervish",
+      "name": "Whirling Dervish",
+      "internalName": "Whirling Dervish",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "PBAoE melee attack.",
+      "effectDescriptions": {
+        "1": "Point blank AoE melee damage"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "true_sight",
+      "name": "True Sight",
+      "internalName": "True Sight",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "See through stealth and illusions.",
+      "effectDescriptions": {
+        "1": "See all hidden enemies for 30s"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "anger_management",
+      "name": "Anger Management",
+      "internalName": "Anger Management",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Convert damage taken to power.",
+      "effectDescriptions": {
+        "1": "Damage taken grants power for 30s"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "adrenaline_rush",
+      "name": "Adrenaline Rush",
+      "internalName": "Adrenaline Rush",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Increases melee damage.",
+      "effectDescriptions": {
+        "1": "+25% melee damage for 30s"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "fury",
+      "name": "Fury",
+      "internalName": "Fury",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Short duration damage increase.",
+      "effectDescriptions": {
+        "1": "+10% damage for 15s",
+        "2": "+15% damage for 15s",
+        "3": "+20% damage for 15s"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+
+    {
+      "id": "volcanic_pillar",
+      "name": "Volcanic Pillar",
+      "internalName": "Volcanic Pillar",
+      "realmAvailability": "Albion",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Creates a column of fire dealing AoE damage.",
+      "effectDescriptions": {
+        "1": "Fire AoE damage at target location"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "thunderstorm",
+      "name": "Thunderstorm",
+      "internalName": "Thunderstorm",
+      "realmAvailability": "Albion",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Lightning AoE attack.",
+      "effectDescriptions": {
+        "1": "Lightning damage in target area"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "rain_of_fire",
+      "name": "Rain of Fire",
+      "internalName": "Rain of Fire",
+      "realmAvailability": "Albion",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Fire AoE with damage over time.",
+      "effectDescriptions": {
+        "1": "Sustained fire AoE with DoT"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "selfless_devotion",
+      "name": "Selfless Devotion",
+      "internalName": "Selfless Devotion",
+      "realmAvailability": "Albion",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Transfers damage to pet.",
+      "effectDescriptions": {
+        "1": "Pet absorbs damage for you"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "soldiers_citadel",
+      "name": "Soldier's Citadel",
+      "internalName": "Soldier's Citadel",
+      "realmAvailability": "Albion",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Group defensive buff.",
+      "effectDescriptions": {
+        "1": "Group barricade effect"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "barrier_of_fortitude",
+      "name": "Barrier of Fortitude",
+      "internalName": "Barrier of Fortitude",
+      "realmAvailability": "Albion",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Damage absorption bubble.",
+      "effectDescriptions": {
+        "1": "Absorb damage bubble"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "divine_intervention",
+      "name": "Divine Intervention",
+      "internalName": "Divine Intervention",
+      "realmAvailability": "Albion",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Prevents death once.",
+      "effectDescriptions": {
+        "1": "Next fatal blow instead heals to 10%"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "wall_of_steel",
+      "name": "Wall of Steel",
+      "internalName": "Wall of Steel",
+      "realmAvailability": "Albion",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Massive armor boost.",
+      "effectDescriptions": {
+        "1": "+100 AF for 30 seconds"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "group_purge",
+      "name": "Group Purge",
+      "internalName": "Group Purge",
+      "realmAvailability": "Albion",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Removes negative effects from group.",
+      "effectDescriptions": {
+        "1": "Purge for entire group"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "desperate_bowman",
+      "name": "Desperate Bowman",
+      "internalName": "Desperate Bowman",
+      "realmAvailability": "Albion",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Scout: instant bow shot.",
+      "effectDescriptions": {
+        "1": "Instant critical shot"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "mastery_of_the_art",
+      "name": "Mastery of the Art",
+      "internalName": "Mastery of the Art",
+      "realmAvailability": "Albion",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Albion caster specialization bonus.",
+      "effectDescriptions": {
+        "1": "+2% spell effectiveness",
+        "2": "+4% spell effectiveness",
+        "3": "+6% spell effectiveness",
+        "4": "+8% spell effectiveness",
+        "5": "+10% spell effectiveness"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "shield_trip",
+      "name": "Shield Trip",
+      "internalName": "Shield Trip",
+      "realmAvailability": "Albion",
+      "type": "CrowdControl",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:05:00",
+      "prerequisites": [],
+      "description": "Knockdown target.",
+      "effectDescriptions": {
+        "1": "Knock target down"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "bodyguard",
+      "name": "Bodyguard",
+      "internalName": "Bodyguard",
+      "realmAvailability": "Albion",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Intercept attacks for ally.",
+      "effectDescriptions": {
+        "1": "Intercept damage for target ally"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "calming_notes",
+      "name": "Calming Notes",
+      "internalName": "Calming Notes",
+      "realmAvailability": "Albion",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Minstrel: group CC immunity.",
+      "effectDescriptions": {
+        "1": "Group CC immunity for 10s"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "gift_of_albion",
+      "name": "Gift of Albion",
+      "internalName": "Gift of Albion",
+      "realmAvailability": "Albion",
+      "type": "Healing",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Large group heal.",
+      "effectDescriptions": {
+        "1": "Major group heal"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "pious_concentration",
+      "name": "Pious Concentration",
+      "internalName": "Pious Concentration",
+      "realmAvailability": "Albion",
+      "type": "Healing",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Cleric: free heal spell.",
+      "effectDescriptions": {
+        "1": "Next heal costs no power"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+
+    {
+      "id": "wrath_of_champions",
+      "name": "Wrath of Champions",
+      "internalName": "Wrath of Champions",
+      "realmAvailability": "Midgard",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Cold AoE damage burst.",
+      "effectDescriptions": {
+        "1": "Cold AoE damage in area"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "anger_of_the_gods",
+      "name": "Anger of the Gods",
+      "internalName": "Anger of the Gods",
+      "realmAvailability": "Midgard",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Thunder and lightning damage.",
+      "effectDescriptions": {
+        "1": "Thunder damage in area"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "fury_of_the_gods",
+      "name": "Fury of the Gods",
+      "internalName": "Fury of the Gods",
+      "realmAvailability": "Midgard",
+      "type": "Damage",
+      "maxLevel": 3,
+      "realmPointCosts": [10, 15, 20],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "High burst cold damage.",
+      "effectDescriptions": {
+        "1": "Cold damage burst",
+        "2": "Strong cold damage burst",
+        "3": "Devastating cold damage burst"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "winters_death",
+      "name": "Winter's Death",
+      "internalName": "Winter's Death",
+      "realmAvailability": "Midgard",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Extreme cold burst.",
+      "effectDescriptions": {
+        "1": "Extreme single target cold damage"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "thors_hammer",
+      "name": "Thor's Hammer",
+      "internalName": "Thor's Hammer",
+      "realmAvailability": "Midgard",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Single target lightning.",
+      "effectDescriptions": {
+        "1": "High single target lightning damage"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "static_tempest",
+      "name": "Static Tempest",
+      "internalName": "Static Tempest",
+      "realmAvailability": "Midgard",
+      "type": "CrowdControl",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "AoE stun.",
+      "effectDescriptions": {
+        "1": "Stun enemies in area"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "bedazzling_aura",
+      "name": "Bedazzling Aura",
+      "internalName": "Bedazzling Aura",
+      "realmAvailability": "Midgard",
+      "type": "CrowdControl",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "PBAoE mesmerize.",
+      "effectDescriptions": {
+        "1": "Mesmerize enemies around you"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "grapple",
+      "name": "Grapple",
+      "internalName": "Grapple",
+      "realmAvailability": "Midgard",
+      "type": "CrowdControl",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:05:00",
+      "prerequisites": [],
+      "description": "Immobilize target.",
+      "effectDescriptions": {
+        "1": "Root target in place"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "bunker_of_faith",
+      "name": "Bunker of Faith",
+      "internalName": "Bunker of Faith",
+      "realmAvailability": "Midgard",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Damage reduction for group.",
+      "effectDescriptions": {
+        "1": "Group damage reduction for 30s"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "warriors_heart",
+      "name": "Warrior's Heart",
+      "internalName": "Warrior's Heart",
+      "realmAvailability": "Midgard",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "HP boost with regeneration.",
+      "effectDescriptions": {
+        "1": "+HP and HP regen for 30s"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "valhallas_blessing",
+      "name": "Valhalla's Blessing",
+      "internalName": "Valhalla's Blessing",
+      "realmAvailability": "Midgard",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Prevents death once.",
+      "effectDescriptions": {
+        "1": "Next fatal blow heals instead"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "mastery_of_the_arcane",
+      "name": "Mastery of the Arcane",
+      "internalName": "Mastery of the Arcane",
+      "realmAvailability": "Midgard",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Midgard caster specialization bonus.",
+      "effectDescriptions": {
+        "1": "+2% spell effectiveness",
+        "2": "+4% spell effectiveness",
+        "3": "+6% spell effectiveness",
+        "4": "+8% spell effectiveness",
+        "5": "+10% spell effectiveness"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "odins_eye",
+      "name": "Odin's Eye",
+      "internalName": "Odin's Eye",
+      "realmAvailability": "Midgard",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Reveals hidden enemies.",
+      "effectDescriptions": {
+        "1": "See hidden enemies in area"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "battle_cry",
+      "name": "Battle Cry",
+      "internalName": "Battle Cry",
+      "realmAvailability": "Midgard",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Group damage buff.",
+      "effectDescriptions": {
+        "1": "Group +damage for 30s"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "frost_affinity",
+      "name": "Frost Affinity",
+      "internalName": "Frost Affinity",
+      "realmAvailability": "Midgard",
+      "type": "Passive",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases cold damage.",
+      "effectDescriptions": {
+        "1": "+5% cold damage",
+        "2": "+10% cold damage",
+        "3": "+15% cold damage"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "gift_of_midgard",
+      "name": "Gift of Midgard",
+      "internalName": "Gift of Midgard",
+      "realmAvailability": "Midgard",
+      "type": "Healing",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Large group heal.",
+      "effectDescriptions": {
+        "1": "Major group heal"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "odins_blessing",
+      "name": "Odin's Blessing",
+      "internalName": "Odin's Blessing",
+      "realmAvailability": "Midgard",
+      "type": "Healing",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Healer: enhanced heal.",
+      "effectDescriptions": {
+        "1": "Next heal 50% more effective"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+
+    {
+      "id": "thornweed_field",
+      "name": "Thornweed Field",
+      "internalName": "Thornweed Field",
+      "realmAvailability": "Hibernia",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Nature DoT ground effect.",
+      "effectDescriptions": {
+        "1": "Create area of thorns dealing DoT"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "storm_of_power",
+      "name": "Storm of Power",
+      "internalName": "Storm of Power",
+      "realmAvailability": "Hibernia",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Magic damage storm.",
+      "effectDescriptions": {
+        "1": "AoE magic damage"
+      },
+      "introducedIn": "Classic",
+      "isTimer": true
+    },
+    {
+      "id": "natures_revenge",
+      "name": "Nature's Revenge",
+      "internalName": "Nature's Revenge",
+      "realmAvailability": "Hibernia",
+      "type": "Damage",
+      "maxLevel": 3,
+      "realmPointCosts": [10, 15, 20],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Nature burst damage.",
+      "effectDescriptions": {
+        "1": "Nature damage burst",
+        "2": "Strong nature damage burst",
+        "3": "Devastating nature damage burst"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "ichor_of_the_deep",
+      "name": "Ichor of the Deep",
+      "internalName": "Ichor of the Deep",
+      "realmAvailability": "Hibernia",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Poison burst damage.",
+      "effectDescriptions": {
+        "1": "High poison damage"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "wrath_of_nature",
+      "name": "Wrath of Nature",
+      "internalName": "Wrath of Nature",
+      "realmAvailability": "Hibernia",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Single target nature nuke.",
+      "effectDescriptions": {
+        "1": "High single target nature damage"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "dazzling_array",
+      "name": "Dazzling Array",
+      "internalName": "Dazzling Array",
+      "realmAvailability": "Hibernia",
+      "type": "CrowdControl",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "AoE confusion/mez.",
+      "effectDescriptions": {
+        "1": "Mesmerize enemies in area"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "entangling_roots",
+      "name": "Entangling Roots",
+      "internalName": "Entangling Roots",
+      "realmAvailability": "Hibernia",
+      "type": "CrowdControl",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:05:00",
+      "prerequisites": [],
+      "description": "Root target.",
+      "effectDescriptions": {
+        "1": "Root target in place"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "natures_embrace",
+      "name": "Nature's Embrace",
+      "internalName": "Nature's Embrace",
+      "realmAvailability": "Hibernia",
+      "type": "CrowdControl",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "PBAoE root.",
+      "effectDescriptions": {
+        "1": "Root enemies around you"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "forests_embrace",
+      "name": "Forest's Embrace",
+      "internalName": "Forest's Embrace",
+      "realmAvailability": "Hibernia",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Damage absorption.",
+      "effectDescriptions": {
+        "1": "Absorb damage shield"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "danas_blessing",
+      "name": "Dana's Blessing",
+      "internalName": "Dana's Blessing",
+      "realmAvailability": "Hibernia",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Prevents death once.",
+      "effectDescriptions": {
+        "1": "Next fatal blow heals instead"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "natures_shield",
+      "name": "Nature's Shield",
+      "internalName": "Nature's Shield",
+      "realmAvailability": "Hibernia",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Resist all buff.",
+      "effectDescriptions": {
+        "1": "+resist all for 30s"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "perfect_recovery",
+      "name": "Perfect Recovery",
+      "internalName": "Perfect Recovery",
+      "realmAvailability": "Hibernia",
+      "type": "Healing",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Full self heal.",
+      "effectDescriptions": {
+        "1": "Restore 100% HP"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "gift_of_perizor",
+      "name": "Gift of Perizor",
+      "internalName": "Gift of Perizor",
+      "realmAvailability": "Hibernia",
+      "type": "Healing",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Large group heal.",
+      "effectDescriptions": {
+        "1": "Major group heal"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "druids_embrace",
+      "name": "Druid's Embrace",
+      "internalName": "Druid's Embrace",
+      "realmAvailability": "Hibernia",
+      "type": "Healing",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Group HoT.",
+      "effectDescriptions": {
+        "1": "Group heal over time"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "mastery_of_nature",
+      "name": "Mastery of Nature",
+      "internalName": "Mastery of Nature",
+      "realmAvailability": "Hibernia",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Hibernia caster specialization bonus.",
+      "effectDescriptions": {
+        "1": "+2% spell effectiveness",
+        "2": "+4% spell effectiveness",
+        "3": "+6% spell effectiveness",
+        "4": "+8% spell effectiveness",
+        "5": "+10% spell effectiveness"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+    {
+      "id": "faerie_fire",
+      "name": "Faerie Fire",
+      "internalName": "Faerie Fire",
+      "realmAvailability": "Hibernia",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Reveals stealthers.",
+      "effectDescriptions": {
+        "1": "Reveal hidden enemies in area"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "natures_swiftness",
+      "name": "Nature's Swiftness",
+      "internalName": "Nature's Swiftness",
+      "realmAvailability": "Hibernia",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Instant spell cast.",
+      "effectDescriptions": {
+        "1": "Next spell is instant cast"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "spirit_of_the_hunt",
+      "name": "Spirit of the Hunt",
+      "internalName": "Spirit of the Hunt",
+      "realmAvailability": "Hibernia",
+      "type": "Passive",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Increases bow damage.",
+      "effectDescriptions": {
+        "1": "+5% bow damage",
+        "2": "+10% bow damage",
+        "3": "+15% bow damage"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": false
+    },
+
+    {
+      "id": "long_range_shot",
+      "name": "Long Range Shot",
+      "internalName": "Long Range Shot",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Extended range bow shot.",
+      "effectDescriptions": {
+        "1": "Long range bow attack"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "volley",
+      "name": "Volley",
+      "internalName": "Volley",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Rain of arrows AoE.",
+      "effectDescriptions": {
+        "1": "AoE bow damage"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "snapstrike",
+      "name": "Snapstrike",
+      "internalName": "Snapstrike",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Instant melee strike.",
+      "effectDescriptions": {
+        "1": "Instant weapon attack"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "reflex_attack",
+      "name": "Reflex Attack",
+      "internalName": "Reflex Attack",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Quick reactive strike.",
+      "effectDescriptions": {
+        "1": "Instant counterattack"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "shadow_run",
+      "name": "Shadow Run",
+      "internalName": "Shadow Run",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Stealth sprint.",
+      "effectDescriptions": {
+        "1": "Sprint while stealthed"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "purify_body",
+      "name": "Purify Body",
+      "internalName": "Purify Body",
+      "realmAvailability": "All",
+      "type": "Healing",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Cures disease and poison.",
+      "effectDescriptions": {
+        "1": "Remove disease and poison"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "mark_of_prey",
+      "name": "Mark of Prey",
+      "internalName": "Mark of Prey",
+      "realmAvailability": "All",
+      "type": "Utility",
+      "maxLevel": 1,
+      "realmPointCosts": [8],
+      "baseCooldown": "00:05:00",
+      "prerequisites": [],
+      "description": "Mark target for tracking.",
+      "effectDescriptions": {
+        "1": "Track target location"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "decimation_trap",
+      "name": "Decimation Trap",
+      "internalName": "Decimation Trap",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [14],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Damage trap.",
+      "effectDescriptions": {
+        "1": "Place damage trap"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "poisoned_trap",
+      "name": "Poisoned Trap",
+      "internalName": "Poisoned Trap",
+      "realmAvailability": "All",
+      "type": "Damage",
+      "maxLevel": 1,
+      "realmPointCosts": [10],
+      "baseCooldown": "00:30:00",
+      "prerequisites": [],
+      "description": "Poison trap.",
+      "effectDescriptions": {
+        "1": "Place poison trap"
+      },
+      "introducedIn": "NewFrontiers",
+      "isTimer": true
+    },
+    {
+      "id": "remedy",
+      "name": "Remedy",
+      "internalName": "Remedy",
+      "realmAvailability": "All",
+      "type": "Healing",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": "00:10:00",
+      "prerequisites": [],
+      "description": "Self cure.",
+      "effectDescriptions": {
+        "1": "Cure minor effects",
+        "2": "Cure moderate effects",
+        "3": "Cure severe effects"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "resolution",
+      "name": "Resolution",
+      "internalName": "Resolution",
+      "realmAvailability": "All",
+      "type": "Defensive",
+      "maxLevel": 3,
+      "realmPointCosts": [3, 6, 10],
+      "baseCooldown": "00:15:00",
+      "prerequisites": [],
+      "description": "Temporary resist increase.",
+      "effectDescriptions": {
+        "1": "+5% resist all for 15s",
+        "2": "+10% resist all for 15s",
+        "3": "+15% resist all for 15s"
+      },
+      "introducedIn": "ShroudedIsles",
+      "isTimer": true
+    },
+    {
+      "id": "resilience_of_death",
+      "name": "Resilience of Death",
+      "internalName": "Resilience of Death",
+      "realmAvailability": "All",
+      "type": "Passive",
+      "maxLevel": 5,
+      "realmPointCosts": [1, 2, 3, 6, 10],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Reduced resurrection sickness.",
+      "effectDescriptions": {
+        "1": "-5% res sickness",
+        "2": "-10% res sickness",
+        "3": "-15% res sickness",
+        "4": "-20% res sickness",
+        "5": "-25% res sickness"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "ip_intercept",
+      "name": "IP Intercept",
+      "internalName": "Intercept",
+      "realmAvailability": "All",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [5],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Guard an ally.",
+      "effectDescriptions": {
+        "1": "Intercept attacks for ally"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "ip_protect",
+      "name": "IP Protect",
+      "internalName": "Protect",
+      "realmAvailability": "All",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [5],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Add AF to ally.",
+      "effectDescriptions": {
+        "1": "Grant AF bonus to ally"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    },
+    {
+      "id": "ip_guard",
+      "name": "IP Guard",
+      "internalName": "Guard",
+      "realmAvailability": "All",
+      "type": "Defensive",
+      "maxLevel": 1,
+      "realmPointCosts": [5],
+      "baseCooldown": null,
+      "prerequisites": [],
+      "description": "Block for ally.",
+      "effectDescriptions": {
+        "1": "Block attacks for ally"
+      },
+      "introducedIn": "Classic",
+      "isTimer": false
+    }
+  ]
+}

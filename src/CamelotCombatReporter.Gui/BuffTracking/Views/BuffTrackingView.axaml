@@ -1,0 +1,308 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.BuffTracking.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="CamelotCombatReporter.Gui.BuffTracking.Views.BuffTrackingView"
+             x:DataType="vm:BuffTrackingViewModel">
+
+    <Design.DataContext>
+        <vm:BuffTrackingViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Buff/Debuff Tracking"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <Button Content="Analyze Log File"
+                            Command="{Binding AnalyzeFromFileCommand}"
+                            CommandParameter="{Binding $parent[Window]}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Statistics Summary (visible when data is loaded) -->
+            <Border BorderBrush="#4CAF50"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Buff Statistics"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#4CAF50"/>
+                    <Grid ColumnDefinitions="*,*,*,*,*,*">
+                        <StackPanel>
+                            <TextBlock Text="Buffs Applied" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalBuffsApplied}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#4CAF50"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Debuffs Applied" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalDebuffsApplied}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#9C27B0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Debuffs Received" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalDebuffsReceived}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3">
+                            <TextBlock Text="Overall Uptime" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding OverallBuffUptime}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Critical Gaps" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding CriticalGapsCount}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#FF9800"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="5">
+                            <TextBlock Text="Session Duration" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding SessionDuration}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#607D8B"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Charts Row -->
+            <Grid ColumnDefinitions="*,*" IsVisible="{Binding HasData}">
+                <!-- Category Distribution Chart -->
+                <Border Grid.Column="0"
+                        BorderBrush="#9C27B0"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Buffs by Category" FontWeight="Bold" Foreground="#9C27B0"/>
+                        <lvc:PieChart Series="{Binding CategoryDistributionSeries}"
+                                      Height="180"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Uptime Chart -->
+                <Border Grid.Column="1"
+                        BorderBrush="#2196F3"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Top Buff Uptimes" FontWeight="Bold" Foreground="#2196F3"/>
+                        <lvc:CartesianChart Series="{Binding UptimeChartSeries}"
+                                            XAxes="{Binding UptimeChartXAxes}"
+                                            YAxes="{Binding UptimeChartYAxes}"
+                                            Height="180"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Main Content -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="*" MinHeight="300" IsVisible="{Binding HasData}">
+                <!-- Uptime Statistics Table -->
+                <Border Grid.Column="0"
+                        BorderBrush="#4CAF50"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Buff Uptime Analysis" FontWeight="Bold" Foreground="#4CAF50"/>
+                        <DataGrid ItemsSource="{Binding UptimeStats}"
+                                  SelectedItem="{Binding SelectedUptime}"
+                                  Height="250"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Buff" Binding="{Binding BuffName}" Width="110"/>
+                                <DataGridTextColumn Header="Cat" Binding="{Binding Category}" Width="60"/>
+                                <DataGridTextColumn Header="Uptime" Binding="{Binding UptimePercent}" Width="60"/>
+                                <DataGridTextColumn Header="Apps" Binding="{Binding ApplicationCount}" Width="45"/>
+                                <DataGridTextColumn Header="Gaps" Binding="{Binding GapCount}" Width="45"/>
+                                <DataGridTextColumn Header="Avg Gap" Binding="{Binding AvgGapDuration}" Width="60"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Timeline -->
+                <Border Grid.Column="1"
+                        BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Recent Buff Events" FontWeight="Bold" Foreground="#FF9800"/>
+                        <DataGrid ItemsSource="{Binding TimelineEntries}"
+                                  Height="250"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Time" Binding="{Binding Timestamp}" Width="70"/>
+                                <DataGridTextColumn Header="Buff" Binding="{Binding BuffName}" Width="100"/>
+                                <DataGridTextColumn Header="Event" Binding="{Binding EventType}" Width="70"/>
+                                <DataGridTextColumn Header="Target" Binding="{Binding TargetName}" Width="80"/>
+                                <DataGridTextColumn Header="Dur" Binding="{Binding Duration}" Width="50"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Critical Gaps Section -->
+            <Border BorderBrush="#F44336"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Critical Buff Gaps (Expected Buffs)"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#F44336"/>
+                    <TextBlock Text="These gaps represent times when expected buffs (like stat buffs or damage add) were not active."
+                               Foreground="Gray"
+                               FontStyle="Italic"
+                               TextWrapping="Wrap"/>
+
+                    <!-- No gaps message -->
+                    <TextBlock Text="No critical gaps detected - great buff management!"
+                               Foreground="#4CAF50"
+                               FontWeight="SemiBold"
+                               IsVisible="{Binding !CriticalGaps.Count}"/>
+
+                    <!-- Gaps list -->
+                    <ItemsControl ItemsSource="{Binding CriticalGaps}" IsVisible="{Binding CriticalGaps.Count}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:BuffGapViewModel">
+                                <Border Margin="0,5"
+                                        CornerRadius="5"
+                                        Padding="10"
+                                        BorderThickness="2"
+                                        BorderBrush="{Binding SeverityColor}">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                <TextBlock Text="{Binding BuffName}"
+                                                           FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Context}"
+                                                           Foreground="Gray"
+                                                           FontStyle="Italic"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Spacing="15" Margin="0,5,0,0">
+                                                <TextBlock>
+                                                    <Run Text="Gap Start: " Foreground="Gray"/>
+                                                    <Run Text="{Binding GapStart}"/>
+                                                </TextBlock>
+                                                <TextBlock>
+                                                    <Run Text="Gap End: " Foreground="Gray"/>
+                                                    <Run Text="{Binding GapEnd}"/>
+                                                </TextBlock>
+                                                <TextBlock>
+                                                    <Run Text="Target: " Foreground="Gray"/>
+                                                    <Run Text="{Binding TargetName}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <Border Grid.Column="1"
+                                                Background="{Binding SeverityColor}"
+                                                CornerRadius="3"
+                                                Padding="10,5"
+                                                VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding GapDuration}"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Instructions (when no data) -->
+            <Border BorderBrush="#FFC107"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding !HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Getting Started with Buff Tracking"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#FFC107"/>
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">How to use:</Run>
+                        <LineBreak/>
+                        1. Click "Analyze Log File" to select a DAoC combat log file
+                        <LineBreak/>
+                        2. The system will identify all buff and debuff events
+                        <LineBreak/>
+                        3. View uptime statistics and identify gaps in coverage
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Tracked Buff Categories:</Run>
+                        <LineBreak/>
+                        • Stat Buffs: Strength, Constitution, Dexterity, etc.
+                        <LineBreak/>
+                        • Armor Buffs: Armor Factor, Absorption, Bladeturn
+                        <LineBreak/>
+                        • Resistance Buffs: Body, Cold, Heat, Energy, etc.
+                        <LineBreak/>
+                        • Damage/Speed: Damage Add, Celerity, Speed
+                        <LineBreak/>
+                        • Regeneration: HP, Power, Endurance regen
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Tracked Debuff Types:</Run>
+                        <LineBreak/>
+                        • Stat Debuffs: Strength, Constitution debuffs
+                        <LineBreak/>
+                        • Resistance Debuffs: Reduces resistances
+                        <LineBreak/>
+                        • DoT Effects: Disease, Poison, Bleed
+                        <LineBreak/>
+                        • Speed Debuffs: Snare, root effects
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Gap Detection:</Run>
+                        <LineBreak/>
+                        For "expected" buffs (like stat buffs that should always be up),
+                        the system tracks gaps and highlights when coverage was lost.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>
