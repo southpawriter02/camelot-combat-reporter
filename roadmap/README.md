@@ -4,9 +4,44 @@ This document outlines the feature roadmap for Camelot Combat Reporter. The proj
 
 ---
 
-## Current Version: v1.2.0
+## Current Version: v1.3.0
 
 Released: January 2026
+
+### What's in v1.3.x
+
+**Real-Time Combat Alerts** (New in v1.3.0)
+- Alert engine with real-time event processing and rule evaluation
+- 6 built-in alert conditions: Health threshold, burst damage, kill streaks, enemy class, ability usage, debuff detection
+- 4 notification types: Sound effects, screen flash, text-to-speech, Discord webhooks
+- Configurable rules with priority levels (Low → Critical) and cooldown management
+- AND/OR condition logic for complex alert triggers
+- Trigger history tracking with session-based limits
+
+**Session Comparison & Analytics** (New in v1.3.0)
+- Side-by-side session comparison with delta calculations
+- Change direction indicators (Improved ↑, Declined ↓, Unchanged →)
+- Significance thresholds for meaningful changes
+- Category-based metric grouping (Damage, Healing, Combat, General, Custom)
+
+**Trend Analysis** (New in v1.3.0)
+- Linear regression for performance trend detection
+- Rolling averages for smoothed trend visualization
+- Statistical analysis (mean, median, standard deviation, min/max)
+- Predictive value extrapolation
+- R-squared coefficient for trend confidence
+
+**Goal Tracking** (New in v1.3.0)
+- Performance goal creation with target values
+- Progress monitoring with percentage completion
+- Goal status tracking (NotStarted → InProgress → Achieved/Failed/Expired)
+- JSON persistence for goal history
+
+**Personal Best Tracking** (New in v1.3.0)
+- Automatic PB detection across all metrics
+- Improvement percentage calculations
+- PB history with timestamps
+- Event notifications for new personal bests
 
 ### What's in v1.2.x
 
@@ -123,7 +158,7 @@ Released: January 2026
 | [Database Integration](advanced-features/03-database-integration.md) | ✅ Complete | v1.0.0 | `src/database/` (TypeScript) |
 | [API Exposure](advanced-features/04-api-exposure.md) | ✅ Complete | v1.0.0 | `src/api/` (TypeScript) |
 
-### Future Enhancements (10/18 Complete)
+### Future Enhancements (12/18 Complete)
 
 | Feature | Status | Target | Location |
 |---------|--------|--------|----------|
@@ -143,8 +178,8 @@ Released: January 2026
 | [Death Analysis](future-enhancements/14-death-analysis.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/DeathAnalysis/`, `src/CamelotCombatReporter.Gui/DeathAnalysis/` |
 | [Buff/Debuff Tracking](future-enhancements/15-buff-debuff-tracking.md) | ✅ Complete | v1.2.0 | `src/CamelotCombatReporter.Core/BuffTracking/`, `src/CamelotCombatReporter.Gui/BuffTracking/` |
 | [Crowd Control Analysis](future-enhancements/16-crowd-control-analysis.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/CrowdControlAnalysis/`, `src/CamelotCombatReporter.Gui/CrowdControlAnalysis/` |
-| [Combat Alerts](future-enhancements/17-combat-alerts.md) | 📋 Planned | v1.3.0 | — |
-| [Session Comparison](future-enhancements/18-session-comparison.md) | 📋 Planned | v1.3.0 | — |
+| [Combat Alerts](future-enhancements/17-combat-alerts.md) | ✅ Complete | v1.3.0 | `src/CamelotCombatReporter.Core/Alerts/`, `src/CamelotCombatReporter.Gui/Alerts/` |
+| [Session Comparison](future-enhancements/18-session-comparison.md) | ✅ Complete | v1.3.0 | `src/CamelotCombatReporter.Core/Comparison/`, `src/CamelotCombatReporter.Gui/Comparison/` |
 
 **Legend:**
 - ✅ Complete - Feature fully implemented and tested
@@ -190,18 +225,21 @@ Released: January 2026
 
 ---
 
-### v1.3.0 - Alerts & Comparison
+### v1.3.0 - Alerts & Comparison ✅ RELEASED
 
+**Released:** January 2026
 **Focus:** Proactive feedback and historical analysis
 
-| Item | Type | Description |
-|------|------|-------------|
-| [Combat Alerts](future-enhancements/17-combat-alerts.md) | Feature | Real-time alert engine with configurable triggers |
-| [Session Comparison](future-enhancements/18-session-comparison.md) | Feature | Side-by-side session analysis, trend visualization |
-| Audio Notifications | Feature | Sound effects and TTS alerts |
-| Goal Tracking | Feature | Personal goals with progress tracking |
-| Personal Best Tracking | Feature | Automatic PB detection and celebration |
-| Bug Fixes | Maintenance | Monthly bug fix cycle |
+| Item | Type | Status | Description |
+|------|------|--------|-------------|
+| [Combat Alerts](future-enhancements/17-combat-alerts.md) | Feature | ✅ Complete | Real-time alert engine with 6 conditions, 4 notification types |
+| [Session Comparison](future-enhancements/18-session-comparison.md) | Feature | ✅ Complete | Side-by-side session analysis with delta calculations |
+| Trend Analysis | Feature | ✅ Complete | Linear regression, rolling averages, statistical analysis |
+| Audio Notifications | Feature | ✅ Complete | Sound effects and TTS alerts via service interfaces |
+| Goal Tracking | Feature | ✅ Complete | Personal goals with progress monitoring and persistence |
+| Personal Best Tracking | Feature | ✅ Complete | Automatic PB detection with improvement tracking |
+| Alerts Tab | Feature | ✅ Complete | New tab in MainWindow for alert configuration |
+| Session Comparison Tab | Feature | ✅ Complete | New tab in MainWindow with trend charts |
 
 ---
 
@@ -294,6 +332,20 @@ Bug fix releases occur as needed between feature releases:
 ---
 
 ## Version History
+
+### v1.3.0 (January 2026)
+
+**Alerts & Comparison Release:**
+- Real-Time Combat Alerts with 6 built-in conditions (Health, Damage, KillStreak, EnemyClass, AbilityUsed, Debuff)
+- 4 notification types: Sound, Screen Flash, Text-to-Speech, Discord Webhooks
+- Alert engine with real-time event processing and rule evaluation
+- Configurable rules with priority levels and cooldown management
+- Session Comparison with delta calculations and change indicators
+- Trend Analysis using linear regression and rolling averages
+- Goal Tracking with progress monitoring and JSON persistence
+- Personal Best Tracking with automatic detection and improvement tracking
+- New Alerts and Session Comparison tabs in main window
+- Trend visualization with LiveCharts2
 
 ### v1.2.0 (January 2026)
 
