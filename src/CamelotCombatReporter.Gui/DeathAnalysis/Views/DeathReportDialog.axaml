@@ -1,0 +1,171 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:CamelotCombatReporter.Gui.DeathAnalysis.ViewModels"
+        xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="700"
+        x:Class="CamelotCombatReporter.Gui.DeathAnalysis.Views.DeathReportDialog"
+        x:DataType="vm:DeathReportViewModel"
+        Title="Death Report Details"
+        Width="600"
+        Height="700"
+        WindowStartupLocation="CenterOwner"
+        CanResize="True">
+
+    <Design.DataContext>
+        <vm:DeathReportViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <Border Padding="20">
+            <StackPanel Spacing="15">
+                <!-- Header -->
+                <Border Background="{Binding CategoryColor}"
+                        CornerRadius="5"
+                        Padding="15">
+                    <StackPanel>
+                        <TextBlock Text="Death Report"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding Timestamp, StringFormat='Death at {0}'}"
+                                   Foreground="White"
+                                   Opacity="0.9"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Summary -->
+                <Border BorderBrush="#607D8B"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15">
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
+                            <TextBlock Text="Category" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding Category}"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,10">
+                            <TextBlock Text="Time to Death" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TimeToDeath}"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#FF9800"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
+                            <TextBlock Text="Killed By" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding KillerName}"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,10">
+                            <TextBlock Text="Killer Class" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding KillerClass}"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#9C27B0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,0,10">
+                            <TextBlock Text="Total Damage" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalDamage}"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,10">
+                            <TextBlock Text="Total Healing" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalHealing}"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#4CAF50"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,0,10">
+                            <TextBlock Text="Attackers" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding AttackerCount}"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,10">
+                            <TextBlock Text="Killing Blow" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding KillingBlowAbility}"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="4" Grid.ColumnSpan="2"
+                                    IsVisible="{Binding WasUnderCC}">
+                            <Border Background="#FCE4EC"
+                                    CornerRadius="5"
+                                    Padding="10">
+                                <TextBlock Foreground="#C2185B" FontWeight="SemiBold">
+                                    <Run Text="⚠ You were under crowd control when you died"/>
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Damage Sources -->
+                <Border BorderBrush="#F44336"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Damage Sources (15 seconds before death)"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#F44336"/>
+                        <DataGrid ItemsSource="{Binding DamageSources}"
+                                  Height="150"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Source" Binding="{Binding SourceName}" Width="*"/>
+                                <DataGridTextColumn Header="Class" Binding="{Binding SourceClass}" Width="100"/>
+                                <DataGridTextColumn Header="Damage" Binding="{Binding TotalDamage}" Width="80"/>
+                                <DataGridTextColumn Header="%" Binding="{Binding DamagePercent}" Width="60"/>
+                                <DataGridTextColumn Header="Hits" Binding="{Binding HitCount}" Width="50"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Damage Timeline -->
+                <Border BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Damage Timeline"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#FF9800"/>
+                        <lvc:CartesianChart Series="{Binding DamageTimelineSeries}"
+                                            XAxes="{Binding TimelineXAxes}"
+                                            Height="200"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Close Button -->
+                <Button Content="Close"
+                        HorizontalAlignment="Right"
+                        Padding="20,10"
+                        Command="{Binding CloseCommand}"/>
+            </StackPanel>
+        </Border>
+    </ScrollViewer>
+</Window>

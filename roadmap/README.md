@@ -4,9 +4,43 @@ This document outlines the feature roadmap for Camelot Combat Reporter. The proj
 
 ---
 
-## Current Version: v1.0.2
+## Current Version: v1.1.0
 
 Released: January 2025
+
+### What's in v1.1.x
+
+**Death Analysis** (New in v1.1.0)
+- Pre-death damage reconstruction with 15-second analysis window
+- Death categorization: Burst (Alpha Strike, Coordinated, CC Chain), Attrition (Healing Deficit, Resource Exhaustion, Positional), Execution (Low Health, DoT), Environmental
+- Killing blow identification and attacker class detection
+- Per-death recommendations based on category and circumstances
+- Damage timeline visualization and death statistics
+
+**Crowd Control Analysis** (New in v1.1.0)
+- Full CC tracking with Diminishing Returns (DR) system
+- DR levels: Full (100%) → Reduced (50%) → Minimal (25%) → Immune (0%)
+- 60-second DR decay timer per target per CC type
+- CC chain detection with gap threshold configuration
+- Support for mez, root, snare, stun, silence, and disarm effects
+- CC timeline visualization with DR level color coding
+
+**Server Profile System** (New in v1.1.0)
+- Era-based server profiles: Classic, Shrouded Isles, Trials of Atlantis, New Frontiers, Live, Custom
+- Per-profile class availability and feature flags
+- Built-in profiles with appropriate era settings
+- Custom profile creation with manual configuration
+
+**Chat Filtering** (New in v1.1.0)
+- Pre-parse filtering with 16 chat message types
+- Filter presets: All Messages, Combat Only, Tactical, Custom
+- Per-channel enable/disable with combat context options
+- Keyword and sender whitelists
+- Privacy mode with player name anonymization
+
+**Settings Window** (New in v1.1.0)
+- Unified settings interface with tabbed navigation
+- Server Profiles, Chat Filtering, and Privacy Settings tabs
 
 ### What's in v1.0.x
 
@@ -71,7 +105,7 @@ Released: January 2025
 | [Database Integration](advanced-features/03-database-integration.md) | ✅ Complete | v1.0.0 | `src/database/` (TypeScript) |
 | [API Exposure](advanced-features/04-api-exposure.md) | ✅ Complete | v1.0.0 | `src/api/` (TypeScript) |
 
-### Future Enhancements (4/18 Complete)
+### Future Enhancements (8/18 Complete)
 
 | Feature | Status | Target | Location |
 |---------|--------|--------|----------|
@@ -80,17 +114,17 @@ Released: January 2025
 | [Cross-Realm Analysis](future-enhancements/03-cross-realm-analysis.md) | ✅ Phase 1 | v1.0.0 | `src/CamelotCombatReporter.Core/CrossRealm/`, `src/CamelotCombatReporter.Gui/CrossRealm/` |
 | [Loot Drop Rate Tracking](future-enhancements/04-loot-drop-tracking.md) | ✅ Complete | v1.0.0 | `src/CamelotCombatReporter.Core/LootTracking/`, `src/CamelotCombatReporter.Gui/LootTracking/` |
 | [Realm Ability Tracking](future-enhancements/05-realm-ability-tracking.md) | 📋 Planned | v1.2.0 | — |
-| [Server Type Filters](future-enhancements/06-server-type-filters.md) | 📋 Planned | v1.1.0 | — |
+| [Server Type Filters](future-enhancements/06-server-type-filters.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/ServerProfiles/`, `src/CamelotCombatReporter.Gui/Settings/` |
 | [Distribution Builds](future-enhancements/07-distribution-builds.md) | ✅ Phase 1 | v1.0.0 | `.github/workflows/`, `Directory.Build.props` |
-| [Chat Filtering](future-enhancements/08-chat-filtering.md) | 📋 Planned | v1.1.0 | — |
+| [Chat Filtering](future-enhancements/08-chat-filtering.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/ChatFiltering/`, `src/CamelotCombatReporter.Gui/Settings/` |
 | [Group Composition Analysis](future-enhancements/09-group-composition-analysis.md) | 📋 Planned | v1.4.0 | — |
 | [Keep and Siege Tracking](future-enhancements/10-keep-siege-tracking.md) | 📋 Planned | v1.5.0 | — |
 | [Combat Replay System](future-enhancements/11-combat-replay.md) | 📋 Planned | v2.0.0 | — |
 | [Voice Chat Integration](future-enhancements/12-voice-integration.md) | 📋 Planned | v2.0.0 | — |
 | [In-Game Overlay HUD](future-enhancements/13-overlay-hud.md) | 📋 Planned | v2.0.0 | — |
-| [Death Analysis](future-enhancements/14-death-analysis.md) | 📋 Planned | v1.1.0 | — |
+| [Death Analysis](future-enhancements/14-death-analysis.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/DeathAnalysis/`, `src/CamelotCombatReporter.Gui/DeathAnalysis/` |
 | [Buff/Debuff Tracking](future-enhancements/15-buff-debuff-tracking.md) | 📋 Planned | v1.2.0 | — |
-| [Crowd Control Analysis](future-enhancements/16-crowd-control-analysis.md) | 📋 Planned | v1.1.0 | — |
+| [Crowd Control Analysis](future-enhancements/16-crowd-control-analysis.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/CrowdControlAnalysis/`, `src/CamelotCombatReporter.Gui/CrowdControlAnalysis/` |
 | [Combat Alerts](future-enhancements/17-combat-alerts.md) | 📋 Planned | v1.3.0 | — |
 | [Session Comparison](future-enhancements/18-session-comparison.md) | 📋 Planned | v1.3.0 | — |
 
@@ -104,18 +138,19 @@ Released: January 2025
 
 ## Release Schedule
 
-### v1.1.0 - Combat Intelligence
+### v1.1.0 - Combat Intelligence ✅ RELEASED
 
+**Released:** January 2025
 **Focus:** Death and crowd control analysis (builds on v1.0.2 events)
 
-| Item | Type | Description |
-|------|------|-------------|
-| [Death Analysis](future-enhancements/14-death-analysis.md) | Feature | Pre-death analysis, killing blow breakdown |
-| [Crowd Control Analysis](future-enhancements/16-crowd-control-analysis.md) | Feature | CC chains, diminishing returns tracking |
-| [Server Type Filters](future-enhancements/06-server-type-filters.md) | Feature | Classic, SI, ToA, Live server profiles |
-| [Chat Filtering](future-enhancements/08-chat-filtering.md) | Feature | Pre-parse filtering for non-combat messages |
-| Death Report UI | Feature | Visual death timeline and recommendations |
-| Bug Fixes | Maintenance | Address issues from v1.0.x community feedback |
+| Item | Type | Status | Description |
+|------|------|--------|-------------|
+| [Death Analysis](future-enhancements/14-death-analysis.md) | Feature | ✅ Complete | Pre-death analysis, killing blow breakdown |
+| [Crowd Control Analysis](future-enhancements/16-crowd-control-analysis.md) | Feature | ✅ Complete | CC chains, diminishing returns tracking |
+| [Server Type Filters](future-enhancements/06-server-type-filters.md) | Feature | ✅ Complete | Classic, SI, ToA, Live server profiles |
+| [Chat Filtering](future-enhancements/08-chat-filtering.md) | Feature | ✅ Complete | Pre-parse filtering for non-combat messages |
+| Death Report UI | Feature | ✅ Complete | Visual death timeline and recommendations |
+| Settings Window | Feature | ✅ Complete | Unified settings with tabs for all configuration |
 
 **Dependencies:** Uses DeathEvent, CrowdControlEvent, ResistEvent from v1.0.2
 
@@ -239,6 +274,18 @@ Bug fix releases occur as needed between feature releases:
 ---
 
 ## Version History
+
+### v1.1.0 (January 2025)
+
+**Combat Intelligence Release:**
+- Death Analysis with 15-second pre-death reconstruction
+- Death categorization (9 types: Burst, Attrition, Execution)
+- Crowd Control Analysis with Diminishing Returns tracking
+- DR system: Full → Reduced → Minimal → Immune with 60s decay
+- Server Profile system for DAoC eras (Classic through Live)
+- Chat Filtering with presets and privacy mode
+- Unified Settings window with tabbed configuration
+- New Death Analysis and CC Analysis tabs in main window
 
 ### v1.0.2 (January 2025)
 

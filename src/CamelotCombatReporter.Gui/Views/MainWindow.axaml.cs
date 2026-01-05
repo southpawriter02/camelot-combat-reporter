@@ -6,6 +6,8 @@ using Avalonia.Styling;
 using CamelotCombatReporter.Core.Logging;
 using CamelotCombatReporter.Gui.CrossRealm.ViewModels;
 using CamelotCombatReporter.Gui.Plugins.Views;
+using CamelotCombatReporter.Gui.Settings.ViewModels;
+using CamelotCombatReporter.Gui.Settings.Views;
 using CamelotCombatReporter.Gui.ViewModels;
 using Microsoft.Extensions.Logging;
 using System.Linq;
@@ -102,7 +104,7 @@ public partial class MainWindow : Window
                     },
                     new TextBlock
                     {
-                        Text = "Version 1.0.2",
+                        Text = "Version 1.1.0",
                         HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
                     },
                     new TextBlock
@@ -116,5 +118,14 @@ public partial class MainWindow : Window
         };
 
         await dialog.ShowDialog(this);
+    }
+
+    private async void OnSettingsClick(object? sender, RoutedEventArgs e)
+    {
+        var settingsWindow = new SettingsWindow
+        {
+            DataContext = new SettingsWindowViewModel()
+        };
+        await settingsWindow.ShowDialog(this);
     }
 }

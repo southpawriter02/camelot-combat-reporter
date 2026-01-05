@@ -1,0 +1,126 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.Settings.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="450"
+             x:Class="CamelotCombatReporter.Gui.Settings.Views.ServerProfileSettingsView"
+             x:DataType="vm:ServerProfileSettingsViewModel">
+
+    <Design.DataContext>
+        <vm:ServerProfileSettingsViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <StackPanel>
+                <TextBlock Text="Server Profile Configuration"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#2196F3"/>
+                <TextBlock Text="Select the server type that matches your DAoC server. This affects available classes and features."
+                           TextWrapping="Wrap"
+                           Foreground="Gray"
+                           FontSize="12"
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <!-- Current Profile -->
+            <Border Background="#E3F2FD" CornerRadius="5" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Current Profile" FontWeight="SemiBold" Foreground="#1976D2"/>
+                    <TextBlock Text="{Binding CurrentProfileName}"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="#2196F3"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Profile Selection -->
+            <Border BorderBrush="#607D8B"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Available Profiles" FontWeight="Bold" Foreground="#607D8B"/>
+                    <DataGrid ItemsSource="{Binding Profiles}"
+                              SelectedItem="{Binding SelectedProfile}"
+                              Height="200"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="#CCCCCC"
+                              SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="120"/>
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+                            <DataGridTextColumn Header="Classes" Binding="{Binding ClassCount}" Width="60"/>
+                            <DataGridTextColumn Header="Features" Binding="{Binding Features}" Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Selected Profile Details -->
+            <Border BorderBrush="#4CAF50"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding SelectedProfile, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Profile Details" FontWeight="Bold" Foreground="#4CAF50"/>
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
+                            <TextBlock Text="Server Type" FontSize="11" Foreground="Gray"/>
+                            <TextBlock Text="{Binding SelectedProfile.Name}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,10">
+                            <TextBlock Text="Available Classes" FontSize="11" Foreground="Gray"/>
+                            <TextBlock Text="{Binding SelectedProfile.ClassCount}" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                            <TextBlock Text="Enabled Features" FontSize="11" Foreground="Gray" Margin="0,0,0,5"/>
+                            <WrapPanel>
+                                <Border Background="#E8F5E9" CornerRadius="3" Padding="8,4" Margin="0,0,5,5"
+                                        IsVisible="{Binding SelectedProfile.HasMasterLevels}">
+                                    <TextBlock Text="Master Levels" FontSize="11" Foreground="#4CAF50"/>
+                                </Border>
+                                <Border Background="#E8F5E9" CornerRadius="3" Padding="8,4" Margin="0,0,5,5"
+                                        IsVisible="{Binding SelectedProfile.HasArtifacts}">
+                                    <TextBlock Text="Artifacts" FontSize="11" Foreground="#4CAF50"/>
+                                </Border>
+                                <Border Background="#E8F5E9" CornerRadius="3" Padding="8,4" Margin="0,0,5,5"
+                                        IsVisible="{Binding SelectedProfile.HasChampionLevels}">
+                                    <TextBlock Text="Champion Levels" FontSize="11" Foreground="#4CAF50"/>
+                                </Border>
+                                <Border Background="#E8F5E9" CornerRadius="3" Padding="8,4" Margin="0,0,5,5"
+                                        IsVisible="{Binding SelectedProfile.HasMaulers}">
+                                    <TextBlock Text="Mauler Class" FontSize="11" Foreground="#4CAF50"/>
+                                </Border>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <Button Content="Apply This Profile"
+                            Command="{Binding ApplyProfileCommand}"
+                            HorizontalAlignment="Left"
+                            Padding="15,8"
+                            IsVisible="{Binding HasChanges}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Info Box -->
+            <Border Background="#FFF3E0" CornerRadius="5" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Note" FontWeight="SemiBold" Foreground="#E65100"/>
+                    <TextBlock TextWrapping="Wrap" Foreground="#795548" FontSize="12">
+                        Changing the server profile affects which classes appear in dropdowns and which abilities are recognized during log parsing. Choose the profile that matches your server's expansion level.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

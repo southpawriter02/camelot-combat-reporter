@@ -53,15 +53,19 @@ public record ResistEvent(
 ) : LogEvent(Timestamp);
 
 /// <summary>
-/// Represents a crowd control event (stun, mez, root, etc.).
+/// Represents a crowd control event (stun, mez, root, snare, silence, disarm).
 /// </summary>
 /// <param name="Timestamp">The time the event occurred.</param>
 /// <param name="Target">The target of the crowd control effect.</param>
-/// <param name="EffectType">The type of effect (e.g., "stun", "mez", "root").</param>
+/// <param name="EffectType">The type of effect (e.g., "stun", "mez", "root", "snare", "silence", "disarm").</param>
 /// <param name="IsApplied">True if the effect was applied, false if it wore off/was removed.</param>
+/// <param name="Source">The source that applied the effect, if known.</param>
+/// <param name="Duration">The duration of the effect in seconds, if known from the log message.</param>
 public record CrowdControlEvent(
     TimeOnly Timestamp,
     string Target,
     string EffectType,
-    bool IsApplied
+    bool IsApplied,
+    string? Source = null,
+    int? Duration = null
 ) : LogEvent(Timestamp);

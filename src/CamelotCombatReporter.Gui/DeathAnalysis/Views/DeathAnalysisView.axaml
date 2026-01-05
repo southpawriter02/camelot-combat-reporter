@@ -1,0 +1,291 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.DeathAnalysis.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="CamelotCombatReporter.Gui.DeathAnalysis.Views.DeathAnalysisView"
+             x:DataType="vm:DeathAnalysisViewModel">
+
+    <Design.DataContext>
+        <vm:DeathAnalysisViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Death Analysis"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <Button Content="Analyze Log File"
+                            Command="{Binding AnalyzeFromFileCommand}"
+                            CommandParameter="{Binding $parent[Window]}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Statistics Summary (visible when data is loaded) -->
+            <Border BorderBrush="#F44336"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Death Statistics"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#F44336"/>
+                    <Grid ColumnDefinitions="*,*,*,*,*,*">
+                        <StackPanel>
+                            <TextBlock Text="Total Deaths" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalDeaths}"
+                                       FontSize="20"
+                                       FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Avg Time to Death" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding AverageTTD}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#FF9800"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Top Killer" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TopKiller}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#9C27B0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3">
+                            <TextBlock Text="Most Common" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding MostCommonCategory}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="CC Deaths" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding CcDeathPercent}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#E91E63"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="5">
+                            <TextBlock Text="Avg Damage" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding AverageDamage}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Main Content: Death List and Details -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,*" MinHeight="400" IsVisible="{Binding HasData}">
+                <!-- Filter -->
+                <Border Grid.Column="0" Grid.Row="0"
+                        BorderBrush="#607D8B"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,7,10">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Filter by Category" FontWeight="Bold" Foreground="#607D8B"/>
+                        <ComboBox ItemsSource="{Binding CategoryOptions}"
+                                  SelectedItem="{Binding SelectedCategory}"
+                                  HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Category Distribution Chart -->
+                <Border Grid.Column="1" Grid.Row="0"
+                        BorderBrush="#4CAF50"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="7,0,0,10">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Deaths by Category" FontWeight="Bold" Foreground="#4CAF50"/>
+                        <lvc:PieChart Series="{Binding CategoryDistributionSeries}"
+                                      Height="120"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Death List -->
+                <Border Grid.Column="0" Grid.Row="1"
+                        BorderBrush="#F44336"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Death Events" FontWeight="Bold" Foreground="#F44336"/>
+                        <DataGrid ItemsSource="{Binding Deaths}"
+                                  SelectedItem="{Binding SelectedDeath}"
+                                  Height="300"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Time" Binding="{Binding Timestamp}" Width="80"/>
+                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="100"/>
+                                <DataGridTextColumn Header="TTD" Binding="{Binding TimeToDeath}" Width="60"/>
+                                <DataGridTextColumn Header="Damage" Binding="{Binding TotalDamage}" Width="70"/>
+                                <DataGridTextColumn Header="Killer" Binding="{Binding KillerName}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Selected Death Details -->
+                <Border Grid.Column="1" Grid.Row="1"
+                        BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Death Details" FontWeight="Bold" Foreground="#FF9800"/>
+
+                        <!-- No selection message -->
+                        <TextBlock Text="Select a death event to view details"
+                                   Foreground="Gray"
+                                   FontStyle="Italic"
+                                   IsVisible="{Binding SelectedDeath, Converter={x:Static ObjectConverters.IsNull}}"/>
+
+                        <!-- Death details when selected -->
+                        <StackPanel Spacing="10" IsVisible="{Binding SelectedDeath, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <!-- Summary -->
+                            <Border Background="#FFF3E0" CornerRadius="5" Padding="10">
+                                <StackPanel Spacing="5">
+                                    <TextBlock FontWeight="Bold">
+                                        <Run Text="Killed by: "/>
+                                        <Run Text="{Binding SelectedDeath.KillerName}" Foreground="#F44336"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Category: " Foreground="Gray"/>
+                                        <Run Text="{Binding SelectedDeath.Category}"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Time to Death: " Foreground="Gray"/>
+                                        <Run Text="{Binding SelectedDeath.TimeToDeath}"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Total Damage: " Foreground="Gray"/>
+                                        <Run Text="{Binding SelectedDeath.TotalDamage}" FontWeight="Bold"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Attackers: " Foreground="Gray"/>
+                                        <Run Text="{Binding SelectedDeath.AttackerCount}"/>
+                                    </TextBlock>
+                                    <TextBlock IsVisible="{Binding SelectedDeath.WasUnderCC}">
+                                        <Run Text="⚠ " Foreground="#E91E63"/>
+                                        <Run Text="Under CC when killed" Foreground="#E91E63" FontWeight="SemiBold"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Damage Timeline Chart -->
+                            <TextBlock Text="Damage Timeline (seconds before death)"
+                                       FontWeight="SemiBold"
+                                       Foreground="#FF9800"/>
+                            <lvc:CartesianChart Series="{Binding DamageTimelineSeries}"
+                                                XAxes="{Binding DamageTimelineXAxes}"
+                                                Height="150"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Recommendations -->
+            <Border BorderBrush="#2196F3"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding SelectedDeath, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Recommendations"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#2196F3"/>
+                    <ItemsControl ItemsSource="{Binding Recommendations}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:RecommendationViewModel">
+                                <Border Margin="0,5"
+                                        CornerRadius="5"
+                                        Padding="10"
+                                        BorderThickness="2"
+                                        BorderBrush="{Binding PriorityColor}">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <Border Background="{Binding PriorityColor}"
+                                                    CornerRadius="3"
+                                                    Padding="5,2">
+                                                <TextBlock Text="{Binding Priority}"
+                                                           FontSize="10"
+                                                           Foreground="White"
+                                                           FontWeight="Bold"/>
+                                            </Border>
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontWeight="Bold"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Description}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,5,0,0"
+                                                   Foreground="Gray"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Instructions (when no data) -->
+            <Border BorderBrush="#FFC107"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding !HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Getting Started with Death Analysis"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#FFC107"/>
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">How to use:</Run>
+                        <LineBreak/>
+                        1. Click "Analyze Log File" to select a DAoC combat log file
+                        <LineBreak/>
+                        2. The system will identify all death events where you died
+                        <LineBreak/>
+                        3. Each death is analyzed for the 15 seconds preceding it
+                        <LineBreak/>
+                        4. Deaths are categorized as Burst, Attrition, or Execution
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Death Categories:</Run>
+                        <LineBreak/>
+                        • Burst (TTD &lt; 3s): Alpha strike, coordinated attack, or CC chain
+                        <LineBreak/>
+                        • Attrition (TTD > 10s): Healing deficit, resource exhaustion, or positional
+                        <LineBreak/>
+                        • Execution: Finished while low health or from DoT damage
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Recommendations:</Run>
+                        <LineBreak/>
+                        Select a death to see personalized recommendations for survival.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

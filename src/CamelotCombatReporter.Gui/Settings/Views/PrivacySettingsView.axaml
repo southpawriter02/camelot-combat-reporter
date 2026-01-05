@@ -1,0 +1,163 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.Settings.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="450"
+             x:Class="CamelotCombatReporter.Gui.Settings.Views.PrivacySettingsView"
+             x:DataType="vm:PrivacySettingsViewModel">
+
+    <Design.DataContext>
+        <vm:PrivacySettingsViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <StackPanel>
+                <TextBlock Text="Privacy Settings"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#E91E63"/>
+                <TextBlock Text="Configure privacy options for log exports and data sharing."
+                           TextWrapping="Wrap"
+                           Foreground="Gray"
+                           FontSize="12"
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <!-- Enable Toggle -->
+            <Border Background="#FCE4EC" CornerRadius="5" Padding="15">
+                <Grid ColumnDefinitions="*,Auto,Auto">
+                    <StackPanel Orientation="Horizontal" Spacing="15">
+                        <ToggleSwitch IsChecked="{Binding IsEnabled}"
+                                      OnContent="Enabled"
+                                      OffContent="Disabled"/>
+                        <TextBlock Text="Privacy mode"
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <Button Grid.Column="1"
+                            Content="Max Privacy"
+                            Command="{Binding EnableMaxPrivacyCommand}"
+                            Padding="10,5"/>
+                    <Button Grid.Column="2"
+                            Content="Disable All"
+                            Command="{Binding DisableAllCommand}"
+                            Margin="10,0,0,0"
+                            Padding="10,5"/>
+                </Grid>
+            </Border>
+
+            <!-- Player Identity -->
+            <Border BorderBrush="#E91E63"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Player Identity Protection" FontWeight="Bold" Foreground="#E91E63"/>
+
+                    <StackPanel Spacing="10">
+                        <CheckBox IsChecked="{Binding AnonymizePlayerNames}">
+                            <StackPanel>
+                                <TextBlock Text="Anonymize Player Names" FontWeight="SemiBold"/>
+                                <TextBlock Text="Replace player names with Player1, Player2, etc."
+                                           FontSize="11"
+                                           Foreground="Gray"/>
+                            </StackPanel>
+                        </CheckBox>
+
+                        <CheckBox IsChecked="{Binding AnonymizeGuildNames}">
+                            <StackPanel>
+                                <TextBlock Text="Anonymize Guild Names" FontWeight="SemiBold"/>
+                                <TextBlock Text="Replace guild names with Guild1, Guild2, etc."
+                                           FontSize="11"
+                                           Foreground="Gray"/>
+                            </StackPanel>
+                        </CheckBox>
+
+                        <CheckBox IsChecked="{Binding HashIdentifiers}">
+                            <StackPanel>
+                                <TextBlock Text="Use Hash-Based Identifiers" FontWeight="SemiBold"/>
+                                <TextBlock Text="Use consistent hashes instead of sequential numbers (allows correlation across exports)"
+                                           FontSize="11"
+                                           Foreground="Gray"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </CheckBox>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Message Privacy -->
+            <Border BorderBrush="#9C27B0"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Message Privacy" FontWeight="Bold" Foreground="#9C27B0"/>
+
+                    <StackPanel Spacing="10">
+                        <CheckBox IsChecked="{Binding StripPrivateMessages}">
+                            <StackPanel>
+                                <TextBlock Text="Strip Private Messages" FontWeight="SemiBold"/>
+                                <TextBlock Text="Remove all /send and /reply messages from exports"
+                                           FontSize="11"
+                                           Foreground="Gray"/>
+                            </StackPanel>
+                        </CheckBox>
+
+                        <CheckBox IsChecked="{Binding RemoveLocationInfo}">
+                            <StackPanel>
+                                <TextBlock Text="Remove Location Information" FontWeight="SemiBold"/>
+                                <TextBlock Text="Strip zone names and coordinates from exports"
+                                           FontSize="11"
+                                           Foreground="Gray"/>
+                            </StackPanel>
+                        </CheckBox>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Privacy Level Indicator -->
+            <Border Background="#E8F5E9" CornerRadius="5" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Current Privacy Level" FontWeight="SemiBold" Foreground="#2E7D32"/>
+                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+                        <Border Background="#4CAF50" CornerRadius="3" Padding="10,5"
+                                IsVisible="{Binding AnonymizePlayerNames}">
+                            <TextBlock Text="Names Hidden" Foreground="White" FontSize="11"/>
+                        </Border>
+                        <Border Background="#4CAF50" CornerRadius="3" Padding="10,5"
+                                IsVisible="{Binding StripPrivateMessages}">
+                            <TextBlock Text="PMs Stripped" Foreground="White" FontSize="11"/>
+                        </Border>
+                        <Border Background="#4CAF50" CornerRadius="3" Padding="10,5"
+                                IsVisible="{Binding AnonymizeGuildNames}">
+                            <TextBlock Text="Guilds Hidden" Foreground="White" FontSize="11"/>
+                        </Border>
+                        <Border Background="#4CAF50" CornerRadius="3" Padding="10,5"
+                                IsVisible="{Binding RemoveLocationInfo}">
+                            <TextBlock Text="Location Hidden" Foreground="White" FontSize="11"/>
+                        </Border>
+                        <TextBlock Text="(No privacy options enabled)"
+                                   Foreground="Gray"
+                                   FontStyle="Italic"
+                                   VerticalAlignment="Center"
+                                   IsVisible="{Binding !IsEnabled}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Warning Box -->
+            <Border Background="#FFF3E0" CornerRadius="5" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Important" FontWeight="SemiBold" Foreground="#E65100"/>
+                    <TextBlock TextWrapping="Wrap" Foreground="#795548" FontSize="12">
+                        Privacy settings only affect exported data. Your original log files are never modified. When sharing exports with others, enable appropriate privacy settings to protect player identities.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -6,6 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:crossrealm="using:CamelotCombatReporter.Gui.CrossRealm.Views"
         xmlns:loottracking="using:CamelotCombatReporter.Gui.LootTracking.Views"
+        xmlns:deathanalysis="using:CamelotCombatReporter.Gui.DeathAnalysis.Views"
+        xmlns:ccanalysis="using:CamelotCombatReporter.Gui.CrowdControlAnalysis.Views"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
         x:Class="CamelotCombatReporter.Gui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -40,6 +42,8 @@
             </MenuItem>
             <MenuItem Header="_Tools">
                 <MenuItem Header="_Plugin Manager..." Command="{Binding ShowPluginManagerCommand}" InputGesture="Ctrl+P"/>
+                <Separator/>
+                <MenuItem Header="_Settings..." Click="OnSettingsClick"/>
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_About" Click="OnAboutClick"/>
@@ -650,6 +654,16 @@
         <!-- Loot Tracking Tab -->
         <TabItem Header="Loot Tracking">
             <loottracking:LootTrackingView x:Name="LootTrackingView"/>
+        </TabItem>
+
+        <!-- Death Analysis Tab -->
+        <TabItem Header="Death Analysis">
+            <deathanalysis:DeathAnalysisView x:Name="DeathAnalysisView"/>
+        </TabItem>
+
+        <!-- CC Analysis Tab -->
+        <TabItem Header="CC Analysis">
+            <ccanalysis:CCAnalysisView x:Name="CCAnalysisView"/>
         </TabItem>
     </TabControl>
     </DockPanel>

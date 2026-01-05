@@ -1,0 +1,64 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:CamelotCombatReporter.Gui.Settings.ViewModels"
+        xmlns:views="using:CamelotCombatReporter.Gui.Settings.Views"
+        mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="600"
+        x:Class="CamelotCombatReporter.Gui.Settings.Views.SettingsWindow"
+        x:DataType="vm:SettingsWindowViewModel"
+        Title="Settings"
+        Width="700"
+        Height="600"
+        WindowStartupLocation="CenterOwner">
+
+    <Design.DataContext>
+        <vm:SettingsWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*,Auto">
+        <!-- Tab Control -->
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}" Margin="10">
+            <!-- Server Profile Tab -->
+            <TabItem Header="Server Profile">
+                <views:ServerProfileSettingsView DataContext="{Binding ServerProfileSettings}"/>
+            </TabItem>
+
+            <!-- Chat Filtering Tab -->
+            <TabItem Header="Chat Filtering">
+                <views:ChatFilterSettingsView DataContext="{Binding ChatFilterSettings}"/>
+            </TabItem>
+
+            <!-- Privacy Tab -->
+            <TabItem Header="Privacy">
+                <views:PrivacySettingsView DataContext="{Binding PrivacySettings}"/>
+            </TabItem>
+        </TabControl>
+
+        <!-- Bottom Buttons -->
+        <Border Grid.Row="1"
+                BorderBrush="#CCCCCC"
+                BorderThickness="0,1,0,0"
+                Padding="15">
+            <Grid ColumnDefinitions="Auto,*,Auto,10,Auto">
+                <Button Content="Reset to Defaults"
+                        Command="{Binding ResetToDefaultsCommand}"
+                        Padding="15,8"/>
+
+                <Button Grid.Column="2"
+                        Content="Cancel"
+                        Padding="20,8"
+                        Width="100"
+                        Click="OnCancelClick"/>
+
+                <Button Grid.Column="4"
+                        Content="Save"
+                        Command="{Binding SaveAllCommand}"
+                        Padding="20,8"
+                        Width="100"
+                        Classes="accent"
+                        Click="OnSaveClick"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

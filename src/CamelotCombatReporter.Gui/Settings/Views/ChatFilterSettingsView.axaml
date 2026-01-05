@@ -1,0 +1,158 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.Settings.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="550"
+             x:Class="CamelotCombatReporter.Gui.Settings.Views.ChatFilterSettingsView"
+             x:DataType="vm:ChatFilterSettingsViewModel">
+
+    <Design.DataContext>
+        <vm:ChatFilterSettingsViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <StackPanel>
+                <TextBlock Text="Chat Filtering Configuration"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#9C27B0"/>
+                <TextBlock Text="Configure which chat channels to include in log parsing and analysis."
+                           TextWrapping="Wrap"
+                           Foreground="Gray"
+                           FontSize="12"
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <!-- Enable Toggle -->
+            <Border Background="#F3E5F5" CornerRadius="5" Padding="15">
+                <StackPanel Orientation="Horizontal" Spacing="15">
+                    <ToggleSwitch IsChecked="{Binding IsEnabled}"
+                                  OnContent="Enabled"
+                                  OffContent="Disabled"/>
+                    <TextBlock Text="Chat filtering is currently"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding IsEnabled, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Preset Selection -->
+            <Border BorderBrush="#607D8B"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Filter Preset" FontWeight="Bold" Foreground="#607D8B"/>
+                    <Grid ColumnDefinitions="*,Auto,Auto">
+                        <ComboBox ItemsSource="{Binding PresetOptions}"
+                                  SelectedItem="{Binding SelectedPreset}"
+                                  HorizontalAlignment="Stretch"/>
+                        <Button Grid.Column="1"
+                                Content="Enable All"
+                                Command="{Binding EnableAllCommand}"
+                                Margin="10,0,0,0"
+                                Padding="10,5"/>
+                        <Button Grid.Column="2"
+                                Content="Disable All"
+                                Command="{Binding DisableAllCommand}"
+                                Margin="10,0,0,0"
+                                Padding="10,5"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Channel Settings -->
+            <Border BorderBrush="#9C27B0"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Channel Settings" FontWeight="Bold" Foreground="#9C27B0"/>
+                    <DataGrid ItemsSource="{Binding ChannelSettings}"
+                              Height="180"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="False"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="#CCCCCC">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Channel" Binding="{Binding Name}" Width="100" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" IsReadOnly="True"/>
+                            <DataGridCheckBoxColumn Header="Enabled" Binding="{Binding IsEnabled}" Width="70"/>
+                            <DataGridCheckBoxColumn Header="Keep in Combat" Binding="{Binding KeepDuringCombat}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Whitelist Settings -->
+            <Grid ColumnDefinitions="*,*">
+                <!-- Keyword Whitelist -->
+                <Border BorderBrush="#4CAF50"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Keyword Whitelist" FontWeight="Bold" Foreground="#4CAF50"/>
+                        <TextBlock Text="Always keep messages containing these words (one per line)"
+                                   FontSize="11"
+                                   Foreground="Gray"/>
+                        <TextBox Text="{Binding KeywordWhitelist}"
+                                 AcceptsReturn="True"
+                                 Height="80"
+                                 Watermark="Enter keywords..."/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Sender Whitelist -->
+                <Border Grid.Column="1"
+                        BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Sender Whitelist" FontWeight="Bold" Foreground="#FF9800"/>
+                        <TextBlock Text="Always keep messages from these players (one per line)"
+                                   FontSize="11"
+                                   Foreground="Gray"/>
+                        <TextBox Text="{Binding SenderWhitelist}"
+                                 AcceptsReturn="True"
+                                 Height="80"
+                                 Watermark="Enter player names..."/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Combat Context -->
+            <Border BorderBrush="#2196F3"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Combat Context Window" FontWeight="Bold" Foreground="#2196F3"/>
+                    <StackPanel Orientation="Horizontal" Spacing="15">
+                        <TextBlock Text="Keep tactical messages within"
+                                   VerticalAlignment="Center"/>
+                        <NumericUpDown Value="{Binding CombatContextWindow}"
+                                       Minimum="1"
+                                       Maximum="60"
+                                       Increment="1"
+                                       Width="80"/>
+                        <TextBlock Text="seconds of combat events"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Text="Messages marked 'Keep in Combat' will be preserved if they occur within this window of any combat event."
+                               FontSize="11"
+                               Foreground="Gray"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

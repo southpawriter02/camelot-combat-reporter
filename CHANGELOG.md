@@ -11,6 +11,82 @@ No unreleased changes.
 
 ---
 
+## [1.1.0] - 2025-01-05
+
+### Added
+- **Death Analysis System**
+  - Pre-death damage reconstruction with configurable 15-second analysis window
+  - Death categorization into 9 types: Burst (Alpha Strike, Coordinated, CC Chain), Attrition (Healing Deficit, Resource Exhaustion, Positional), Execution (Low Health, DoT), Environmental
+  - Killing blow identification with attacker class detection
+  - Time-to-death (TTD) calculation from first damage to death
+  - Per-death recommendations based on death category and circumstances
+  - Damage timeline visualization showing DPS per second before death
+  - Death statistics: total deaths, average TTD, top killer class, CC death percentage
+  - New "Death Analysis" tab in main window
+
+- **Crowd Control Analysis**
+  - Full CC tracking with Diminishing Returns (DR) system
+  - DR levels: Full (100%) → Reduced (50%) → Minimal (25%) → Immune (0%)
+  - 60-second DR decay timer per target per CC type
+  - CC chain detection with configurable gap threshold
+  - Support for mez, root, snare, stun, silence, and disarm effects
+  - CC timeline visualization with DR level color coding
+  - CC statistics: total applications, chain count, average chain length
+  - New "CC Analysis" tab in main window
+
+- **Server Profile System**
+  - Era-based server profiles: Classic, Shrouded Isles, Trials of Atlantis, New Frontiers, Live, Custom
+  - Per-profile class availability and feature flags (Master Levels, Artifacts, Champion Levels, Maulers)
+  - Built-in profiles with appropriate era settings
+  - Custom profile creation with manual class/feature selection
+  - Profile persistence to JSON configuration
+  - Settings view for server profile management
+
+- **Chat Filtering System**
+  - Pre-parse filtering with 16 chat message types (Say, Yell, Group, Guild, Alliance, Broadcast, Send, Tell, Region, Trade, Emote, NpcDialog, Combat, LFG, Advice, System)
+  - Filter presets: All Messages, Combat Only, Tactical, Custom
+  - Per-channel enable/disable with "keep during combat" option
+  - Keyword whitelist for always-keep messages
+  - Sender whitelist for important players
+  - Combat context window (configurable seconds around combat)
+  - Privacy mode with player name anonymization
+  - Settings view for chat filter configuration
+
+- **Settings Window**
+  - Unified settings interface with tabbed navigation
+  - Server Profiles tab for era selection
+  - Chat Filtering tab with preset and channel configuration
+  - Privacy Settings tab for anonymization options
+
+- **Enhanced Log Parsing**
+  - Extended `CrowdControlEvent` with Source and Duration fields
+  - New CC parsing patterns for mez, root, snare, silence, and disarm effects
+  - Filter pipeline infrastructure for pre-parse filtering
+  - Filter context tracking for combat state awareness
+
+- **New Core Services**
+  - `IDeathAnalysisService` / `DeathAnalysisService` - Death analysis and categorization
+  - `ICCAnalysisService` / `CCAnalysisService` - CC tracking and chain detection
+  - `DRTracker` - Diminishing returns state management
+  - `ServerProfileService` - Server profile management
+  - `ChatFilter` - Chat message filtering with presets
+  - `FilterPipeline` - Composable filter chain
+  - `PrivacyAnonymizer` - Player name anonymization
+
+### Changed
+- MainWindow now includes Death Analysis, CC Analysis tabs
+- Menu bar includes Settings option for configuration access
+- About dialog updated to show version 1.1.0
+
+### Technical Details
+- 54 new files added across Core and GUI projects
+- New namespaces: `DeathAnalysis`, `CrowdControlAnalysis`, `ServerProfiles`, `ChatFiltering`, `Filtering`
+- Full MVVM implementation with CommunityToolkit.Mvvm source generators
+- LiveCharts2 integration for timeline and distribution charts
+- All existing tests continue to pass
+
+---
+
 ## [1.0.2] - 2025-01-03
 
 ### Fixed
@@ -222,6 +298,7 @@ The TypeScript implementation follows the same feature set as the C# version but
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| 1.1.0 | 2025-01-05 | Death Analysis, CC Analysis with DR tracking, Server Profiles, Chat Filtering |
 | 1.0.2 | 2025-01-03 | Log parsing fixes, new event types (crit, pet, death, CC) |
 | 1.0.1 | 2025-01-03 | Logging infrastructure, bug fixes, IDisposable |
 | 1.0.0 | 2025-01-02 | Full feature release: GUI, plugins, cross-realm, loot tracking |

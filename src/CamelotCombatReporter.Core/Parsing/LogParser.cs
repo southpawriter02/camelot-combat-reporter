@@ -111,14 +111,44 @@ public class LogParser
         @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) resists the effect!$",
         RegexOptions.Compiled);
 
-    // Stun applied: "The giant snowcrab is stunned!"
+    // Stun applied: "The giant snowcrab is stunned!" or "The troll is stunned for 9 seconds!"
     private static readonly Regex StunAppliedPattern = new(
-        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) is stunned!$",
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) is stunned(?:\s+for\s+(?<duration>\d+)\s+seconds?)?!$",
         RegexOptions.Compiled);
 
     // Stun recovered: "The giant snowcrab recovers from the stun."
     private static readonly Regex StunRecoveredPattern = new(
         @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) recovers from the stun\.$",
+        RegexOptions.Compiled);
+
+    // Mez applied: "The goblin is mesmerized!" or "The goblin is mesmerized for 60 seconds!"
+    private static readonly Regex MezAppliedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) is mesmerized(?:\s+for\s+(?<duration>\d+)\s+seconds?)?!$",
+        RegexOptions.Compiled);
+
+    // Mez recovered: "The goblin is no longer mesmerized."
+    private static readonly Regex MezRecoveredPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) is no longer mesmerized\.$",
+        RegexOptions.Compiled);
+
+    // Root applied: "The troll is rooted!" or "The troll is rooted for 15 seconds!"
+    private static readonly Regex RootAppliedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) is rooted(?:\s+for\s+(?<duration>\d+)\s+seconds?)?!$",
+        RegexOptions.Compiled);
+
+    // Root recovered: "The troll is no longer rooted."
+    private static readonly Regex RootRecoveredPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) is no longer rooted\.$",
+        RegexOptions.Compiled);
+
+    // Snare applied: "The goblin is snared!" or "The goblin is snared for 30 seconds!"
+    private static readonly Regex SnareAppliedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) is snared(?:\s+for\s+(?<duration>\d+)\s+seconds?)?!$",
+        RegexOptions.Compiled);
+
+    // Snare recovered: "The goblin is no longer snared."
+    private static readonly Regex SnareRecoveredPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:The )?(?<target>.+?) is no longer snared\.$",
         RegexOptions.Compiled);
 
     // Regex to capture combat styles used by the player.
@@ -495,12 +525,14 @@ public class LogParser
                 var groups = stunAppliedMatch.Groups;
                 var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
                 var target = groups["target"].Value.Trim();
+                int? duration = groups["duration"].Success ? int.Parse(groups["duration"].Value) : null;
 
                 var evt = new CrowdControlEvent(
                     Timestamp: timestamp,
                     Target: target,
                     EffectType: "stun",
-                    IsApplied: true
+                    IsApplied: true,
+                    Duration: duration
                 );
                 AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
                 yield return evt;
@@ -519,6 +551,126 @@ public class LogParser
                     Timestamp: timestamp,
                     Target: target,
                     EffectType: "stun",
+                    IsApplied: false
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Mez applied pattern
+            var mezAppliedMatch = MezAppliedPattern.Match(line);
+            if (mezAppliedMatch.Success)
+            {
+                var groups = mezAppliedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+                int? duration = groups["duration"].Success ? int.Parse(groups["duration"].Value) : null;
+
+                var evt = new CrowdControlEvent(
+                    Timestamp: timestamp,
+                    Target: target,
+                    EffectType: "mez",
+                    IsApplied: true,
+                    Duration: duration
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Mez recovered pattern
+            var mezRecoveredMatch = MezRecoveredPattern.Match(line);
+            if (mezRecoveredMatch.Success)
+            {
+                var groups = mezRecoveredMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+
+                var evt = new CrowdControlEvent(
+                    Timestamp: timestamp,
+                    Target: target,
+                    EffectType: "mez",
+                    IsApplied: false
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Root applied pattern
+            var rootAppliedMatch = RootAppliedPattern.Match(line);
+            if (rootAppliedMatch.Success)
+            {
+                var groups = rootAppliedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+                int? duration = groups["duration"].Success ? int.Parse(groups["duration"].Value) : null;
+
+                var evt = new CrowdControlEvent(
+                    Timestamp: timestamp,
+                    Target: target,
+                    EffectType: "root",
+                    IsApplied: true,
+                    Duration: duration
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Root recovered pattern
+            var rootRecoveredMatch = RootRecoveredPattern.Match(line);
+            if (rootRecoveredMatch.Success)
+            {
+                var groups = rootRecoveredMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+
+                var evt = new CrowdControlEvent(
+                    Timestamp: timestamp,
+                    Target: target,
+                    EffectType: "root",
+                    IsApplied: false
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Snare applied pattern
+            var snareAppliedMatch = SnareAppliedPattern.Match(line);
+            if (snareAppliedMatch.Success)
+            {
+                var groups = snareAppliedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+                int? duration = groups["duration"].Success ? int.Parse(groups["duration"].Value) : null;
+
+                var evt = new CrowdControlEvent(
+                    Timestamp: timestamp,
+                    Target: target,
+                    EffectType: "snare",
+                    IsApplied: true,
+                    Duration: duration
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Snare recovered pattern
+            var snareRecoveredMatch = SnareRecoveredPattern.Match(line);
+            if (snareRecoveredMatch.Success)
+            {
+                var groups = snareRecoveredMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var target = groups["target"].Value.Trim();
+
+                var evt = new CrowdControlEvent(
+                    Timestamp: timestamp,
+                    Target: target,
+                    EffectType: "snare",
                     IsApplied: false
                 );
                 AddToRecentEvents(recentEvents, evt, MaxRecentEvents);

@@ -1,0 +1,357 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.CrowdControlAnalysis.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="800"
+             x:Class="CamelotCombatReporter.Gui.CrowdControlAnalysis.Views.CCAnalysisView"
+             x:DataType="vm:CCAnalysisViewModel">
+
+    <Design.DataContext>
+        <vm:CCAnalysisViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Crowd Control Analysis"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <Button Content="Analyze Log File"
+                            Command="{Binding AnalyzeFromFileCommand}"
+                            CommandParameter="{Binding $parent[Window]}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Statistics Summary -->
+            <Border BorderBrush="#9C27B0"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="CC Statistics"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#9C27B0"/>
+                    <Grid ColumnDefinitions="*,*,*,*,*,*,*">
+                        <StackPanel>
+                            <TextBlock Text="Applied" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalCcApplied}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#4CAF50"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Resisted" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalCcResisted}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Uptime" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding CcUptime}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3">
+                            <TextBlock Text="Avg Duration" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding AverageDuration}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#FF9800"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="DR Efficiency" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding DrEfficiency}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#FFEB3B"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="5">
+                            <TextBlock Text="Kills in CC" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding KillsWithinCc}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#E91E63"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="6">
+                            <TextBlock Text="Dmg in CC" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="{Binding TotalDamageDuringCc}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Charts Row -->
+            <Grid ColumnDefinitions="*,*" IsVisible="{Binding HasData}">
+                <!-- CC Type Distribution -->
+                <Border BorderBrush="#607D8B"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="CC by Type"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#607D8B"/>
+                        <lvc:PieChart Series="{Binding CcTypeSeries}"
+                                      Height="150"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- DR Level Distribution -->
+                <Border Grid.Column="1"
+                        BorderBrush="#607D8B"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="DR at Application"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#607D8B"/>
+                        <lvc:PieChart Series="{Binding DrLevelSeries}"
+                                      Height="150"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Border Width="12" Height="12" Background="#4CAF50" CornerRadius="2"/>
+                                <TextBlock Text="Full" FontSize="11"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Border Width="12" Height="12" Background="#FFEB3B" CornerRadius="2"/>
+                                <TextBlock Text="50%" FontSize="11"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Border Width="12" Height="12" Background="#FF9800" CornerRadius="2"/>
+                                <TextBlock Text="25%" FontSize="11"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Border Width="12" Height="12" Background="#F44336" CornerRadius="2"/>
+                                <TextBlock Text="Immune" FontSize="11"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Main Content: Timeline and Chains -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,*" MinHeight="400" IsVisible="{Binding HasData}">
+                <!-- Filters -->
+                <Border Grid.Column="0" Grid.Row="0"
+                        BorderBrush="#607D8B"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,7,10">
+                    <StackPanel Orientation="Horizontal" Spacing="15">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="CC Type" FontSize="11" Foreground="Gray"/>
+                            <ComboBox ItemsSource="{Binding CcTypeOptions}"
+                                      SelectedItem="{Binding SelectedCcType}"
+                                      Width="100"/>
+                        </StackPanel>
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Target" FontSize="11" Foreground="Gray"/>
+                            <ComboBox ItemsSource="{Binding TargetOptions}"
+                                      SelectedItem="{Binding SelectedTarget}"
+                                      Width="150"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Chain Summary Header -->
+                <Border Grid.Column="1" Grid.Row="0"
+                        BorderBrush="#E91E63"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="7,0,0,10"
+                        IsVisible="{Binding SelectedChain, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <StackPanel>
+                        <TextBlock FontWeight="Bold" Foreground="#E91E63">
+                            <Run Text="Chain on "/>
+                            <Run Text="{Binding SelectedChain.TargetName}"/>
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <TextBlock>
+                                <Run Text="Length: " Foreground="Gray"/>
+                                <Run Text="{Binding SelectedChain.ChainLength}" FontWeight="SemiBold"/>
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="Duration: " Foreground="Gray"/>
+                                <Run Text="{Binding SelectedChain.TotalDuration}" FontWeight="SemiBold"/>
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="Efficiency: " Foreground="Gray"/>
+                                <Run Text="{Binding SelectedChain.Efficiency}" FontWeight="SemiBold"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- CC Timeline -->
+                <Border Grid.Column="0" Grid.Row="1"
+                        BorderBrush="#9C27B0"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="CC Timeline" FontWeight="Bold" Foreground="#9C27B0"/>
+                        <DataGrid ItemsSource="{Binding TimelineEntries}"
+                                  SelectedItem="{Binding SelectedEntry}"
+                                  Height="300"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Time" Binding="{Binding Timestamp}" Width="70"/>
+                                <DataGridTextColumn Header="Type" Binding="{Binding CcType}" Width="60"/>
+                                <DataGridTextColumn Header="Target" Binding="{Binding TargetName}" Width="*"/>
+                                <DataGridTextColumn Header="Event" Binding="{Binding EventType}" Width="70"/>
+                                <DataGridTextColumn Header="DR" Binding="{Binding DrLevelDisplay}" Width="50"/>
+                                <DataGridTextColumn Header="Dur" Binding="{Binding Duration}" Width="50"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- CC Chains -->
+                <Border Grid.Column="1" Grid.Row="1"
+                        BorderBrush="#E91E63"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="CC Chains (2+ consecutive CCs)" FontWeight="Bold" Foreground="#E91E63"/>
+                        <DataGrid ItemsSource="{Binding Chains}"
+                                  SelectedItem="{Binding SelectedChain}"
+                                  Height="300"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="#CCCCCC"
+                                  SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Target" Binding="{Binding TargetName}" Width="*"/>
+                                <DataGridTextColumn Header="Start" Binding="{Binding StartTime}" Width="70"/>
+                                <DataGridTextColumn Header="Length" Binding="{Binding ChainLength}" Width="55"/>
+                                <DataGridTextColumn Header="Duration" Binding="{Binding TotalDuration}" Width="65"/>
+                                <DataGridTextColumn Header="Gaps" Binding="{Binding GapTime}" Width="50"/>
+                                <DataGridTextColumn Header="Eff." Binding="{Binding Efficiency}" Width="50"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- DR Legend -->
+            <Border BorderBrush="#4CAF50"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Diminishing Returns (DR) System"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#4CAF50"/>
+                    <Grid ColumnDefinitions="*,*,*,*">
+                        <Border Background="#E8F5E9" CornerRadius="5" Padding="10">
+                            <StackPanel>
+                                <TextBlock Text="Full (100%)" FontWeight="Bold" Foreground="#4CAF50"/>
+                                <TextBlock Text="First CC - full duration" FontSize="11" Foreground="Gray"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Background="#FFFDE7" CornerRadius="5" Padding="10" Margin="5,0">
+                            <StackPanel>
+                                <TextBlock Text="Reduced (50%)" FontWeight="Bold" Foreground="#F9A825"/>
+                                <TextBlock Text="Second CC - half duration" FontSize="11" Foreground="Gray"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="2" Background="#FFF3E0" CornerRadius="5" Padding="10" Margin="5,0">
+                            <StackPanel>
+                                <TextBlock Text="Minimal (25%)" FontWeight="Bold" Foreground="#FF9800"/>
+                                <TextBlock Text="Third CC - quarter duration" FontSize="11" Foreground="Gray"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="3" Background="#FFEBEE" CornerRadius="5" Padding="10">
+                            <StackPanel>
+                                <TextBlock Text="Immune (0%)" FontWeight="Bold" Foreground="#F44336"/>
+                                <TextBlock Text="Fourth+ CC - no effect" FontSize="11" Foreground="Gray"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <TextBlock Text="DR resets to Full after 60 seconds without receiving CC of that type."
+                               FontSize="11"
+                               Foreground="Gray"
+                               FontStyle="Italic"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Instructions (when no data) -->
+            <Border BorderBrush="#FFC107"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding !HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Getting Started with CC Analysis"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#FFC107"/>
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">How to use:</Run>
+                        <LineBreak/>
+                        1. Click "Analyze Log File" to select a DAoC combat log file
+                        <LineBreak/>
+                        2. The system will identify all crowd control events
+                        <LineBreak/>
+                        3. Diminishing Returns (DR) are calculated for each CC
+                        <LineBreak/>
+                        4. CC chains (consecutive CCs on same target) are detected
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">CC Types Tracked:</Run>
+                        <LineBreak/>
+                        • Mez (Mesmerize) - Target cannot act, breaks on damage
+                        <LineBreak/>
+                        • Stun - Target cannot act, doesn't break on damage
+                        <LineBreak/>
+                        • Root - Target cannot move
+                        <LineBreak/>
+                        • Snare - Target movement slowed
+                        <LineBreak/>
+                        • Silence - Target cannot cast spells
+                        <LineBreak/>
+                        • Disarm - Target cannot melee attack
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run FontWeight="SemiBold">Key Metrics:</Run>
+                        <LineBreak/>
+                        • DR Efficiency: % of CCs applied at full DR (higher = better timing)
+                        <LineBreak/>
+                        • Chain Efficiency: How well CC was maintained without gaps
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>
