@@ -148,38 +148,38 @@ Create distributable executables for all major platforms, including installers, 
 
 ## Implementation Phases
 
-### Phase 1: Basic Builds
-- [ ] Configure `dotnet publish` for self-contained builds
-- [ ] Create GitHub Actions workflow for Windows x64
-- [ ] Create GitHub Actions workflow for macOS (x64 + ARM64)
-- [ ] Create GitHub Actions workflow for Linux x64
-- [ ] Generate portable .zip archives
+### Phase 1: Basic Builds ✅ Complete (v1.0.0)
+- [x] Configure `dotnet publish` for self-contained builds
+- [x] Create GitHub Actions workflow for Windows x64
+- [x] Create GitHub Actions workflow for macOS (x64 + ARM64)
+- [x] Create GitHub Actions workflow for Linux x64
+- [x] Generate portable .zip archives
 
-### Phase 2: Windows Installers
-- [ ] Set up WiX Toolset project
-- [ ] Create MSI installer template
-- [ ] Add file associations
-- [ ] Obtain code signing certificate
-- [ ] Sign installer and executables
+### Phase 2: Windows Installers ✅ Complete (v1.6.0)
+- [x] Set up WiX Toolset v4 project
+- [x] Create MSI installer template with Product.wxs
+- [x] Add file associations (.combat, .log)
+- [x] Signing infrastructure ready (certificates optional)
+- [x] Sign installer and executables (when certificates available)
 
-### Phase 3: macOS Distribution
-- [ ] Create DMG with background and layout
-- [ ] Set up notarization workflow
-- [ ] Build universal binary (x64 + ARM64)
-- [ ] Submit to Homebrew Cask
+### Phase 3: macOS Distribution ✅ Complete (v1.6.0)
+- [x] Create DMG with background and layout
+- [x] Set up notarization workflow
+- [x] Build universal binary (x64 + ARM64)
+- [ ] Submit to Homebrew Cask (future)
 
-### Phase 4: Linux Packages
-- [ ] Create AppImage build script
-- [ ] Set up .deb packaging
-- [ ] Set up .rpm packaging
-- [ ] Create Snap package manifest
-- [ ] Create Flatpak manifest
+### Phase 4: Linux Packages ✅ Complete (v1.6.0)
+- [x] Create AppImage build script
+- [x] Set up .deb packaging
+- [x] Set up .rpm packaging
+- [ ] Create Snap package manifest (future)
+- [ ] Create Flatpak manifest (future)
 
-### Phase 5: Auto-Updates
-- [ ] Implement update check mechanism
-- [ ] Create update download/install flow
-- [ ] Set up release feed (JSON/XML)
-- [ ] Add update notification UI
+### Phase 5: Auto-Updates ✅ Complete (v1.6.0)
+- [x] Implement update check mechanism (IUpdateService)
+- [x] Create update download/install flow
+- [x] Set up release feed (JSON at releases/latest.json)
+- [x] Add update notification UI (UpdateDialog)
 
 ## Technical Notes
 
