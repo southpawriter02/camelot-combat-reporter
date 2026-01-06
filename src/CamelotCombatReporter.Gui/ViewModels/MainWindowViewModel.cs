@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CamelotCombatReporter.Core.Exporting;
+using CamelotCombatReporter.Core.InstanceTracking;
 using CamelotCombatReporter.Core.Logging;
 using CamelotCombatReporter.Core.Models;
 using CamelotCombatReporter.Core.Parsing;
@@ -36,6 +37,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _hasAnalyzedData = false;
+
+    [ObservableProperty]
+    private string _statusMessage = "";
+
+    [ObservableProperty]
+    private bool _hasStatusMessage = false;
 
     #endregion
 
@@ -288,6 +295,38 @@ public partial class MainWindowViewModel : ViewModelBase
 
     #endregion
 
+    #region Instance Tracking
+
+    [ObservableProperty]
+    private bool _showInstanceBreakdown = false;
+
+    [ObservableProperty]
+    private ObservableCollection<TargetTypeStatisticsViewModel> _targetStatistics = new();
+
+    [ObservableProperty]
+    private ObservableCollection<CombatEncounterViewModel> _allEncounters = new();
+
+    #endregion
+
+    #region Session Tracking
+
+    [ObservableProperty]
+    private ObservableCollection<CombatSessionViewModel> _combatSessions = new();
+
+    [ObservableProperty]
+    private ObservableCollection<string> _availableSessions = new() { "All Sessions" };
+
+    [ObservableProperty]
+    private string _selectedSession = "All Sessions";
+
+    [ObservableProperty]
+    private int _totalSessionCount = 0;
+
+    [ObservableProperty]
+    private string _sessionStatsSummary = "";
+
+    #endregion
+
     #region Private Fields
 
     private List<LogEvent>? _analyzedEvents;
@@ -295,6 +334,9 @@ public partial class MainWindowViewModel : ViewModelBase
     private CombatStatistics? _currentStatistics;
     private TimeOnly _firstEventTime;
     private TimeOnly _lastEventTime;
+    private readonly ICombatInstanceResolver _instanceResolver;
+    private readonly ICombatSessionResolver _sessionResolver;
+    private IReadOnlyList<CombatSession>? _resolvedSessions;
 
     private static readonly string PreferencesPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -306,6 +348,8 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel()
     {
         _logger = App.CreateLogger<MainWindowViewModel>();
+        _instanceResolver = new CombatInstanceResolver();
+        _sessionResolver = new CombatSessionResolver();
         LoadPreferences();
     }
 
@@ -365,9 +409,14 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
 
         _logger.LogAnalyzingFile(SelectedLogFile);
+        StatusMessage = "";
+        HasStatusMessage = false;
 
         try
         {
+            var fileName = Path.GetFileName(SelectedLogFile);
+            var noCombatEvents = false;
+
             await Task.Run(() =>
             {
                 var logParser = new LogParser(SelectedLogFile);
@@ -376,6 +425,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (events.Count == 0)
                 {
                     HasAnalyzedData = false;
+                    noCombatEvents = true;
                     return;
                 }
 
@@ -408,11 +458,20 @@ public partial class MainWindowViewModel : ViewModelBase
 
                 _logger.LogAnalysisCompleted(events.Count, LogDuration, DamagePerSecond);
             });
+
+            if (noCombatEvents)
+            {
+                StatusMessage = $"No combat events found in '{fileName}'. The log may contain only chat, spells, or other non-combat activity. Combat Reporter looks for damage, healing, loot, and death events.";
+                HasStatusMessage = true;
+                _logger.LogInformation("No combat events found in log file: {FilePath}", SelectedLogFile);
+            }
         }
         catch (Exception ex)
         {
             _logger.LogAnalysisError(SelectedLogFile, ex);
             HasAnalyzedData = false;
+            StatusMessage = $"Error analyzing log file: {ex.Message}";
+            HasStatusMessage = true;
         }
 
         SavePreferences();
@@ -702,6 +761,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
         // Generate quick stats summary
         GenerateQuickStatsSummary();
+
+        // Resolve combat instances for per-target tracking
+        ResolveInstanceTracking(filteredEvents);
+
+        // Resolve combat sessions
+        ResolveCombatSessions(filteredEvents);
 
         // Generate comparison if applicable
         if (IsComparisonMode && _comparisonEvents != null)
@@ -1085,6 +1150,46 @@ public partial class MainWindowViewModel : ViewModelBase
         QuickStatsSummary = string.Join(" | ", parts);
     }
 
+    private void ResolveInstanceTracking(List<LogEvent> filteredEvents)
+    {
+        var targetStats = _instanceResolver.ResolveInstances(filteredEvents, CombatantName);
+        var allEncounters = _instanceResolver.GetAllEncounters(filteredEvents, CombatantName);
+
+        // Map to view models
+        TargetStatistics = new ObservableCollection<TargetTypeStatisticsViewModel>(
+            targetStats.Select(ts => new TargetTypeStatisticsViewModel(ts)));
+
+        AllEncounters = new ObservableCollection<CombatEncounterViewModel>(
+            allEncounters.Select(e => new CombatEncounterViewModel(e)));
+    }
+
+    private void ResolveCombatSessions(List<LogEvent> filteredEvents)
+    {
+        _resolvedSessions = _sessionResolver.ResolveSessions(filteredEvents, CombatantName);
+        var stats = _sessionResolver.GetSessionStatistics(filteredEvents, CombatantName);
+
+        // Map to view models
+        CombatSessions = new ObservableCollection<CombatSessionViewModel>(
+            _resolvedSessions.Select(s => new CombatSessionViewModel(s)));
+
+        TotalSessionCount = _resolvedSessions.Count;
+
+        // Populate session filter dropdown
+        var sessionOptions = new List<string> { "All Sessions" };
+        sessionOptions.AddRange(_resolvedSessions.Select(s => $"Session {s.SessionNumber} ({s.StartTime:HH:mm:ss})"));
+        AvailableSessions = new ObservableCollection<string>(sessionOptions);
+
+        // Generate session stats summary
+        if (_resolvedSessions.Count > 0)
+        {
+            SessionStatsSummary = $"{stats.TotalSessions} sessions, {stats.TotalKills} kills, {stats.TotalDamageDealt:N0} total dmg, {stats.AverageDps:F1} avg DPS";
+        }
+        else
+        {
+            SessionStatsSummary = "No combat sessions detected";
+        }
+    }
+
     private void GenerateComparisonSummary()
     {
         if (_comparisonEvents == null || !_comparisonEvents.Any())
@@ -1201,6 +1306,124 @@ public class UserPreferences
     public string? ChartType { get; set; }
     public string? ChartInterval { get; set; }
     public string? LastLogFilePath { get; set; }
+}
+
+/// <summary>
+/// View model for target type statistics with expandable encounter list.
+/// </summary>
+public partial class TargetTypeStatisticsViewModel : ViewModelBase
+{
+    private readonly TargetTypeStatistics _model;
+
+    [ObservableProperty]
+    private bool _isExpanded = false;
+
+    public TargetTypeStatisticsViewModel(TargetTypeStatistics model)
+    {
+        _model = model;
+        Encounters = new ObservableCollection<CombatEncounterViewModel>(
+            model.Encounters.Select(e => new CombatEncounterViewModel(e)));
+    }
+
+    public string TargetName => _model.TargetName;
+    public int TotalKills => _model.TotalKills;
+    public int TotalEncounters => _model.TotalEncounters;
+    public int TotalDamageDealt => _model.TotalDamageDealt;
+    public int TotalDamageTaken => _model.TotalDamageTaken;
+    public string AverageDamagePerKill => _model.AverageDamagePerKill.ToString("F0");
+    public string AverageTimeToKill => _model.AverageTimeToKill.ToString("F1") + "s";
+    public string AverageDps => _model.AverageDps.ToString("F1");
+    public string FastestKill => _model.FastestKill?.ToString("F1") + "s" ?? "N/A";
+    public string HighestDps => _model.HighestDps?.ToString("F1") ?? "N/A";
+
+    public ObservableCollection<CombatEncounterViewModel> Encounters { get; }
+
+    public string Summary => $"{TotalKills} kills, {TotalDamageDealt:N0} dmg, {AverageDps} avg DPS";
+}
+
+/// <summary>
+/// View model for individual combat encounters.
+/// </summary>
+public class CombatEncounterViewModel
+{
+    private readonly CombatEncounter _model;
+
+    public CombatEncounterViewModel(CombatEncounter model)
+    {
+        _model = model;
+    }
+
+    public string DisplayName => _model.Instance.DisplayName;
+    public int InstanceNumber => _model.Instance.InstanceNumber;
+    public string StartTime => _model.StartTime.ToString("HH:mm:ss");
+    public string EndTime => _model.EndTime.ToString("HH:mm:ss");
+    public string Duration => _model.Duration.TotalSeconds.ToString("F1") + "s";
+    public int DamageDealt => _model.TotalDamageDealt;
+    public int DamageTaken => _model.TotalDamageTaken;
+    public int HealingDone => _model.TotalHealingDone;
+    public string Dps => _model.Dps.ToString("F1");
+    public string EndReason => _model.EndReason.ToString();
+    public bool WasKilled => _model.WasKilled;
+    public int EventCount => _model.Events.Count;
+
+    // For timeline markers - expose raw TimeOnly for chart integration
+    public TimeOnly EndTimeValue => _model.EndTime;
+}
+
+/// <summary>
+/// View model for combat sessions containing multiple encounters.
+/// </summary>
+public partial class CombatSessionViewModel : ViewModelBase
+{
+    private readonly CombatSession _model;
+
+    [ObservableProperty]
+    private bool _isExpanded = false;
+
+    public CombatSessionViewModel(CombatSession model)
+    {
+        _model = model;
+        Encounters = new ObservableCollection<CombatEncounterViewModel>(
+            model.Encounters.Select(e => new CombatEncounterViewModel(e)));
+    }
+
+    public int SessionNumber => _model.SessionNumber;
+    public string StartTime => _model.StartTime.ToString("HH:mm:ss");
+    public string EndTime => _model.EndTime.ToString("HH:mm:ss");
+    public string Duration => FormatDuration(_model.Duration);
+    public int TotalKills => _model.TotalKills;
+    public int TotalEncounters => _model.Encounters.Count;
+    public int TotalDamageDealt => _model.TotalDamageDealt;
+    public int TotalDamageTaken => _model.TotalDamageTaken;
+    public int TotalHealingDone => _model.TotalHealingDone;
+    public string Dps => _model.Dps.ToString("F1");
+    public int UniqueTargetCount => _model.UniqueTargetCount;
+    public string EndReason => FormatEndReason(_model.EndReason);
+    public int EventCount => _model.Events.Count;
+
+    public ObservableCollection<CombatEncounterViewModel> Encounters { get; }
+
+    public string Summary => $"{TotalKills} kills, {TotalDamageDealt:N0} dmg, {Dps} DPS";
+
+    public string DisplayName => $"Session {SessionNumber}";
+
+    private static string FormatDuration(TimeSpan duration)
+    {
+        if (duration.TotalMinutes >= 1)
+            return $"{duration.TotalMinutes:F1}m";
+        return $"{duration.TotalSeconds:F0}s";
+    }
+
+    private static string FormatEndReason(SessionEndReason reason) => reason switch
+    {
+        SessionEndReason.Timeout => "Timeout",
+        SessionEndReason.Rest => "Rested",
+        SessionEndReason.LogBoundary => "Log Closed",
+        SessionEndReason.CombatModeExit => "Combat Ended",
+        SessionEndReason.EndOfLog => "End of Log",
+        SessionEndReason.InProgress => "In Progress",
+        _ => reason.ToString()
+    };
 }
 
 #endregion

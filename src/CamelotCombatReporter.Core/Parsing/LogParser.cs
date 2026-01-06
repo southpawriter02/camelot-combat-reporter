@@ -240,6 +240,26 @@ public class LogParser
         @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You gain an additional\s+(?:(?<gold>\d+)\s+gold)?(?:,?\s*)?(?:(?<silver>\d+)\s+silver)?(?:\s+and\s+)?(?:(?<copper>\d+)\s+copper)?\s*pieces?\s+for adventuring in this area!$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+    // Combat mode enter: "[HH:mm:ss] You enter combat mode and target [the siabra mireguard]" or "You enter combat mode but have no target!"
+    private static readonly Regex CombatModeEnterPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You enter combat mode(?:\s+and target \[(?:the )?(?<target>.+?)\]|\s+but have no target)?[!.]?$",
+        RegexOptions.Compiled);
+
+    // Sit down: "[HH:mm:ss] You sit down.  Type '/stand' or move to stand up."
+    private static readonly Regex SitDownPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You sit down\.",
+        RegexOptions.Compiled);
+
+    // Stand up: "[HH:mm:ss] You stand up."
+    private static readonly Regex StandUpPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You stand up\.$",
+        RegexOptions.Compiled);
+
+    // Chat log boundary: "*** Chat Log Opened: Wed Dec 20 08:26:35 2017" or "*** Chat Log Closed: ..."
+    private static readonly Regex ChatLogBoundaryPattern = new(
+        @"^\*\*\*\s+Chat Log (?<action>Opened|Closed):\s+(?<datetime>.+)$",
+        RegexOptions.Compiled);
+
     public LogParser(string logFilePath)
     {
         _logFilePath = logFilePath;
@@ -1049,6 +1069,72 @@ public class LogParser
                 );
                 AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
                 yield return evt;
+                continue;
+            }
+
+            // Combat mode enter
+            var combatEnterMatch = CombatModeEnterPattern.Match(line);
+            if (combatEnterMatch.Success)
+            {
+                var groups = combatEnterMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                string? target = groups["target"].Success ? groups["target"].Value.Trim() : null;
+
+                var evt = new CombatModeEnterEvent(
+                    Timestamp: timestamp,
+                    TargetName: target
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Sit down (rest start)
+            var sitMatch = SitDownPattern.Match(line);
+            if (sitMatch.Success)
+            {
+                var groups = sitMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+
+                var evt = new RestStartEvent(Timestamp: timestamp);
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Stand up (rest end)
+            var standMatch = StandUpPattern.Match(line);
+            if (standMatch.Success)
+            {
+                var groups = standMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+
+                var evt = new RestEndEvent(Timestamp: timestamp);
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Chat log boundary (no timestamp in line, uses log datetime)
+            var logBoundaryMatch = ChatLogBoundaryPattern.Match(line);
+            if (logBoundaryMatch.Success)
+            {
+                var groups = logBoundaryMatch.Groups;
+                var isOpened = groups["action"].Value == "Opened";
+                var dateStr = groups["datetime"].Value.Trim();
+
+                // Parse datetime like "Wed Dec 20 08:26:35 2017"
+                if (DateTime.TryParse(dateStr, CultureInfo.InvariantCulture, DateTimeStyles.None, out var logDateTime))
+                {
+                    var timestamp = TimeOnly.FromDateTime(logDateTime);
+                    var evt = new ChatLogBoundaryEvent(
+                        Timestamp: timestamp,
+                        IsOpened: isOpened,
+                        LogDateTime: logDateTime
+                    );
+                    AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                    yield return evt;
+                }
                 continue;
             }
         }
