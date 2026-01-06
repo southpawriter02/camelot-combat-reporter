@@ -8,8 +8,21 @@
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
-  
+
     <Application.Styles>
         <FluentTheme />
+        <!-- Load custom control styles -->
+        <StyleInclude Source="avares://CamelotCombatReporter.Gui/Resources/Styles.axaml"/>
     </Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Load centralized color and brush resources -->
+                <ResourceInclude Source="avares://CamelotCombatReporter.Gui/Resources/Colors.axaml"/>
+                <ResourceInclude Source="avares://CamelotCombatReporter.Gui/Resources/Brushes.axaml"/>
+                <ResourceInclude Source="avares://CamelotCombatReporter.Gui/Resources/Icons.axaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

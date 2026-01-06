@@ -27,12 +27,20 @@
     </Design.DataContext>
 
     <Window.KeyBindings>
+        <!-- File Operations -->
         <KeyBinding Gesture="Ctrl+O" Command="{Binding SelectLogFileCommand}"/>
         <KeyBinding Gesture="Ctrl+E" Command="{Binding ExportCsvCommand}"/>
         <KeyBinding Gesture="Ctrl+Shift+E" Command="{Binding ExportJsonCommand}"/>
-        <KeyBinding Gesture="Ctrl+R" Command="{Binding ResetFiltersCommand}"/>
+
+        <!-- Analysis -->
         <KeyBinding Gesture="F5" Command="{Binding AnalyzeLogCommand}"/>
+        <KeyBinding Gesture="Ctrl+R" Command="{Binding ResetFiltersCommand}"/>
+
+        <!-- Tools -->
         <KeyBinding Gesture="Ctrl+P" Command="{Binding ShowPluginManagerCommand}"/>
+
+        <!-- Help -->
+        <KeyBinding Gesture="F1" Command="{Binding ShowKeyboardShortcutsCommand}"/>
     </Window.KeyBindings>
 
     <DockPanel>
@@ -52,6 +60,8 @@
                 <MenuItem Header="_Settings..." Click="OnSettingsClick"/>
             </MenuItem>
             <MenuItem Header="_Help">
+                <MenuItem Header="_Keyboard Shortcuts" Click="OnKeyboardShortcutsClick" InputGesture="F1"/>
+                <Separator/>
                 <MenuItem Header="_About" Click="OnAboutClick"/>
             </MenuItem>
         </Menu>
@@ -554,9 +564,17 @@
                             </Grid>
                         </Border>
 
-                        <!-- Sessions List -->
-                        <ItemsControl ItemsSource="{Binding CombatSessions}">
-                            <ItemsControl.ItemTemplate>
+                        <!-- Sessions List (Virtualized for performance) -->
+                        <ListBox ItemsSource="{Binding CombatSessions}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Border BorderBrush="#26A69A"
                                             BorderThickness="1"
@@ -679,8 +697,8 @@
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </StackPanel>
                 </Expander>
             </Border>
@@ -698,9 +716,17 @@
                                   IsChecked="{Binding ShowInstanceBreakdown}"
                                   Margin="0,0,0,10"/>
 
-                        <!-- Target Statistics List -->
-                        <ItemsControl ItemsSource="{Binding TargetStatistics}">
-                            <ItemsControl.ItemTemplate>
+                        <!-- Target Statistics List (Virtualized for performance) -->
+                        <ListBox ItemsSource="{Binding TargetStatistics}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Border BorderBrush="#A1887F"
                                             BorderThickness="1"
@@ -800,8 +826,8 @@
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </StackPanel>
                 </Expander>
             </Border>
@@ -1020,6 +1046,61 @@
             <rvr:BattlegroundView x:Name="BattlegroundView"/>
         </TabItem>
     </TabControl>
+
+        <!-- Status Bar -->
+        <Border DockPanel.Dock="Bottom"
+                Background="#F5F5F5"
+                BorderBrush="#E0E0E0"
+                BorderThickness="0,1,0,0"
+                Padding="10,5">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+                <!-- Status indicator -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Grid Width="8" Height="8">
+                        <!-- Gray dot when no data -->
+                        <Ellipse Width="8" Height="8" Fill="#9E9E9E"
+                                 IsVisible="{Binding !HasAnalyzedData}"/>
+                        <!-- Green dot when data loaded -->
+                        <Ellipse Width="8" Height="8" Fill="#4CAF50"
+                                 IsVisible="{Binding HasAnalyzedData}"/>
+                    </Grid>
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontSize="12"
+                               VerticalAlignment="Center"
+                               IsVisible="{Binding HasStatusMessage}"/>
+                    <TextBlock Text="Ready"
+                               FontSize="12"
+                               VerticalAlignment="Center"
+                               IsVisible="{Binding !HasStatusMessage}"/>
+                </StackPanel>
+
+                <!-- Spacer -->
+                <TextBlock Grid.Column="1"/>
+
+                <!-- Event count -->
+                <TextBlock Grid.Column="2"
+                           Text="{Binding EventCountStatus}"
+                           FontSize="11"
+                           Foreground="#757575"
+                           VerticalAlignment="Center"
+                           Margin="0,0,20,0"/>
+
+                <!-- Current theme indicator -->
+                <TextBlock Grid.Column="3"
+                           Text="{Binding ThemeStatus}"
+                           FontSize="11"
+                           Foreground="#757575"
+                           VerticalAlignment="Center"
+                           Margin="0,0,20,0"/>
+
+                <!-- Version -->
+                <TextBlock Grid.Column="4"
+                           Text="v1.7.0"
+                           FontSize="11"
+                           Foreground="#9E9E9E"
+                           VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
     </DockPanel>
 
 </Window>

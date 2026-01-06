@@ -23,6 +23,9 @@ public partial class SettingsWindowViewModel : ViewModelBase
     [ObservableProperty]
     private PrivacySettingsViewModel _privacySettings = new();
 
+    [ObservableProperty]
+    private AppearanceSettingsViewModel _appearanceSettings = new();
+
     public SettingsWindowViewModel()
     {
     }
@@ -33,6 +36,7 @@ public partial class SettingsWindowViewModel : ViewModelBase
         ServerProfileSettings.Save();
         ChatFilterSettings.Save();
         PrivacySettings.Save();
+        AppearanceSettings.Save();
     }
 
     [RelayCommand]
@@ -41,5 +45,6 @@ public partial class SettingsWindowViewModel : ViewModelBase
         ServerProfileSettings.ResetToDefaults();
         ChatFilterSettings.ResetToDefaults();
         PrivacySettings.ResetToDefaults();
+        AppearanceSettings.ResetToDefaults();
     }
 }

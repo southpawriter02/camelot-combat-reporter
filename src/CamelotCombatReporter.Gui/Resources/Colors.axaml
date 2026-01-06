@@ -1,0 +1,161 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ================================================================== -->
+    <!-- CAMELOT COMBAT REPORTER - COLOR PALETTE                           -->
+    <!-- ================================================================== -->
+    <!-- This file defines all colors used throughout the application.     -->
+    <!-- Use these resources instead of hardcoded hex values.              -->
+    <!-- ================================================================== -->
+
+    <!-- Primary Brand Colors -->
+    <Color x:Key="PrimaryColor">#1E88E5</Color>
+    <Color x:Key="PrimaryDarkColor">#1565C0</Color>
+    <Color x:Key="PrimaryLightColor">#42A5F5</Color>
+    <Color x:Key="PrimaryVeryLightColor">#BBDEFB</Color>
+
+    <!-- Secondary/Accent Colors -->
+    <Color x:Key="AccentColor">#FF5722</Color>
+    <Color x:Key="AccentDarkColor">#E64A19</Color>
+    <Color x:Key="AccentLightColor">#FF8A65</Color>
+
+    <!-- Semantic Colors -->
+    <Color x:Key="SuccessColor">#4CAF50</Color>
+    <Color x:Key="SuccessDarkColor">#388E3C</Color>
+    <Color x:Key="SuccessLightColor">#81C784</Color>
+
+    <Color x:Key="WarningColor">#FFC107</Color>
+    <Color x:Key="WarningDarkColor">#FFA000</Color>
+    <Color x:Key="WarningLightColor">#FFD54F</Color>
+
+    <Color x:Key="ErrorColor">#F44336</Color>
+    <Color x:Key="ErrorDarkColor">#D32F2F</Color>
+    <Color x:Key="ErrorLightColor">#EF5350</Color>
+
+    <Color x:Key="InfoColor">#2196F3</Color>
+    <Color x:Key="InfoDarkColor">#1976D2</Color>
+    <Color x:Key="InfoLightColor">#64B5F6</Color>
+
+    <!-- Realm Colors (Dark Age of Camelot) -->
+    <Color x:Key="AlbionColor">#E53935</Color>
+    <Color x:Key="AlbionDarkColor">#C62828</Color>
+    <Color x:Key="AlbionLightColor">#EF5350</Color>
+
+    <Color x:Key="MidgardColor">#1E88E5</Color>
+    <Color x:Key="MidgardDarkColor">#1565C0</Color>
+    <Color x:Key="MidgardLightColor">#42A5F5</Color>
+
+    <Color x:Key="HiberniaColor">#43A047</Color>
+    <Color x:Key="HiberniaDarkColor">#2E7D32</Color>
+    <Color x:Key="HiberniaLightColor">#66BB6A</Color>
+
+    <!-- Alert Priority Colors -->
+    <Color x:Key="AlertCriticalColor">#D32F2F</Color>
+    <Color x:Key="AlertHighColor">#F57C00</Color>
+    <Color x:Key="AlertMediumColor">#FBC02D</Color>
+    <Color x:Key="AlertLowColor">#388E3C</Color>
+
+    <!-- Combat Event Colors -->
+    <Color x:Key="DamageDealtColor">#E53935</Color>
+    <Color x:Key="DamageTakenColor">#C62828</Color>
+    <Color x:Key="HealingDoneColor">#43A047</Color>
+    <Color x:Key="HealingReceivedColor">#66BB6A</Color>
+    <Color x:Key="CombatStyleColor">#FF9800</Color>
+    <Color x:Key="SpellCastColor">#9C27B0</Color>
+    <Color x:Key="CrowdControlColor">#00BCD4</Color>
+    <Color x:Key="BuffColor">#8BC34A</Color>
+    <Color x:Key="DebuffColor">#FF5722</Color>
+
+    <!-- Chart Colors (for LiveCharts) -->
+    <Color x:Key="ChartColor1">#1E88E5</Color>
+    <Color x:Key="ChartColor2">#43A047</Color>
+    <Color x:Key="ChartColor3">#E53935</Color>
+    <Color x:Key="ChartColor4">#FF9800</Color>
+    <Color x:Key="ChartColor5">#9C27B0</Color>
+    <Color x:Key="ChartColor6">#00BCD4</Color>
+    <Color x:Key="ChartColor7">#795548</Color>
+    <Color x:Key="ChartColor8">#607D8B</Color>
+
+    <!-- ================================================================== -->
+    <!-- LIGHT THEME COLORS                                                -->
+    <!-- ================================================================== -->
+
+    <!-- Light Theme Backgrounds -->
+    <Color x:Key="BackgroundLightColor">#FFFFFF</Color>
+    <Color x:Key="SurfaceLightColor">#F5F5F5</Color>
+    <Color x:Key="SurfaceVariantLightColor">#EEEEEE</Color>
+    <Color x:Key="CardLightColor">#FFFFFF</Color>
+
+    <!-- Light Theme Borders -->
+    <Color x:Key="BorderLightColor">#E0E0E0</Color>
+    <Color x:Key="BorderStrongLightColor">#BDBDBD</Color>
+    <Color x:Key="DividerLightColor">#E0E0E0</Color>
+
+    <!-- Light Theme Text -->
+    <Color x:Key="TextPrimaryLightColor">#212121</Color>
+    <Color x:Key="TextSecondaryLightColor">#757575</Color>
+    <Color x:Key="TextDisabledLightColor">#9E9E9E</Color>
+    <Color x:Key="TextOnPrimaryLightColor">#FFFFFF</Color>
+
+    <!-- ================================================================== -->
+    <!-- DARK THEME COLORS                                                 -->
+    <!-- ================================================================== -->
+
+    <!-- Dark Theme Backgrounds -->
+    <Color x:Key="BackgroundDarkColor">#121212</Color>
+    <Color x:Key="SurfaceDarkColor">#1E1E1E</Color>
+    <Color x:Key="SurfaceVariantDarkColor">#2D2D2D</Color>
+    <Color x:Key="CardDarkColor">#1E1E1E</Color>
+
+    <!-- Dark Theme Borders -->
+    <Color x:Key="BorderDarkColor">#333333</Color>
+    <Color x:Key="BorderStrongDarkColor">#424242</Color>
+    <Color x:Key="DividerDarkColor">#424242</Color>
+
+    <!-- Dark Theme Text -->
+    <Color x:Key="TextPrimaryDarkColor">#E0E0E0</Color>
+    <Color x:Key="TextSecondaryDarkColor">#9E9E9E</Color>
+    <Color x:Key="TextDisabledDarkColor">#616161</Color>
+    <Color x:Key="TextOnPrimaryDarkColor">#FFFFFF</Color>
+
+    <!-- ================================================================== -->
+    <!-- NEUTRAL GRAYS                                                     -->
+    <!-- ================================================================== -->
+
+    <Color x:Key="Gray50">#FAFAFA</Color>
+    <Color x:Key="Gray100">#F5F5F5</Color>
+    <Color x:Key="Gray200">#EEEEEE</Color>
+    <Color x:Key="Gray300">#E0E0E0</Color>
+    <Color x:Key="Gray400">#BDBDBD</Color>
+    <Color x:Key="Gray500">#9E9E9E</Color>
+    <Color x:Key="Gray600">#757575</Color>
+    <Color x:Key="Gray700">#616161</Color>
+    <Color x:Key="Gray800">#424242</Color>
+    <Color x:Key="Gray900">#212121</Color>
+
+    <!-- ================================================================== -->
+    <!-- SPECIAL PURPOSE COLORS                                            -->
+    <!-- ================================================================== -->
+
+    <!-- Selection and Focus -->
+    <Color x:Key="SelectionColor">#1E88E5</Color>
+    <Color x:Key="SelectionBackgroundColor">#E3F2FD</Color>
+    <Color x:Key="FocusColor">#1E88E5</Color>
+    <Color x:Key="HoverColor">#F5F5F5</Color>
+
+    <!-- Status Indicators -->
+    <Color x:Key="OnlineColor">#4CAF50</Color>
+    <Color x:Key="OfflineColor">#9E9E9E</Color>
+    <Color x:Key="BusyColor">#FF9800</Color>
+    <Color x:Key="AwayColor">#FFC107</Color>
+
+    <!-- Progress and Loading -->
+    <Color x:Key="ProgressTrackColor">#E0E0E0</Color>
+    <Color x:Key="ProgressFillColor">#1E88E5</Color>
+
+    <!-- Transparent Overlays -->
+    <Color x:Key="OverlayLightColor">#80FFFFFF</Color>
+    <Color x:Key="OverlayDarkColor">#80000000</Color>
+    <Color x:Key="ScrimColor">#52000000</Color>
+
+</ResourceDictionary>

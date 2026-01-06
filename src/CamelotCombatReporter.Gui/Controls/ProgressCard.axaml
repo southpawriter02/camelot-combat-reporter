@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="100"
+             x:Class="CamelotCombatReporter.Gui.Controls.ProgressCard"
+             x:Name="Root">
+
+    <Border Classes="Card" Padding="15">
+        <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+            <!-- Title and status -->
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                       Text="{Binding Title, ElementName=Root}"
+                       Classes="Title"
+                       Margin="0,0,0,8"/>
+
+            <TextBlock Grid.Row="0" Grid.Column="1"
+                       Text="{Binding StatusText, ElementName=Root}"
+                       Classes="Caption"
+                       VerticalAlignment="Center"
+                       IsVisible="{Binding StatusText, ElementName=Root, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            <!-- Progress bar -->
+            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,8">
+                <ProgressBar Value="{Binding Value, ElementName=Root}"
+                             Minimum="{Binding Minimum, ElementName=Root}"
+                             Maximum="{Binding Maximum, ElementName=Root}"
+                             Height="8"
+                             Classes="Primary"
+                             IsIndeterminate="{Binding IsIndeterminate, ElementName=Root}"/>
+            </Grid>
+
+            <!-- Description text -->
+            <TextBlock Grid.Row="2" Grid.Column="0"
+                       Text="{Binding Description, ElementName=Root}"
+                       Classes="Caption"
+                       TextTrimming="CharacterEllipsis"
+                       IsVisible="{Binding Description, ElementName=Root, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            <!-- Percentage or count -->
+            <TextBlock Grid.Row="2" Grid.Column="1"
+                       Text="{Binding ProgressText, ElementName=Root}"
+                       Classes="Caption"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Right"/>
+        </Grid>
+    </Border>
+</UserControl>

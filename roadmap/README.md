@@ -4,9 +4,27 @@ This document outlines the feature roadmap for Camelot Combat Reporter. The proj
 
 ---
 
-## Current Version: v1.6.0
+## Current Version: v1.7.0
 
 Released: January 2026
+
+### What's in v1.7.x
+
+**GUI Polish** (New in v1.7.0)
+- Centralized style resources (Colors, Brushes, Styles, Icons)
+- ThemeService with System/Light/Dark mode support and JSON persistence
+- Loading indicators: LoadingSpinner, LoadingOverlay, ProgressCard controls
+- Keyboard shortcuts with F1 help window and Ctrl+T theme toggle
+- Status bar with event count, theme status, and version display
+
+**Performance Optimization** (New in v1.7.0)
+- Async log parser with IProgress<ParseProgress> support
+- Statistics caching layer with SHA256 file hash validation
+- LRU cache eviction with configurable max entries
+- DataGrid virtualization using VirtualizingStackPanel
+- StringPool for memory-efficient string interning
+- ObjectPool<T> and StringBuilderPool for reduced allocations
+- BenchmarkDotNet performance benchmarks for parser, cache, and pools
 
 ### What's in v1.6.x
 
@@ -372,19 +390,23 @@ Released: January 2026
 
 ---
 
-### v1.7.0 - Community & Polish
+### v1.7.0 - Polish & Enhancement ✅ RELEASED
 
-**Focus:** Community features and stability
+**Released:** January 2026
+**Focus:** GUI polish, performance optimization, stability
 
-| Item | Type | Description |
-|------|------|-------------|
-| Cross-Realm Analysis Phase 2 | Feature | Central server for community statistics |
-| Public Leaderboards | Feature | Opt-in anonymous leaderboard participation |
-| Performance Audit | Maintenance | Full performance optimization pass |
-| UX Improvements | Enhancement | UI/UX refinements based on feedback |
-| Documentation Update | Maintenance | Comprehensive docs for all v1.x features |
-| API Stabilization | Maintenance | Lock down public API for v2.0 compatibility |
-| Bug Fixes | Maintenance | Final v1.x bug fixes |
+| Item | Type | Status | Description |
+|------|------|--------|-------------|
+| Centralized Style Resources | Enhancement | ✅ Complete | Colors, Brushes, Styles, Icons in Resources folder |
+| Theme Service | Enhancement | ✅ Complete | IThemeService with System/Light/Dark modes and persistence |
+| Loading Indicators | Enhancement | ✅ Complete | LoadingSpinner, LoadingOverlay, ProgressCard controls |
+| Keyboard Shortcuts | Enhancement | ✅ Complete | F1 help, Ctrl+T theme toggle, shortcuts window |
+| Status Bar | Enhancement | ✅ Complete | Event count, theme status, version display |
+| Async Parser | Performance | ✅ Complete | ParseAsync with IProgress support, cancellation |
+| Statistics Caching | Performance | ✅ Complete | SHA256 hash validation, LRU eviction |
+| DataGrid Virtualization | Performance | ✅ Complete | VirtualizingStackPanel for large lists |
+| Memory Optimizations | Performance | ✅ Complete | StringPool, ObjectPool for reduced allocations |
+| Performance Benchmarks | Performance | ✅ Complete | BenchmarkDotNet suite for parser, cache, pools |
 
 ---
 
@@ -420,6 +442,47 @@ Bug fix releases occur as needed between feature releases:
 ---
 
 ## Version History
+
+### v1.7.0 (January 2026)
+
+**Polish & Enhancement Release:**
+- Centralized style resources in `src/CamelotCombatReporter.Gui/Resources/`
+  - Colors.axaml with semantic color definitions
+  - Brushes.axaml for light/dark theme brushes
+  - Styles.axaml with reusable control styles
+  - Icons.axaml with PathGeometry definitions
+- ThemeService with System/Light/Dark mode support
+  - JSON persistence at `AppData/CamelotCombatReporter/theme-settings.json`
+  - ThemeChanged event for reactive UI updates
+- Loading indicator controls
+  - LoadingSpinner: Animated circular spinner with configurable size
+  - LoadingOverlay: Full overlay with message and progress bar
+  - ProgressCard: Card control with title, description, and progress
+- Keyboard shortcuts system
+  - F1 for keyboard shortcuts help window
+  - Ctrl+T for theme toggle
+  - KeyboardShortcutsWindow with organized shortcut display
+- Status bar in MainWindow with event count, theme status, version
+- Async log parser with ParseAsync() method
+  - IProgress<ParseProgress> for progress reporting
+  - CancellationToken support for cancellation
+  - Task.Yield() for UI responsiveness every 1000 lines
+- Statistics caching layer
+  - IStatisticsCacheService interface with GetCachedAsync/CacheAsync
+  - SHA256 file hash validation for cache integrity
+  - LRU eviction when cache exceeds max entries (default 10)
+- DataGrid virtualization with VirtualizingStackPanel
+  - CombatSessions and TargetStatistics lists converted to ListBox
+- Memory optimization utilities
+  - StringPool for string interning with LRU eviction
+  - ObjectPool<T> generic object pooling
+  - StringBuilderPool and ListPool<T> specialized implementations
+- BenchmarkDotNet performance benchmarks
+  - LogParserBenchmarks: sync vs async parsing
+  - StringPoolBenchmarks: unique vs duplicate string interning
+  - CachingBenchmarks: parse vs cached retrieval
+- 36 new unit tests for caching and optimization services
+- 9 new ThemeService tests
 
 ### v1.6.0 (January 2026)
 

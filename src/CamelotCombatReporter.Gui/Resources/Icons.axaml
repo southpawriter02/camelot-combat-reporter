@@ -1,0 +1,200 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ================================================================== -->
+    <!-- CAMELOT COMBAT REPORTER - ICON PATH DATA                          -->
+    <!-- ================================================================== -->
+    <!-- SVG path data for icons used throughout the application.          -->
+    <!-- Icons are based on Material Design Icons (24x24 viewbox).         -->
+    <!-- Usage: <PathIcon Data="{StaticResource IconName}"/>               -->
+    <!-- ================================================================== -->
+
+    <!-- ================================================================== -->
+    <!-- FILE OPERATIONS                                                   -->
+    <!-- ================================================================== -->
+
+    <!-- File Open -->
+    <StreamGeometry x:Key="IconFileOpen">M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6l2 2h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2M13 13v-3h-2v3H8l4 4 4-4h-3Z</StreamGeometry>
+
+    <!-- File Save -->
+    <StreamGeometry x:Key="IconFileSave">M15 9H5V5h10m-3 14a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3m5-16H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4Z</StreamGeometry>
+
+    <!-- Export -->
+    <StreamGeometry x:Key="IconExport">M23 12L19 8v3h-9v2h9v3m-1 5H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8l6 6v1h-2V9h-5V4H6v14h16v-2Z</StreamGeometry>
+
+    <!-- Import -->
+    <StreamGeometry x:Key="IconImport">M14 12L10 8v3H1v2h9v3m0 5H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8l6 6v1h-2V9h-5V4H6v14h16v-2h-8Z</StreamGeometry>
+
+    <!-- ================================================================== -->
+    <!-- NAVIGATION                                                        -->
+    <!-- ================================================================== -->
+
+    <!-- Home -->
+    <StreamGeometry x:Key="IconHome">M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z</StreamGeometry>
+
+    <!-- Settings -->
+    <StreamGeometry x:Key="IconSettings">M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z</StreamGeometry>
+
+    <!-- Menu -->
+    <StreamGeometry x:Key="IconMenu">M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z</StreamGeometry>
+
+    <!-- Close -->
+    <StreamGeometry x:Key="IconClose">M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z</StreamGeometry>
+
+    <!-- Back -->
+    <StreamGeometry x:Key="IconBack">M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2Z</StreamGeometry>
+
+    <!-- Forward -->
+    <StreamGeometry x:Key="IconForward">M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8Z</StreamGeometry>
+
+    <!-- ================================================================== -->
+    <!-- ACTIONS                                                           -->
+    <!-- ================================================================== -->
+
+    <!-- Refresh -->
+    <StreamGeometry x:Key="IconRefresh">M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35Z</StreamGeometry>
+
+    <!-- Search -->
+    <StreamGeometry x:Key="IconSearch">M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z</StreamGeometry>
+
+    <!-- Filter -->
+    <StreamGeometry x:Key="IconFilter">M14 12v7.88c.04.3-.06.62-.29.83a.996.996 0 0 1-1.41 0l-2.01-2.01a.989.989 0 0 1-.29-.83V12h-.03L4.21 4.62a1 1 0 0 1 .17-1.4c.19-.14.4-.22.62-.22h14c.22 0 .43.08.62.22a1 1 0 0 1 .17 1.4L14.03 12H14Z</StreamGeometry>
+
+    <!-- Add -->
+    <StreamGeometry x:Key="IconAdd">M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z</StreamGeometry>
+
+    <!-- Remove -->
+    <StreamGeometry x:Key="IconRemove">M19 13H5v-2h14v2Z</StreamGeometry>
+
+    <!-- Delete -->
+    <StreamGeometry x:Key="IconDelete">M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12Z</StreamGeometry>
+
+    <!-- Edit -->
+    <StreamGeometry x:Key="IconEdit">M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z</StreamGeometry>
+
+    <!-- Copy -->
+    <StreamGeometry x:Key="IconCopy">M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12V1Z</StreamGeometry>
+
+    <!-- ================================================================== -->
+    <!-- COMBAT/GAME                                                       -->
+    <!-- ================================================================== -->
+
+    <!-- Sword (Damage) -->
+    <StreamGeometry x:Key="IconSword">M6.92 5H5l.21-.79L5 4.17V2.05l2.95 1.59 1.59 2.94L7.36 4.79l-.45.18v.03M14.59 8l-1.41-1.41 3.06-3.06c.39-.39 1.02-.39 1.41 0l1.41 1.41c.39.39.39 1.02 0 1.41L16 9.41l1.41 1.41-1.41 1.41-5.66-5.66L8.93 8l5.66 5.66-1.41 1.41L11.77 13.66l-.35.35 4.24 4.24 1.41-1.41 1.41 1.41-2.83 2.83-1.41-1.41-4.24-4.24-4.24 4.24-1.41 1.41-2.83-2.83 1.41-1.41 1.41 1.41 4.24-4.24-.35-.35-1.41 1.41L3.17 11.66l1.41-1.41 5.66 5.66 1.41-1.41L5.99 8.75 14.59 8Z</StreamGeometry>
+
+    <!-- Shield (Defense) -->
+    <StreamGeometry x:Key="IconShield">M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4Z</StreamGeometry>
+
+    <!-- Heart (Healing) -->
+    <StreamGeometry x:Key="IconHeart">M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z</StreamGeometry>
+
+    <!-- Skull (Death) -->
+    <StreamGeometry x:Key="IconSkull">M12 2a9 9 0 0 0-9 9c0 4.17 2.84 7.67 6.69 8.69L12 22l2.31-2.31C18.16 18.67 21 15.17 21 11a9 9 0 0 0-9-9m-2 14l-2-4h1.5v-3h1v3H12v-.59l.42.59L12 13l-2 3m6-1l-2 4-2-4 2-3 2 3m-6-6a2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2m4 0a2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2Z</StreamGeometry>
+
+    <!-- Magic (Spell) -->
+    <StreamGeometry x:Key="IconMagic">M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7l2.5-1.4m12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14l-2.5 1.4M22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5L22 2m-8.66 10.78l2.44-2.44-2.12-2.12-2.44 2.44 2.12 2.12m1.03-5.49l2.34 2.34c.39.37.39 1.02 0 1.41L5.04 22.71c-.39.39-1.04.39-1.41 0l-2.34-2.34c-.39-.37-.39-1.02 0-1.41L12.96 7.29c.39-.39 1.04-.39 1.41 0Z</StreamGeometry>
+
+    <!-- Crown (Realm) -->
+    <StreamGeometry x:Key="IconCrown">M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5m14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1Z</StreamGeometry>
+
+    <!-- Castle (Keep) -->
+    <StreamGeometry x:Key="IconCastle">M2 13h2v8H2v-8m4-5h2v3H6V8M2 2v3h2V2h4v3h2V2h4v3h2V2h4v3h2V2h-2v6h-4v3H6V8H2V2m16 11h2v8h-2v-8m-4 0v8h-4v-4H8v4H6v-8h12Z</StreamGeometry>
+
+    <!-- ================================================================== -->
+    <!-- STATUS AND ALERTS                                                 -->
+    <!-- ================================================================== -->
+
+    <!-- Alert -->
+    <StreamGeometry x:Key="IconAlert">M13 14h-2V9h2m0 9h-2v-2h2M1 21h22L12 2 1 21Z</StreamGeometry>
+
+    <!-- Info -->
+    <StreamGeometry x:Key="IconInfo">M13 9h-2V7h2m0 10h-2v-6h2m-1-9A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z</StreamGeometry>
+
+    <!-- Check/Success -->
+    <StreamGeometry x:Key="IconCheck">M21 7L9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59 21 7Z</StreamGeometry>
+
+    <!-- Check Circle -->
+    <StreamGeometry x:Key="IconCheckCircle">M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2m-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9Z</StreamGeometry>
+
+    <!-- Error -->
+    <StreamGeometry x:Key="IconError">M13 13h-2V7h2m0 10h-2v-2h2M12 2a10 10 0 0 0-10 10 10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z</StreamGeometry>
+
+    <!-- Warning -->
+    <StreamGeometry x:Key="IconWarning">M13 14h-2v-4h2m0 8h-2v-2h2M1 21h22L12 2 1 21Z</StreamGeometry>
+
+    <!-- Bell (Notification) -->
+    <StreamGeometry x:Key="IconBell">M21 19v1H3v-1l2-2v-6c0-3.1 2.03-5.83 5-6.71V4a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.29c2.97.88 5 3.61 5 6.71v6l2 2m-7 2a2 2 0 0 1-2 2 2 2 0 0 1-2-2</StreamGeometry>
+
+    <!-- ================================================================== -->
+    <!-- CHARTS AND ANALYSIS                                               -->
+    <!-- ================================================================== -->
+
+    <!-- Chart Line -->
+    <StreamGeometry x:Key="IconChartLine">M16 11.78l4.24-7.33 1.73 1-5.23 9.05-6.51-3.75L5.46 19H22v2H2V3h2v14.54L9.5 8l6.5 3.78Z</StreamGeometry>
+
+    <!-- Chart Bar -->
+    <StreamGeometry x:Key="IconChartBar">M22 21H2V3h2v16h2v-9h4v9h2V6h4v13h2v-5h4v7Z</StreamGeometry>
+
+    <!-- Chart Pie -->
+    <StreamGeometry x:Key="IconChartPie">M11 2v9h9c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9m2 0c4.39.54 7.96 4.11 8.5 8.5H13V2.5Z</StreamGeometry>
+
+    <!-- Timeline -->
+    <StreamGeometry x:Key="IconTimeline">M5 12H3v9h2v-9m16 0h-2v9h2v-9M12 3a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2m7 1a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2M5 4a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2m7 8c-1.1 0-2-.9-2-2h2v2m7-2c0 1.1-.9 2-2 2v-2h2m-14 0h2v2c-1.1 0-2-.9-2-2m7 2v9h-2v-9h2Z</StreamGeometry>
+
+    <!-- Trending Up -->
+    <StreamGeometry x:Key="IconTrendingUp">M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6Z</StreamGeometry>
+
+    <!-- Trending Down -->
+    <StreamGeometry x:Key="IconTrendingDown">M16 18l2.29-2.29-4.88-4.88-4 4L2 7.41 3.41 6l6 6 4-4 6.3 6.29L22 12v6h-6Z</StreamGeometry>
+
+    <!-- ================================================================== -->
+    <!-- GROUP AND USERS                                                   -->
+    <!-- ================================================================== -->
+
+    <!-- Person -->
+    <StreamGeometry x:Key="IconPerson">M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4m0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4Z</StreamGeometry>
+
+    <!-- Group -->
+    <StreamGeometry x:Key="IconGroup">M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3m-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z</StreamGeometry>
+
+    <!-- ================================================================== -->
+    <!-- MISCELLANEOUS                                                     -->
+    <!-- ================================================================== -->
+
+    <!-- Clock -->
+    <StreamGeometry x:Key="IconClock">M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2m4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3Z</StreamGeometry>
+
+    <!-- Calendar -->
+    <StreamGeometry x:Key="IconCalendar">M19 19H5V8h14m-3-7v2H8V1H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5v-5Z</StreamGeometry>
+
+    <!-- Download -->
+    <StreamGeometry x:Key="IconDownload">M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7Z</StreamGeometry>
+
+    <!-- Upload -->
+    <StreamGeometry x:Key="IconUpload">M9 16v-6H5l7-7 7 7h-4v6H9m-4 4v-2h14v2H5Z</StreamGeometry>
+
+    <!-- Help -->
+    <StreamGeometry x:Key="IconHelp">M15.07 11.25l-.9.92c-.72.73-1.17 1.33-1.17 2.83h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41a2 2 0 0 0-2-2 2 2 0 0 0-2 2H8a4 4 0 0 1 4-4 4 4 0 0 1 4 4c0 .88-.36 1.68-.93 2.25M13 19h-2v-2h2M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z</StreamGeometry>
+
+    <!-- Plugin -->
+    <StreamGeometry x:Key="IconPlugin">M20.5 11H19V7a2 2 0 0 0-2-2h-4V3.5A2.5 2.5 0 0 0 10.5 1 2.5 2.5 0 0 0 8 3.5V5H4a2 2 0 0 0-2 2v3.8h1.5c1.5 0 2.7 1.2 2.7 2.7s-1.2 2.7-2.7 2.7H2V20a2 2 0 0 0 2 2h3.8v-1.5c0-1.5 1.2-2.7 2.7-2.7s2.7 1.2 2.7 2.7V22H17a2 2 0 0 0 2-2v-4h1.5a2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5Z</StreamGeometry>
+
+    <!-- Update -->
+    <StreamGeometry x:Key="IconUpdate">M21 10.12h-6.78l2.74-2.82c-2.73-2.7-7.15-2.8-9.88-.1-2.73 2.71-2.73 7.08 0 9.79s7.15 2.71 9.88 0A6.89 6.89 0 0 0 19 12.5h2a9 9 0 0 1-2.64 6.36c-3.52 3.49-9.21 3.49-12.73 0s-3.52-9.14 0-12.64c3.52-3.49 9.14-3.49 12.65 0L21 3v7.12Z</StreamGeometry>
+
+    <!-- Expand -->
+    <StreamGeometry x:Key="IconExpand">M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42Z</StreamGeometry>
+
+    <!-- Collapse -->
+    <StreamGeometry x:Key="IconCollapse">M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41Z</StreamGeometry>
+
+    <!-- More (Vertical dots) -->
+    <StreamGeometry x:Key="IconMore">M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2m0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2Z</StreamGeometry>
+
+    <!-- Keyboard -->
+    <StreamGeometry x:Key="IconKeyboard">M19 10h-2V8h2m0 5h-2v-2h2m-3-2h-2V8h2m0 5h-2v-2h2m0 5H8v-2h8m-9-3H5V8h2m0 5H5v-2h2m1-2h2V8H8m0 5h2v-2H8m10 7H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2Z</StreamGeometry>
+
+    <!-- Loading/Spinner -->
+    <StreamGeometry x:Key="IconLoading">M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8Z</StreamGeometry>
+
+</ResourceDictionary>

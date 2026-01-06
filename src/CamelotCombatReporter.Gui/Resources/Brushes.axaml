@@ -1,0 +1,221 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ================================================================== -->
+    <!-- CAMELOT COMBAT REPORTER - BRUSH RESOURCES                         -->
+    <!-- ================================================================== -->
+    <!-- Brushes created from the color palette for use in controls.       -->
+    <!-- ================================================================== -->
+
+    <!-- Merge Colors dictionary -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://CamelotCombatReporter.Gui/Resources/Colors.axaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- ================================================================== -->
+    <!-- PRIMARY BRUSHES                                                   -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
+    <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDarkColor}"/>
+    <SolidColorBrush x:Key="PrimaryLightBrush" Color="{StaticResource PrimaryLightColor}"/>
+    <SolidColorBrush x:Key="PrimaryVeryLightBrush" Color="{StaticResource PrimaryVeryLightColor}"/>
+
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="AccentDarkBrush" Color="{StaticResource AccentDarkColor}"/>
+    <SolidColorBrush x:Key="AccentLightBrush" Color="{StaticResource AccentLightColor}"/>
+
+    <!-- ================================================================== -->
+    <!-- SEMANTIC BRUSHES                                                  -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+    <SolidColorBrush x:Key="SuccessDarkBrush" Color="{StaticResource SuccessDarkColor}"/>
+    <SolidColorBrush x:Key="SuccessLightBrush" Color="{StaticResource SuccessLightColor}"/>
+
+    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+    <SolidColorBrush x:Key="WarningDarkBrush" Color="{StaticResource WarningDarkColor}"/>
+    <SolidColorBrush x:Key="WarningLightBrush" Color="{StaticResource WarningLightColor}"/>
+
+    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
+    <SolidColorBrush x:Key="ErrorDarkBrush" Color="{StaticResource ErrorDarkColor}"/>
+    <SolidColorBrush x:Key="ErrorLightBrush" Color="{StaticResource ErrorLightColor}"/>
+
+    <SolidColorBrush x:Key="InfoBrush" Color="{StaticResource InfoColor}"/>
+    <SolidColorBrush x:Key="InfoDarkBrush" Color="{StaticResource InfoDarkColor}"/>
+    <SolidColorBrush x:Key="InfoLightBrush" Color="{StaticResource InfoLightColor}"/>
+
+    <!-- ================================================================== -->
+    <!-- REALM BRUSHES                                                     -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="AlbionBrush" Color="{StaticResource AlbionColor}"/>
+    <SolidColorBrush x:Key="AlbionDarkBrush" Color="{StaticResource AlbionDarkColor}"/>
+    <SolidColorBrush x:Key="AlbionLightBrush" Color="{StaticResource AlbionLightColor}"/>
+
+    <SolidColorBrush x:Key="MidgardBrush" Color="{StaticResource MidgardColor}"/>
+    <SolidColorBrush x:Key="MidgardDarkBrush" Color="{StaticResource MidgardDarkColor}"/>
+    <SolidColorBrush x:Key="MidgardLightBrush" Color="{StaticResource MidgardLightColor}"/>
+
+    <SolidColorBrush x:Key="HiberniaBrush" Color="{StaticResource HiberniaColor}"/>
+    <SolidColorBrush x:Key="HiberniaDarkBrush" Color="{StaticResource HiberniaDarkColor}"/>
+    <SolidColorBrush x:Key="HiberniaLightBrush" Color="{StaticResource HiberniaLightColor}"/>
+
+    <!-- ================================================================== -->
+    <!-- ALERT PRIORITY BRUSHES                                            -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="AlertCriticalBrush" Color="{StaticResource AlertCriticalColor}"/>
+    <SolidColorBrush x:Key="AlertHighBrush" Color="{StaticResource AlertHighColor}"/>
+    <SolidColorBrush x:Key="AlertMediumBrush" Color="{StaticResource AlertMediumColor}"/>
+    <SolidColorBrush x:Key="AlertLowBrush" Color="{StaticResource AlertLowColor}"/>
+
+    <!-- ================================================================== -->
+    <!-- COMBAT EVENT BRUSHES                                              -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="DamageDealtBrush" Color="{StaticResource DamageDealtColor}"/>
+    <SolidColorBrush x:Key="DamageTakenBrush" Color="{StaticResource DamageTakenColor}"/>
+    <SolidColorBrush x:Key="HealingDoneBrush" Color="{StaticResource HealingDoneColor}"/>
+    <SolidColorBrush x:Key="HealingReceivedBrush" Color="{StaticResource HealingReceivedColor}"/>
+    <SolidColorBrush x:Key="CombatStyleBrush" Color="{StaticResource CombatStyleColor}"/>
+    <SolidColorBrush x:Key="SpellCastBrush" Color="{StaticResource SpellCastColor}"/>
+    <SolidColorBrush x:Key="CrowdControlBrush" Color="{StaticResource CrowdControlColor}"/>
+    <SolidColorBrush x:Key="BuffBrush" Color="{StaticResource BuffColor}"/>
+    <SolidColorBrush x:Key="DebuffBrush" Color="{StaticResource DebuffColor}"/>
+
+    <!-- ================================================================== -->
+    <!-- CHART BRUSHES                                                     -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="ChartBrush1" Color="{StaticResource ChartColor1}"/>
+    <SolidColorBrush x:Key="ChartBrush2" Color="{StaticResource ChartColor2}"/>
+    <SolidColorBrush x:Key="ChartBrush3" Color="{StaticResource ChartColor3}"/>
+    <SolidColorBrush x:Key="ChartBrush4" Color="{StaticResource ChartColor4}"/>
+    <SolidColorBrush x:Key="ChartBrush5" Color="{StaticResource ChartColor5}"/>
+    <SolidColorBrush x:Key="ChartBrush6" Color="{StaticResource ChartColor6}"/>
+    <SolidColorBrush x:Key="ChartBrush7" Color="{StaticResource ChartColor7}"/>
+    <SolidColorBrush x:Key="ChartBrush8" Color="{StaticResource ChartColor8}"/>
+
+    <!-- ================================================================== -->
+    <!-- LIGHT THEME BRUSHES                                               -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLightColor}"/>
+    <SolidColorBrush x:Key="SurfaceLightBrush" Color="{StaticResource SurfaceLightColor}"/>
+    <SolidColorBrush x:Key="SurfaceVariantLightBrush" Color="{StaticResource SurfaceVariantLightColor}"/>
+    <SolidColorBrush x:Key="CardLightBrush" Color="{StaticResource CardLightColor}"/>
+
+    <SolidColorBrush x:Key="BorderLightBrush" Color="{StaticResource BorderLightColor}"/>
+    <SolidColorBrush x:Key="BorderStrongLightBrush" Color="{StaticResource BorderStrongLightColor}"/>
+    <SolidColorBrush x:Key="DividerLightBrush" Color="{StaticResource DividerLightColor}"/>
+
+    <SolidColorBrush x:Key="TextPrimaryLightBrush" Color="{StaticResource TextPrimaryLightColor}"/>
+    <SolidColorBrush x:Key="TextSecondaryLightBrush" Color="{StaticResource TextSecondaryLightColor}"/>
+    <SolidColorBrush x:Key="TextDisabledLightBrush" Color="{StaticResource TextDisabledLightColor}"/>
+    <SolidColorBrush x:Key="TextOnPrimaryLightBrush" Color="{StaticResource TextOnPrimaryLightColor}"/>
+
+    <!-- ================================================================== -->
+    <!-- DARK THEME BRUSHES                                                -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{StaticResource BackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="SurfaceDarkBrush" Color="{StaticResource SurfaceDarkColor}"/>
+    <SolidColorBrush x:Key="SurfaceVariantDarkBrush" Color="{StaticResource SurfaceVariantDarkColor}"/>
+    <SolidColorBrush x:Key="CardDarkBrush" Color="{StaticResource CardDarkColor}"/>
+
+    <SolidColorBrush x:Key="BorderDarkBrush" Color="{StaticResource BorderDarkColor}"/>
+    <SolidColorBrush x:Key="BorderStrongDarkBrush" Color="{StaticResource BorderStrongDarkColor}"/>
+    <SolidColorBrush x:Key="DividerDarkBrush" Color="{StaticResource DividerDarkColor}"/>
+
+    <SolidColorBrush x:Key="TextPrimaryDarkBrush" Color="{StaticResource TextPrimaryDarkColor}"/>
+    <SolidColorBrush x:Key="TextSecondaryDarkBrush" Color="{StaticResource TextSecondaryDarkColor}"/>
+    <SolidColorBrush x:Key="TextDisabledDarkBrush" Color="{StaticResource TextDisabledDarkColor}"/>
+    <SolidColorBrush x:Key="TextOnPrimaryDarkBrush" Color="{StaticResource TextOnPrimaryDarkColor}"/>
+
+    <!-- ================================================================== -->
+    <!-- GRAY BRUSHES                                                      -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="Gray50Brush" Color="{StaticResource Gray50}"/>
+    <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}"/>
+    <SolidColorBrush x:Key="Gray200Brush" Color="{StaticResource Gray200}"/>
+    <SolidColorBrush x:Key="Gray300Brush" Color="{StaticResource Gray300}"/>
+    <SolidColorBrush x:Key="Gray400Brush" Color="{StaticResource Gray400}"/>
+    <SolidColorBrush x:Key="Gray500Brush" Color="{StaticResource Gray500}"/>
+    <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
+    <SolidColorBrush x:Key="Gray700Brush" Color="{StaticResource Gray700}"/>
+    <SolidColorBrush x:Key="Gray800Brush" Color="{StaticResource Gray800}"/>
+    <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
+
+    <!-- ================================================================== -->
+    <!-- SPECIAL PURPOSE BRUSHES                                           -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="SelectionBrush" Color="{StaticResource SelectionColor}"/>
+    <SolidColorBrush x:Key="SelectionBackgroundBrush" Color="{StaticResource SelectionBackgroundColor}"/>
+    <SolidColorBrush x:Key="FocusBrush" Color="{StaticResource FocusColor}"/>
+    <SolidColorBrush x:Key="HoverBrush" Color="{StaticResource HoverColor}"/>
+
+    <SolidColorBrush x:Key="OnlineBrush" Color="{StaticResource OnlineColor}"/>
+    <SolidColorBrush x:Key="OfflineBrush" Color="{StaticResource OfflineColor}"/>
+    <SolidColorBrush x:Key="BusyBrush" Color="{StaticResource BusyColor}"/>
+    <SolidColorBrush x:Key="AwayBrush" Color="{StaticResource AwayColor}"/>
+
+    <SolidColorBrush x:Key="ProgressTrackBrush" Color="{StaticResource ProgressTrackColor}"/>
+    <SolidColorBrush x:Key="ProgressFillBrush" Color="{StaticResource ProgressFillColor}"/>
+
+    <SolidColorBrush x:Key="OverlayLightBrush" Color="{StaticResource OverlayLightColor}"/>
+    <SolidColorBrush x:Key="OverlayDarkBrush" Color="{StaticResource OverlayDarkColor}"/>
+    <SolidColorBrush x:Key="ScrimBrush" Color="{StaticResource ScrimColor}"/>
+
+    <!-- ================================================================== -->
+    <!-- TRANSPARENT BRUSH                                                 -->
+    <!-- ================================================================== -->
+
+    <SolidColorBrush x:Key="TransparentBrush" Color="Transparent"/>
+
+    <!-- ================================================================== -->
+    <!-- THEME-AWARE BRUSHES                                               -->
+    <!-- ================================================================== -->
+    <!-- These brushes automatically switch based on Light/Dark theme.     -->
+    <!-- Use these for UI elements that should adapt to the current theme. -->
+    <!-- ================================================================== -->
+
+    <ResourceDictionary.ThemeDictionaries>
+        <!-- Light Theme Resources -->
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource BackgroundLightColor}"/>
+            <SolidColorBrush x:Key="AppSurfaceBrush" Color="{StaticResource SurfaceLightColor}"/>
+            <SolidColorBrush x:Key="AppSurfaceVariantBrush" Color="{StaticResource SurfaceVariantLightColor}"/>
+            <SolidColorBrush x:Key="AppCardBrush" Color="{StaticResource CardLightColor}"/>
+            <SolidColorBrush x:Key="AppBorderBrush" Color="{StaticResource BorderLightColor}"/>
+            <SolidColorBrush x:Key="AppBorderStrongBrush" Color="{StaticResource BorderStrongLightColor}"/>
+            <SolidColorBrush x:Key="AppDividerBrush" Color="{StaticResource DividerLightColor}"/>
+            <SolidColorBrush x:Key="AppTextPrimaryBrush" Color="{StaticResource TextPrimaryLightColor}"/>
+            <SolidColorBrush x:Key="AppTextSecondaryBrush" Color="{StaticResource TextSecondaryLightColor}"/>
+            <SolidColorBrush x:Key="AppTextDisabledBrush" Color="{StaticResource TextDisabledLightColor}"/>
+            <SolidColorBrush x:Key="AppTextOnPrimaryBrush" Color="{StaticResource TextOnPrimaryLightColor}"/>
+            <SolidColorBrush x:Key="AppHoverBrush" Color="#F5F5F5"/>
+            <SolidColorBrush x:Key="AppSelectedBrush" Color="#E3F2FD"/>
+        </ResourceDictionary>
+
+        <!-- Dark Theme Resources -->
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource BackgroundDarkColor}"/>
+            <SolidColorBrush x:Key="AppSurfaceBrush" Color="{StaticResource SurfaceDarkColor}"/>
+            <SolidColorBrush x:Key="AppSurfaceVariantBrush" Color="{StaticResource SurfaceVariantDarkColor}"/>
+            <SolidColorBrush x:Key="AppCardBrush" Color="{StaticResource CardDarkColor}"/>
+            <SolidColorBrush x:Key="AppBorderBrush" Color="{StaticResource BorderDarkColor}"/>
+            <SolidColorBrush x:Key="AppBorderStrongBrush" Color="{StaticResource BorderStrongDarkColor}"/>
+            <SolidColorBrush x:Key="AppDividerBrush" Color="{StaticResource DividerDarkColor}"/>
+            <SolidColorBrush x:Key="AppTextPrimaryBrush" Color="{StaticResource TextPrimaryDarkColor}"/>
+            <SolidColorBrush x:Key="AppTextSecondaryBrush" Color="{StaticResource TextSecondaryDarkColor}"/>
+            <SolidColorBrush x:Key="AppTextDisabledBrush" Color="{StaticResource TextDisabledDarkColor}"/>
+            <SolidColorBrush x:Key="AppTextOnPrimaryBrush" Color="{StaticResource TextOnPrimaryDarkColor}"/>
+            <SolidColorBrush x:Key="AppHoverBrush" Color="#2D2D2D"/>
+            <SolidColorBrush x:Key="AppSelectedBrush" Color="#1E3A5F"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+</ResourceDictionary>

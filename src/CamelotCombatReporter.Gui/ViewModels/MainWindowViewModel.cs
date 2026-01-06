@@ -44,6 +44,18 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private bool _hasStatusMessage = false;
 
+    /// <summary>
+    /// Gets the event count status text for the status bar.
+    /// </summary>
+    public string EventCountStatus => _analyzedEvents != null
+        ? $"Events: {_analyzedEvents.Count:N0}"
+        : "No data";
+
+    /// <summary>
+    /// Gets the current theme status text for the status bar.
+    /// </summary>
+    public string ThemeStatus => App.ThemeService?.CurrentTheme.ToString() ?? "System";
+
     #endregion
 
     #region Event Type Toggles
@@ -455,6 +467,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 RefreshAnalysis();
 
                 HasAnalyzedData = true;
+                OnPropertyChanged(nameof(EventCountStatus));
 
                 _logger.LogAnalysisCompleted(events.Count, LogDuration, DamagePerSecond);
             });
@@ -639,6 +652,16 @@ public partial class MainWindowViewModel : ViewModelBase
             DataContext = viewModel
         };
 
+        await window.ShowDialog(mainWindow);
+    }
+
+    [RelayCommand]
+    private async Task ShowKeyboardShortcuts()
+    {
+        var mainWindow = GetMainWindow();
+        if (mainWindow == null) return;
+
+        var window = new Views.KeyboardShortcutsWindow();
         await window.ShowDialog(mainWindow);
     }
 

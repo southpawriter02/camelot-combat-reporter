@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:CamelotCombatReporter.Gui.Controls"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+             x:Class="CamelotCombatReporter.Gui.Controls.LoadingOverlay"
+             x:Name="Root"
+             IsVisible="{Binding IsLoading, ElementName=Root}">
+
+    <UserControl.Styles>
+        <Style Selector="controls|LoadingOverlay">
+            <Setter Property="IsHitTestVisible" Value="True"/>
+        </Style>
+        <Style Selector="controls|LoadingOverlay:not(.loading)">
+            <Setter Property="IsHitTestVisible" Value="False"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid>
+        <!-- Semi-transparent background overlay -->
+        <Border Background="{Binding OverlayBrush, ElementName=Root}"
+                IsVisible="{Binding IsLoading, ElementName=Root}"/>
+
+        <!-- Loading content -->
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="12"
+                    IsVisible="{Binding IsLoading, ElementName=Root}">
+
+            <controls:LoadingSpinner Size="{Binding SpinnerSize, ElementName=Root}"
+                                     StrokeThickness="3"
+                                     SpinnerBrush="{Binding SpinnerBrush, ElementName=Root}"/>
+
+            <TextBlock Text="{Binding Message, ElementName=Root}"
+                       HorizontalAlignment="Center"
+                       FontSize="14"
+                       Foreground="{Binding MessageBrush, ElementName=Root}"
+                       IsVisible="{Binding Message, ElementName=Root, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            <!-- Optional progress bar -->
+            <ProgressBar Value="{Binding Progress, ElementName=Root}"
+                         Minimum="0"
+                         Maximum="100"
+                         Width="200"
+                         Height="6"
+                         IsVisible="{Binding ShowProgress, ElementName=Root}"
+                         Classes="Primary"/>
+
+            <TextBlock Text="{Binding ProgressText, ElementName=Root}"
+                       HorizontalAlignment="Center"
+                       FontSize="12"
+                       Foreground="{Binding MessageBrush, ElementName=Root}"
+                       IsVisible="{Binding ShowProgress, ElementName=Root}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

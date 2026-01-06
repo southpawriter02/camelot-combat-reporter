@@ -1,0 +1,106 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+        x:Class="CamelotCombatReporter.Gui.Views.KeyboardShortcutsWindow"
+        Title="Keyboard Shortcuts"
+        Width="500" Height="450"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <ScrollViewer Margin="20">
+        <StackPanel Spacing="20">
+            <!-- Header -->
+            <TextBlock Text="Keyboard Shortcuts"
+                       Classes="Header"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+            <!-- File Operations -->
+            <Border Classes="Card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="File Operations" Classes="Title"/>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" Margin="0,8,0,0">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Open Log File" VerticalAlignment="Center"/>
+                        <Border Grid.Row="0" Grid.Column="1" Classes="BadgePrimary">
+                            <TextBlock Text="Ctrl+O" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
+                        </Border>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Export to CSV" VerticalAlignment="Center" Margin="0,8,0,0"/>
+                        <Border Grid.Row="1" Grid.Column="1" Classes="BadgePrimary" Margin="0,8,0,0">
+                            <TextBlock Text="Ctrl+E" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
+                        </Border>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Export to JSON" VerticalAlignment="Center" Margin="0,8,0,0"/>
+                        <Border Grid.Row="2" Grid.Column="1" Classes="BadgePrimary" Margin="0,8,0,0">
+                            <TextBlock Text="Ctrl+Shift+E" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Analysis -->
+            <Border Classes="Card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Analysis" Classes="Title"/>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" Margin="0,8,0,0">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Analyze/Refresh Log" VerticalAlignment="Center"/>
+                        <Border Grid.Row="0" Grid.Column="1" Classes="BadgeSuccess">
+                            <TextBlock Text="F5" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
+                        </Border>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Reset Filters" VerticalAlignment="Center" Margin="0,8,0,0"/>
+                        <Border Grid.Row="1" Grid.Column="1" Classes="BadgePrimary" Margin="0,8,0,0">
+                            <TextBlock Text="Ctrl+R" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Tools -->
+            <Border Classes="Card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Tools" Classes="Title"/>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto" Margin="0,8,0,0">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Plugin Manager" VerticalAlignment="Center"/>
+                        <Border Grid.Row="0" Grid.Column="1" Classes="BadgePrimary">
+                            <TextBlock Text="Ctrl+P" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Help -->
+            <Border Classes="Card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Help" Classes="Title"/>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto" Margin="0,8,0,0">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Show Keyboard Shortcuts" VerticalAlignment="Center"/>
+                        <Border Grid.Row="0" Grid.Column="1" Classes="BadgeWarning">
+                            <TextBlock Text="F1" Foreground="#212121" FontWeight="SemiBold" FontSize="11"/>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Tips -->
+            <Border Background="#F5F5F5" CornerRadius="5" Padding="15">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Tips" Classes="Title"/>
+                    <TextBlock Text="You can drag and drop .log or .txt files onto the main window to open them."
+                               TextWrapping="Wrap" Classes="Caption"/>
+                    <TextBlock Text="Use the menu bar to access all features, including Settings and About."
+                               TextWrapping="Wrap" Classes="Caption"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Close button -->
+            <Button Content="Close"
+                    Classes="Primary"
+                    HorizontalAlignment="Center"
+                    Width="100"
+                    Click="OnCloseClick"/>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

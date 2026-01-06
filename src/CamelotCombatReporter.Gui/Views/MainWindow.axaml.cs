@@ -6,6 +6,7 @@ using Avalonia.Styling;
 using CamelotCombatReporter.Core.Logging;
 using CamelotCombatReporter.Gui.CrossRealm.ViewModels;
 using CamelotCombatReporter.Gui.Plugins.Views;
+using CamelotCombatReporter.Gui.Services;
 using CamelotCombatReporter.Gui.Settings.ViewModels;
 using CamelotCombatReporter.Gui.Settings.Views;
 using CamelotCombatReporter.Gui.ViewModels;
@@ -66,13 +67,19 @@ public partial class MainWindow : Window
 
     private void ToggleTheme(object? sender, RoutedEventArgs e)
     {
-        var app = Avalonia.Application.Current;
-        if (app != null)
+        var themeService = App.ThemeService;
+        if (themeService != null)
         {
-            var theme = app.RequestedThemeVariant;
-            app.RequestedThemeVariant = (theme == ThemeVariant.Dark)
-                ? ThemeVariant.Light
-                : ThemeVariant.Dark;
+            // Cycle through themes: System -> Light -> Dark -> System
+            var newTheme = themeService.CurrentTheme switch
+            {
+                ThemeMode.System => ThemeMode.Light,
+                ThemeMode.Light => ThemeMode.Dark,
+                ThemeMode.Dark => ThemeMode.System,
+                _ => ThemeMode.System
+            };
+            themeService.ApplyTheme(newTheme);
+            themeService.SavePreference();
         }
     }
 
@@ -127,5 +134,11 @@ public partial class MainWindow : Window
             DataContext = new SettingsWindowViewModel()
         };
         await settingsWindow.ShowDialog(this);
+    }
+
+    private async void OnKeyboardShortcutsClick(object? sender, RoutedEventArgs e)
+    {
+        var shortcutsWindow = new KeyboardShortcutsWindow();
+        await shortcutsWindow.ShowDialog(this);
     }
 }

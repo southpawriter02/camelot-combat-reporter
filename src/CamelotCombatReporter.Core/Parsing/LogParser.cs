@@ -1606,4 +1606,299 @@ public class LogParser
         }
         return null;
     }
+
+    #region Async Parsing Methods
+
+    /// <summary>
+    /// Parses the log file asynchronously with progress reporting.
+    /// </summary>
+    /// <param name="progress">Optional progress reporter.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The parse result containing all events.</returns>
+    public async Task<ParseResult> ParseAsync(
+        IProgress<ParseProgress>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        var startTime = DateTime.UtcNow;
+
+        if (!File.Exists(_logFilePath))
+        {
+            return new ParseResult(
+                Events: Array.Empty<LogEvent>(),
+                TotalLines: 0,
+                ParseTime: TimeSpan.Zero,
+                WasCancelled: false);
+        }
+
+        // Count total lines for progress reporting
+        long totalLines = 0;
+        await using (var countStream = new FileStream(_logFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
+        using (var countReader = new StreamReader(countStream))
+        {
+            while (await countReader.ReadLineAsync(cancellationToken).ConfigureAwait(false) != null)
+            {
+                totalLines++;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return new ParseResult(
+                        Events: Array.Empty<LogEvent>(),
+                        TotalLines: 0,
+                        ParseTime: DateTime.UtcNow - startTime,
+                        WasCancelled: true);
+                }
+            }
+        }
+
+        // Now parse with progress
+        var events = new List<LogEvent>();
+        var recentEvents = new List<LogEvent>();
+        const int MaxRecentEvents = 10;
+        const int ChunkSize = 1000;
+        const int ProgressReportInterval = 100;
+
+        long lineNumber = 0;
+        long lastProgressReport = 0;
+
+        await using var parseStream = new FileStream(_logFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
+        using var reader = new StreamReader(parseStream);
+
+        string? line;
+        while ((line = await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false)) != null)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return new ParseResult(
+                    Events: events,
+                    TotalLines: lineNumber,
+                    ParseTime: DateTime.UtcNow - startTime,
+                    WasCancelled: true);
+            }
+
+            lineNumber++;
+
+            // Parse the line using the synchronous method
+            var parsedEvent = ParseLine(line, (int)lineNumber, recentEvents);
+            if (parsedEvent != null)
+            {
+                AddToRecentEvents(recentEvents, parsedEvent, MaxRecentEvents);
+                events.Add(parsedEvent);
+            }
+
+            // Report progress periodically
+            if (lineNumber - lastProgressReport >= ProgressReportInterval)
+            {
+                lastProgressReport = lineNumber;
+                var elapsed = DateTime.UtcNow - startTime;
+                var percentComplete = totalLines > 0 ? (lineNumber * 100.0 / totalLines) : 0;
+                var linesPerSecond = elapsed.TotalSeconds > 0 ? lineNumber / elapsed.TotalSeconds : 0;
+                var remainingLines = totalLines - lineNumber;
+                var estimatedRemaining = linesPerSecond > 0
+                    ? TimeSpan.FromSeconds(remainingLines / linesPerSecond)
+                    : (TimeSpan?)null;
+
+                progress?.Report(new ParseProgress(
+                    LinesProcessed: lineNumber,
+                    TotalLines: totalLines,
+                    EventsFound: events.Count,
+                    PercentComplete: percentComplete,
+                    Elapsed: elapsed,
+                    EstimatedRemaining: estimatedRemaining));
+            }
+
+            // Yield control periodically for UI responsiveness
+            if (lineNumber % ChunkSize == 0)
+            {
+                await Task.Yield();
+            }
+        }
+
+        var parseTime = DateTime.UtcNow - startTime;
+
+        // Final progress report
+        progress?.Report(new ParseProgress(
+            LinesProcessed: lineNumber,
+            TotalLines: totalLines,
+            EventsFound: events.Count,
+            PercentComplete: 100,
+            Elapsed: parseTime,
+            EstimatedRemaining: TimeSpan.Zero));
+
+        return new ParseResult(
+            Events: events,
+            TotalLines: lineNumber,
+            ParseTime: parseTime,
+            WasCancelled: false);
+    }
+
+    /// <summary>
+    /// Parses a single line and returns the event if it matches any pattern.
+    /// </summary>
+    /// <param name="line">The line to parse.</param>
+    /// <param name="lineNumber">The line number.</param>
+    /// <param name="recentEvents">Recent events for context.</param>
+    /// <returns>The parsed event, or null if the line doesn't match any pattern.</returns>
+    public LogEvent? ParseLine(string line, int lineNumber, List<LogEvent> recentEvents)
+    {
+        // Try plugins first (ordered by priority, highest first)
+        foreach (var plugin in _plugins)
+        {
+            var result = plugin.TryParse(line, lineNumber, recentEvents.AsReadOnly());
+            if (result is ParserPluginSuccess success)
+            {
+                return success.Event;
+            }
+        }
+
+        // Fall back to built-in patterns - check each pattern and return if matched
+        return TryParseBuiltInPatterns(line, recentEvents);
+    }
+
+    /// <summary>
+    /// Tries all built-in patterns against a line.
+    /// Note: This is a simplified version for the async parser.
+    /// For full pattern matching, use the Parse() method.
+    /// </summary>
+    private LogEvent? TryParseBuiltInPatterns(string line, List<LogEvent> recentEvents)
+    {
+        // Melee attack pattern
+        var meleeMatch = MeleeAttackPattern.Match(line);
+        if (meleeMatch.Success)
+        {
+            var groups = meleeMatch.Groups;
+            var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+            var target = groups["target"].Value.Trim();
+            var weapon = groups["weapon"].Value.Trim();
+            var amount = int.Parse(groups["amount"].Value);
+            int? modifier = groups["modifier"].Success ? int.Parse(groups["modifier"].Value) : null;
+
+            return new DamageEvent(
+                Timestamp: timestamp,
+                Source: "You",
+                Target: target,
+                DamageAmount: amount,
+                DamageType: "Melee",
+                Modifier: modifier,
+                WeaponUsed: weapon
+            );
+        }
+
+        // Ranged attack pattern
+        var rangedMatch = RangedAttackPattern.Match(line);
+        if (rangedMatch.Success)
+        {
+            var groups = rangedMatch.Groups;
+            var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+            var target = groups["target"].Value.Trim();
+            var weapon = groups["weapon"].Value.Trim();
+            var amount = int.Parse(groups["amount"].Value);
+            int? modifier = groups["modifier"].Success ? int.Parse(groups["modifier"].Value) : null;
+
+            return new DamageEvent(
+                Timestamp: timestamp,
+                Source: "You",
+                Target: target,
+                DamageAmount: amount,
+                DamageType: "Ranged",
+                Modifier: modifier,
+                WeaponUsed: weapon
+            );
+        }
+
+        // Damage dealt pattern
+        var damageDealtMatch = DamageDealtPattern.Match(line);
+        if (damageDealtMatch.Success)
+        {
+            var groups = damageDealtMatch.Groups;
+            var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+            var target = groups["target"].Value.Trim();
+            var amount = int.Parse(groups["amount"].Value);
+            var damageType = groups["type"].Success ? groups["type"].Value.Trim() : "Unknown";
+            int? modifier = groups["modifier"].Success ? int.Parse(groups["modifier"].Value) : null;
+
+            return new DamageEvent(
+                Timestamp: timestamp,
+                Source: "You",
+                Target: target,
+                DamageAmount: amount,
+                DamageType: damageType,
+                Modifier: modifier
+            );
+        }
+
+        // Damage taken pattern - uses DamageEvent with Target="You"
+        var damageTakenMatch = DamageTakenPattern.Match(line);
+        if (damageTakenMatch.Success)
+        {
+            var groups = damageTakenMatch.Groups;
+            var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+            var source = groups["source"].Value.Trim();
+            var amount = int.Parse(groups["amount"].Value);
+            var damageType = groups["type"].Success ? groups["type"].Value.Trim() : "Unknown";
+            int? modifier = groups["modifier"].Success ? int.Parse(groups["modifier"].Value) : null;
+            string? bodyPart = groups["bodypart"].Success ? groups["bodypart"].Value.Trim() : null;
+
+            return new DamageEvent(
+                Timestamp: timestamp,
+                Source: source,
+                Target: "You",
+                DamageAmount: amount,
+                DamageType: damageType,
+                Modifier: modifier,
+                BodyPart: bodyPart
+            );
+        }
+
+        // Healing done pattern
+        var healDoneMatch = HealingDonePattern.Match(line);
+        if (healDoneMatch.Success)
+        {
+            var groups = healDoneMatch.Groups;
+            var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+            var target = groups["target"].Value.Trim();
+            var amount = int.Parse(groups["amount"].Value);
+
+            return new HealingEvent(
+                Timestamp: timestamp,
+                Source: "You",
+                Target: target,
+                HealingAmount: amount
+            );
+        }
+
+        // Healing received pattern
+        var healReceivedMatch = HealingReceivedPattern.Match(line);
+        if (healReceivedMatch.Success)
+        {
+            var groups = healReceivedMatch.Groups;
+            var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+            var source = groups["source"].Value.Trim();
+            var amount = int.Parse(groups["amount"].Value);
+
+            return new HealingEvent(
+                Timestamp: timestamp,
+                Source: source,
+                Target: "You",
+                HealingAmount: amount
+            );
+        }
+
+        // Death pattern
+        var deathMatch = DeathPattern.Match(line);
+        if (deathMatch.Success)
+        {
+            var groups = deathMatch.Groups;
+            var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+            var target = groups["target"].Value.Trim();
+
+            return new DeathEvent(
+                Timestamp: timestamp,
+                Target: target
+            );
+        }
+
+        // Return null if no pattern matched - other patterns will still work via the main Parse() method
+        return null;
+    }
+
+    #endregion
 }

@@ -4,6 +4,7 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
+using CamelotCombatReporter.Gui.Services;
 using CamelotCombatReporter.Gui.ViewModels;
 using CamelotCombatReporter.Gui.Views;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,11 @@ public partial class App : Application
     /// Gets the application-wide logger factory.
     /// </summary>
     public static ILoggerFactory? LoggerFactory { get; private set; }
+
+    /// <summary>
+    /// Gets the application-wide theme service.
+    /// </summary>
+    public static IThemeService? ThemeService { get; private set; }
 
     /// <summary>
     /// Creates a logger for the specified type.
@@ -56,6 +62,11 @@ public partial class App : Application
         logger.LogInformation("Camelot Combat Reporter starting...");
 
         AvaloniaXamlLoader.Load(this);
+
+        // Initialize and apply theme preferences
+        ThemeService = new ThemeService();
+        ThemeService.LoadAndApplyPreference();
+        logger.LogInformation("Theme service initialized");
     }
 
     public override void OnFrameworkInitializationCompleted()
