@@ -1,0 +1,183 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CamelotCombatReporter.Gui.Updates.ViewModels"
+        x:Class="CamelotCombatReporter.Gui.Updates.Views.UpdateDialog"
+        x:DataType="vm:UpdateViewModel"
+        Title="Software Update"
+        Width="450"
+        Height="350"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        ShowInTaskbar="False">
+
+    <Design.DataContext>
+        <vm:UpdateViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="20" RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="10">
+            <TextBlock Text="Camelot Combat Reporter"
+                       FontSize="20"
+                       FontWeight="Bold"/>
+            <TextBlock Text="{Binding CurrentVersion, StringFormat='Current version: {0}'}"
+                       Foreground="Gray"/>
+        </StackPanel>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" Margin="0,15">
+            <StackPanel Spacing="15">
+
+                <!-- Checking for updates -->
+                <StackPanel IsVisible="{Binding IsChecking}"
+                            Spacing="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <ProgressBar IsIndeterminate="True"
+                                 Width="200"/>
+                    <TextBlock Text="Checking for updates..."
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Update available -->
+                <StackPanel IsVisible="{Binding IsUpdateAvailable}"
+                            Spacing="10">
+                    <Border Background="#1a7f37"
+                            CornerRadius="4"
+                            Padding="10"
+                            IsVisible="{Binding IsRequired}">
+                        <TextBlock Text="This is a required update"
+                                   Foreground="White"
+                                   FontWeight="Bold"/>
+                    </Border>
+
+                    <TextBlock Text="{Binding NewVersion, StringFormat='Version {0} is available!'}"
+                               FontSize="16"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="{Binding ReleaseDate, StringFormat='Released: {0}'}"
+                               Foreground="Gray"/>
+
+                    <Button Content="View Release Notes"
+                            Command="{Binding OpenReleaseNotesCommand}"
+                            Classes="link"
+                            Padding="0"
+                            Background="Transparent"/>
+
+                    <!-- Download progress -->
+                    <StackPanel IsVisible="{Binding IsDownloading}"
+                                Spacing="5">
+                        <ProgressBar Value="{Binding DownloadProgress}"
+                                     Minimum="0"
+                                     Maximum="100"/>
+                        <Grid ColumnDefinitions="*,*">
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding DownloadStatus}"
+                                       FontSize="12"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding DownloadSpeed}"
+                                       HorizontalAlignment="Right"
+                                       FontSize="12"
+                                       Foreground="Gray"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,*">
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding DownloadedSize}"
+                                       FontSize="12"
+                                       Foreground="Gray"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TimeRemaining}"
+                                       HorizontalAlignment="Right"
+                                       FontSize="12"
+                                       Foreground="Gray"/>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- No update available -->
+                <StackPanel IsVisible="{Binding !IsUpdateAvailable}"
+                            Spacing="10"
+                            HorizontalAlignment="Center">
+                    <TextBlock Text="You're up to date!"
+                               FontSize="16"
+                               IsVisible="{Binding !IsChecking}"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="No updates available at this time."
+                               Foreground="Gray"
+                               IsVisible="{Binding !IsChecking}"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Error message -->
+                <Border Background="#d1242f"
+                        CornerRadius="4"
+                        Padding="10"
+                        IsVisible="{Binding HasError}">
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="White"
+                               TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Rollback option -->
+                <StackPanel Orientation="Horizontal"
+                            Spacing="10"
+                            IsVisible="{Binding CanRollback}"
+                            Margin="0,10,0,0">
+                    <TextBlock Text="Having issues?"
+                               VerticalAlignment="Center"
+                               Foreground="Gray"/>
+                    <Button Content="{Binding RollbackVersion, StringFormat='Rollback to v{0}'}"
+                            Command="{Binding RollbackCommand}"
+                            Classes="link"
+                            Padding="0"
+                            Background="Transparent"/>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10">
+
+            <!-- Check button (shown when not checking and no update) -->
+            <Button Content="Check for Updates"
+                    Command="{Binding CheckForUpdatesCommand}"
+                    IsVisible="{Binding !IsUpdateAvailable}"
+                    IsEnabled="{Binding !IsChecking}"/>
+
+            <!-- Update buttons (shown when update available) -->
+            <Button Content="Skip This Version"
+                    Command="{Binding SkipVersionCommand}"
+                    IsVisible="{Binding IsUpdateAvailable}"
+                    IsEnabled="{Binding !IsDownloading}"/>
+
+            <Button Content="Remind Me Later"
+                    Command="{Binding RemindLaterCommand}"
+                    IsVisible="{Binding IsUpdateAvailable}"
+                    IsEnabled="{Binding !IsDownloading}"/>
+
+            <Button Content="Download and Install"
+                    Command="{Binding DownloadAndInstallCommand}"
+                    Classes="accent"
+                    IsVisible="{Binding IsUpdateAvailable}"
+                    IsEnabled="{Binding !IsDownloading}"/>
+
+            <Button Content="Cancel"
+                    Command="{Binding CancelDownloadCommand}"
+                    IsVisible="{Binding IsDownloading}"/>
+
+            <!-- Close button (shown when no update or after error) -->
+            <Button Content="Close"
+                    Click="OnCloseClick"
+                    IsVisible="{Binding !IsUpdateAvailable}"
+                    IsEnabled="{Binding !IsChecking}"/>
+
+        </StackPanel>
+
+    </Grid>
+
+</Window>

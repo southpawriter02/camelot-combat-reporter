@@ -1,0 +1,19 @@
+[Desktop Entry]
+Type=Application
+Name=Camelot Combat Reporter
+GenericName=Combat Log Analyzer
+Comment=Parse and analyze combat logs from Dark Age of Camelot
+Exec=CamelotCombatReporter.Gui %F
+Icon=camelot-combat-reporter
+Terminal=false
+Categories=Game;Utility;
+Keywords=daoc;combat;log;analyzer;mmorpg;
+MimeType=application/x-combat-log;text/x-log;
+StartupNotify=true
+StartupWMClass=CamelotCombatReporter
+
+Actions=new-window;
+
+[Desktop Action new-window]
+Name=New Window
+Exec=CamelotCombatReporter.Gui

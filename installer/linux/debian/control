@@ -1,0 +1,21 @@
+Package: camelot-combat-reporter
+Version: 1.6.0
+Section: games
+Priority: optional
+Architecture: amd64
+Depends: libicu72 | libicu71 | libicu70 | libicu-dev, libssl3 | libssl1.1, zlib1g
+Recommends: fonts-liberation
+Suggests: wine
+Maintainer: Camelot Combat Reporter Contributors <noreply@github.com>
+Homepage: https://github.com/southpawriter02/camelot-combat-reporter
+Description: Combat log analyzer for Dark Age of Camelot
+ Camelot Combat Reporter is a cross-platform application for parsing
+ and analyzing combat logs from Dark Age of Camelot (DAoC).
+ .
+ Features include:
+  - Real-time log parsing and analysis
+  - Damage, healing, and combat statistics
+  - RvR siege tracking and battleground statistics
+  - Relic raid tracking
+  - Session comparison and trend analysis
+  - Plugin support for extensibility

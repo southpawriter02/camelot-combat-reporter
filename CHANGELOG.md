@@ -11,6 +11,73 @@ No unreleased changes.
 
 ---
 
+## [1.6.0] - 2026-01-06
+
+### Added
+- **Windows MSI Installer**
+  - WiX Toolset v4-based installer with full installation flow
+  - File associations for `.combat` and `.log` files
+  - Start menu shortcuts and optional desktop shortcut
+  - Upgrade/downgrade support with version migration
+  - Custom UI dialog sequence with branding
+  - Per-user or per-machine installation options
+
+- **macOS DMG Distribution**
+  - Universal binary support (x64 + ARM64) via `lipo`
+  - Drag-to-Applications DMG installer with custom background
+  - Full code signing infrastructure with entitlements
+  - Notarization workflow for Gatekeeper compatibility
+  - App bundle with proper Info.plist and file associations
+
+- **Linux Package Support**
+  - AppImage for universal Linux distribution
+  - Debian package (.deb) for Ubuntu/Debian/Mint
+  - RPM package for Fedora/RHEL/CentOS
+  - Desktop entry with icon integration
+  - Post-install and post-remove scripts
+
+- **Auto-Update System**
+  - `IUpdateService` / `UpdateService` for update management
+  - Automatic update checking on startup
+  - Download progress tracking with speed and ETA
+  - SHA256 checksum verification before installation
+  - Platform-specific installer execution
+  - Version rollback support with backup management
+  - Update channels: Stable, Beta, Dev
+  - JSON release feed at `releases/latest.json`
+
+- **Update Dialog UI**
+  - Update notification with version comparison
+  - Release notes link
+  - Download progress bar with speed and time remaining
+  - "Download and Install", "Remind Me Later", "Skip This Version" options
+  - Rollback to previous version option
+  - Required update indicator
+
+- **New Core Services**
+  - `IUpdateService` / `UpdateService` - Update checking, download, verification, installation
+  - `UpdateInfo`, `UpdateCheckResult`, `DownloadProgress` - Update data models
+  - `UpdateChannel` enum for release channels
+
+- **New GUI Components**
+  - `UpdateDialog` with `UpdateViewModel` for update notifications
+  - Progress tracking and status display
+
+- **CI/CD Enhancements**
+  - GitHub Actions workflow for multi-platform installers
+  - Automatic MSI, DMG, AppImage, deb, rpm builds on release tags
+  - SHA256 checksum generation for all artifacts
+  - Automatic `latest.json` release feed generation
+
+- **New Unit Tests**
+  - 26 new tests for UpdateService, UpdateInfo, UpdateCheckResult, DownloadProgress
+
+### Changed
+- GitHub Actions release workflow now builds platform-specific installers
+- Total tests: 256 (236 Core + 20 GUI)
+
+---
+
 ## [1.5.0] - 2026-01-06
 
 ### Added
@@ -587,6 +654,7 @@ The TypeScript implementation follows the same feature set as the C# version but
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| 1.6.0 | 2026-01-06 | Distribution & Auto-Update: MSI, DMG, AppImage, deb, rpm, Auto-Update System |
 | 1.5.0 | 2026-01-06 | RvR Features: Keep/Siege Tracking, Relic Raids, Battleground Statistics |
 | 1.4.0 | 2026-01-06 | Group Composition Analysis with role classification and templates |
 | 1.3.0 | 2026-01-05 | Combat Alerts, Session Comparison, Trend Analysis, Goal Tracking |

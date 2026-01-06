@@ -1,0 +1,33 @@
+<Project Sdk="WixToolset.Sdk/4.0.5">
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <OutputName>CamelotCombatReporter-$(ProductVersion)-win-x64</OutputName>
+    <InstallerPlatform>x64</InstallerPlatform>
+  </PropertyGroup>
+
+  <!-- Define default product version if not provided -->
+  <PropertyGroup Condition="'$(ProductVersion)' == ''">
+    <ProductVersion>1.6.0</ProductVersion>
+  </PropertyGroup>
+
+  <!-- Define publish directory if not provided -->
+  <PropertyGroup Condition="'$(PublishDir)' == ''">
+    <PublishDir>..\..\publish\win-x64</PublishDir>
+  </PropertyGroup>
+
+  <!-- WiX extension references -->
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.5" />
+  </ItemGroup>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
+    <Compile Include="Variables.wxi" />
+  </ItemGroup>
+
+  <!-- Build configuration -->
+  <PropertyGroup>
+    <DefineConstants>ProductVersion=$(ProductVersion);PublishDir=$(PublishDir)</DefineConstants>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,23 @@
+{
+  "version": "1.6.0",
+  "releaseDate": "2026-01-06",
+  "releaseNotesUrl": "https://github.com/southpawriter02/camelot-combat-reporter/releases/tag/v1.6.0",
+  "downloads": {
+    "win-x64-msi": "https://github.com/southpawriter02/camelot-combat-reporter/releases/download/v1.6.0/CamelotCombatReporter-1.6.0-win-x64.msi",
+    "win-x64-zip": "https://github.com/southpawriter02/camelot-combat-reporter/releases/download/v1.6.0/CamelotCombatReporter-1.6.0-win-x64.zip",
+    "osx-universal": "https://github.com/southpawriter02/camelot-combat-reporter/releases/download/v1.6.0/CamelotCombatReporter-1.6.0.dmg",
+    "linux-x64-appimage": "https://github.com/southpawriter02/camelot-combat-reporter/releases/download/v1.6.0/CamelotCombatReporter-1.6.0-x86_64.AppImage",
+    "linux-x64-deb": "https://github.com/southpawriter02/camelot-combat-reporter/releases/download/v1.6.0/camelot-combat-reporter_1.6.0_amd64.deb",
+    "linux-x64-rpm": "https://github.com/southpawriter02/camelot-combat-reporter/releases/download/v1.6.0/camelot-combat-reporter-1.6.0-1.x86_64.rpm"
+  },
+  "checksums": {
+    "win-x64-msi": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "win-x64-zip": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "osx-universal": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "linux-x64-appimage": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "linux-x64-deb": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "linux-x64-rpm": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "isRequired": false,
+  "minimumVersion": null
+}

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Main WiX installer definition for Camelot Combat Reporter.
+  Built with WiX Toolset v4.
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <?include Variables.wxi ?>
+
+  <Package Name="$(ProductName)"
+           Manufacturer="$(Manufacturer)"
+           Version="$(ProductVersion)"
+           UpgradeCode="$(UpgradeCode)"
+           Language="1033"
+           Codepage="1252"
+           InstallerVersion="500"
+           Compressed="yes"
+           Scope="perUser">
+
+    <SummaryInformation Description="$(ProductDescription)"
+                        Manufacturer="$(Manufacturer)" />
+
+    <!-- Upgrade handling -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed."
+                  AllowSameVersionUpgrades="yes" />
+
+    <!-- Embed all files in the MSI -->
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <!-- Properties -->
+    <Property Id="ARPURLINFOABOUT" Value="$(AboutUrl)" />
+    <Property Id="ARPHELPLINK" Value="$(HelpUrl)" />
+    <Property Id="ARPURLUPDATEINFO" Value="$(UpdateUrl)" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+
+    <!-- Icon for Add/Remove Programs -->
+    <Icon Id="AppIcon" SourceFile="assets\icon.ico" />
+
+    <!-- Launch conditions -->
+    <Launch Condition="VersionNT64" Message="This application requires a 64-bit version of Windows." />
+
+    <!-- Directory structure -->
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="INSTALLFOLDER" Name="$(InstallFolder)">
+        <Directory Id="LogsFolder" Name="Logs" />
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="$(InstallFolder)" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <!-- Main component group -->
+    <ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER">
+      <!-- Main executable -->
+      <Component Id="MainExecutable" Guid="A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D">
+        <File Id="CamelotCombatReporterExe"
+              Source="$(PublishDir)\CamelotCombatReporter.Gui.exe"
+              Name="CamelotCombatReporter.exe"
+              KeyPath="yes">
+          <Shortcut Id="StartMenuShortcut"
+                    Directory="ApplicationProgramsFolder"
+                    Name="Camelot Combat Reporter"
+                    Description="Combat log analyzer for Dark Age of Camelot"
+                    WorkingDirectory="INSTALLFOLDER"
+                    Icon="AppIcon"
+                    Advertise="yes" />
+        </File>
+      </Component>
+
+      <!-- Desktop shortcut (optional) -->
+      <Component Id="DesktopShortcutComponent" Guid="B2C3D4E5-F6A7-4B5C-9D0E-1F2A3B4C5D6E">
+        <RegistryValue Root="HKCU"
+                       Key="Software\CamelotCombatReporter"
+                       Name="DesktopShortcut"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+        <Shortcut Id="DesktopShortcut"
+                  Directory="DesktopFolder"
+                  Name="Camelot Combat Reporter"
+                  Description="Combat log analyzer for Dark Age of Camelot"
+                  Target="[INSTALLFOLDER]CamelotCombatReporter.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon" />
+        <RemoveFolder Id="RemoveDesktopShortcut" Directory="DesktopFolder" On="uninstall" />
+      </Component>
+
+      <!-- Program menu folder cleanup -->
+      <Component Id="ProgramMenuCleanup" Guid="C3D4E5F6-A7B8-4C5D-0E1F-2A3B4C5D6E7F">
+        <RegistryValue Root="HKCU"
+                       Key="Software\CamelotCombatReporter"
+                       Name="ProgramMenuFolder"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+        <RemoveFolder Id="RemoveProgramMenuFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+      </Component>
+
+      <!-- Application DLLs and dependencies - harvested dynamically -->
+      <Component Id="ApplicationFiles" Guid="D4E5F6A7-B8C9-4D5E-1F2A-3B4C5D6E7F8A">
+        <File Source="$(PublishDir)\CamelotCombatReporter.Gui.dll" />
+        <File Source="$(PublishDir)\CamelotCombatReporter.Core.dll" />
+        <File Source="$(PublishDir)\CamelotCombatReporter.Plugins.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- File associations -->
+    <ComponentGroup Id="FileAssociations" Directory="INSTALLFOLDER">
+      <!-- .combat file association -->
+      <Component Id="CombatFileAssociation" Guid="E5F6A7B8-C9D0-4E5F-2A3B-4C5D6E7F8A9B">
+        <RegistryValue Root="HKCU"
+                       Key="Software\Classes\.combat"
+                       Value="CamelotCombatReporter.CombatLog"
+                       Type="string"
+                       KeyPath="yes" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\Classes\CamelotCombatReporter.CombatLog"
+                       Value="Combat Log File"
+                       Type="string" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\Classes\CamelotCombatReporter.CombatLog\DefaultIcon"
+                       Value="[INSTALLFOLDER]CamelotCombatReporter.exe,1"
+                       Type="string" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\Classes\CamelotCombatReporter.CombatLog\shell\open\command"
+                       Value="&quot;[INSTALLFOLDER]CamelotCombatReporter.exe&quot; &quot;%1&quot;"
+                       Type="string" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Features -->
+    <Feature Id="MainFeature"
+             Title="Camelot Combat Reporter"
+             Description="The complete application"
+             Level="1"
+             ConfigurableDirectory="INSTALLFOLDER"
+             AllowAbsent="no"
+             AllowAdvertise="no"
+             Display="expand">
+      <ComponentGroupRef Id="MainComponents" />
+
+      <Feature Id="FileAssociationsFeature"
+               Title="File Associations"
+               Description="Associate .combat files with Camelot Combat Reporter"
+               Level="1"
+               AllowAbsent="yes">
+        <ComponentGroupRef Id="FileAssociations" />
+      </Feature>
+
+      <Feature Id="DesktopShortcutFeature"
+               Title="Desktop Shortcut"
+               Description="Create a shortcut on the desktop"
+               Level="1"
+               AllowAbsent="yes">
+        <ComponentRef Id="DesktopShortcutComponent" />
+      </Feature>
+    </Feature>
+
+    <!-- UI configuration -->
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+
+    <!-- License -->
+    <WixVariable Id="WixUILicenseRtf" Value="assets\license.rtf" />
+
+    <!-- Banner and dialog images -->
+    <WixVariable Id="WixUIBannerBmp" Value="assets\banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="assets\dialog.bmp" />
+
+  </Package>
+</Wix>

@@ -4,9 +4,37 @@ This document outlines the feature roadmap for Camelot Combat Reporter. The proj
 
 ---
 
-## Current Version: v1.5.0
+## Current Version: v1.6.0
 
 Released: January 2026
+
+### What's in v1.6.x
+
+**Windows MSI Installer** (New in v1.6.0)
+- WiX Toolset v4-based installer with full installation flow
+- File associations for `.combat` and `.log` files
+- Start menu shortcuts and optional desktop shortcut
+- Upgrade/downgrade support with version migration
+
+**macOS DMG Distribution** (New in v1.6.0)
+- Universal binary support (x64 + ARM64) via `lipo`
+- Drag-to-Applications DMG installer with custom background
+- Full code signing infrastructure with entitlements
+- Notarization workflow for Gatekeeper compatibility
+
+**Linux Package Support** (New in v1.6.0)
+- AppImage for universal Linux distribution
+- Debian package (.deb) for Ubuntu/Debian/Mint
+- RPM package for Fedora/RHEL/CentOS
+- Desktop entry with icon integration
+
+**Auto-Update System** (New in v1.6.0)
+- Automatic update checking with version comparison
+- Download progress tracking with speed and ETA
+- SHA256 checksum verification before installation
+- Platform-specific installer execution
+- Version rollback support with backup management
+- Update channels: Stable, Beta, Dev
 
 ### What's in v1.5.x
 
@@ -207,7 +235,7 @@ Released: January 2026
 | [Database Integration](advanced-features/03-database-integration.md) | ✅ Complete | v1.0.0 | `src/database/` (TypeScript) |
 | [API Exposure](advanced-features/04-api-exposure.md) | ✅ Complete | v1.0.0 | `src/api/` (TypeScript) |
 
-### Future Enhancements (14/18 Complete)
+### Future Enhancements (15/18 Complete)
 
 | Feature | Status | Target | Location |
 |---------|--------|--------|----------|
@@ -217,7 +245,7 @@ Released: January 2026
 | [Loot Drop Rate Tracking](future-enhancements/04-loot-drop-tracking.md) | ✅ Complete | v1.0.0 | `src/CamelotCombatReporter.Core/LootTracking/`, `src/CamelotCombatReporter.Gui/LootTracking/` |
 | [Realm Ability Tracking](future-enhancements/05-realm-ability-tracking.md) | ✅ Complete | v1.2.0 | `src/CamelotCombatReporter.Core/RealmAbilities/`, `src/CamelotCombatReporter.Gui/RealmAbilities/` |
 | [Server Type Filters](future-enhancements/06-server-type-filters.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/ServerProfiles/`, `src/CamelotCombatReporter.Gui/Settings/` |
-| [Distribution Builds](future-enhancements/07-distribution-builds.md) | ✅ Phase 1 | v1.0.0 | `.github/workflows/`, `Directory.Build.props` |
+| [Distribution Builds](future-enhancements/07-distribution-builds.md) | ✅ Complete | v1.6.0 | `installer/`, `.github/workflows/`, `src/CamelotCombatReporter.Core/Updates/` |
 | [Chat Filtering](future-enhancements/08-chat-filtering.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/ChatFiltering/`, `src/CamelotCombatReporter.Gui/Settings/` |
 | [Group Composition Analysis](future-enhancements/09-group-composition-analysis.md) | ✅ Complete | v1.4.0 | `src/CamelotCombatReporter.Core/GroupAnalysis/`, `src/CamelotCombatReporter.Gui/GroupAnalysis/` |
 | [Keep and Siege Tracking](future-enhancements/10-keep-siege-tracking.md) | ✅ Complete | v1.5.0 | `src/CamelotCombatReporter.Core/RvR/`, `src/CamelotCombatReporter.Gui/RvR/` |
@@ -327,27 +355,31 @@ Released: January 2026
 
 ---
 
-### v1.6.0 - Distribution & Community
+### v1.6.0 - Distribution & Auto-Update ✅ RELEASED
 
-**Focus:** Improved installers and community features
+**Released:** January 2026
+**Focus:** Improved installers and auto-update functionality
 
-| Item | Type | Description |
-|------|------|-------------|
-| Distribution Builds Phase 2 | Feature | Windows MSI installer, macOS DMG with notarization |
-| Linux Packages | Feature | AppImage, .deb, .rpm package support |
-| Auto-Update | Feature | In-app update checking and installation |
-| Cross-Realm Analysis Phase 2 | Feature | Central server for community statistics |
-| Public Leaderboards | Feature | Opt-in anonymous leaderboard participation |
-| Bug Fixes | Maintenance | Monthly bug fix cycle |
+| Item | Type | Status | Description |
+|------|------|--------|-------------|
+| [Distribution Builds](future-enhancements/07-distribution-builds.md) | Feature | ✅ Complete | Windows MSI, macOS DMG, Linux packages |
+| Windows MSI Installer | Feature | ✅ Complete | WiX Toolset v4-based installer with file associations |
+| macOS DMG Distribution | Feature | ✅ Complete | Universal binary, code signing, notarization workflow |
+| Linux Packages | Feature | ✅ Complete | AppImage, .deb, .rpm package support |
+| Auto-Update System | Feature | ✅ Complete | Update checking, download, verification, installation |
+| Update Dialog UI | Feature | ✅ Complete | Progress tracking, rollback support, version comparison |
+| Release Feed | Feature | ✅ Complete | JSON-based update feed at `releases/latest.json` |
 
 ---
 
-### v1.7.0 - Polish & Preparation
+### v1.7.0 - Community & Polish
 
-**Focus:** Stability and v2.0 preparation
+**Focus:** Community features and stability
 
 | Item | Type | Description |
 |------|------|-------------|
+| Cross-Realm Analysis Phase 2 | Feature | Central server for community statistics |
+| Public Leaderboards | Feature | Opt-in anonymous leaderboard participation |
 | Performance Audit | Maintenance | Full performance optimization pass |
 | UX Improvements | Enhancement | UI/UX refinements based on feedback |
 | Documentation Update | Maintenance | Comprehensive docs for all v1.x features |
@@ -388,6 +420,27 @@ Bug fix releases occur as needed between feature releases:
 ---
 
 ## Version History
+
+### v1.6.0 (January 2026)
+
+**Distribution & Auto-Update Release:**
+- Windows MSI Installer with WiX Toolset v4
+- File associations for `.combat` and `.log` files
+- Start menu shortcuts and optional desktop shortcut
+- macOS DMG with universal binary (x64 + ARM64) support
+- Full code signing infrastructure and notarization workflow
+- Linux packages: AppImage, .deb (Debian/Ubuntu), .rpm (Fedora/RHEL)
+- Desktop entry integration with icons for all sizes
+- Auto-Update System with update checking and version comparison
+- Download progress tracking with speed and ETA
+- SHA256 checksum verification before installation
+- Platform-specific installer execution
+- Version rollback support with backup management
+- Update channels: Stable, Beta, Dev
+- JSON release feed at `releases/latest.json`
+- Update Dialog UI with progress, rollback, and version comparison
+- GitHub Actions workflow for multi-platform installer builds
+- 26 new unit tests for update services
 
 ### v1.5.0 (January 2026)
 

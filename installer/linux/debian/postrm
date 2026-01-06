@@ -1,0 +1,40 @@
+#!/bin/bash
+# postrm - Post-removal script for Debian package
+#
+# This script is executed after the package files are removed.
+
+set -e
+
+case "$1" in
+    purge|remove)
+        # Remove symlink
+        if [ -L /usr/bin/camelot-combat-reporter ]; then
+            rm -f /usr/bin/camelot-combat-reporter
+        fi
+
+        # Update desktop database
+        if command -v update-desktop-database &> /dev/null; then
+            update-desktop-database -q /usr/share/applications || true
+        fi
+
+        # Update icon cache
+        if command -v gtk-update-icon-cache &> /dev/null; then
+            gtk-update-icon-cache -q /usr/share/icons/hicolor || true
+        fi
+
+        # Update MIME database
+        if command -v update-mime-database &> /dev/null; then
+            update-mime-database /usr/share/mime || true
+        fi
+        ;;
+
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        ;;
+
+    *)
+        echo "postrm called with unknown argument '$1'" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

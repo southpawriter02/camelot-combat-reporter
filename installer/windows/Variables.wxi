@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Variables for Camelot Combat Reporter installer.
+  These can be overridden at build time using -d parameter.
+-->
+<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <!-- Product Information -->
+  <?ifndef ProductVersion ?>
+    <?define ProductVersion = "1.6.0" ?>
+  <?endif?>
+
+  <?define ProductName = "Camelot Combat Reporter" ?>
+  <?define Manufacturer = "Camelot Combat Reporter Contributors" ?>
+  <?define ProductDescription = "Combat log analyzer for Dark Age of Camelot" ?>
+
+  <!-- GUIDs - These should remain constant across versions -->
+  <?define UpgradeCode = "E8F9A2B3-C4D5-4E6F-8A9B-0C1D2E3F4A5B" ?>
+  <?define ProductCode = "*" ?>
+
+  <!-- Paths -->
+  <?ifndef PublishDir ?>
+    <?define PublishDir = "..\..\publish\win-x64" ?>
+  <?endif?>
+
+  <!-- Installation directories -->
+  <?define InstallFolder = "Camelot Combat Reporter" ?>
+
+  <!-- URLs -->
+  <?define HelpUrl = "https://github.com/southpawriter02/camelot-combat-reporter" ?>
+  <?define AboutUrl = "https://github.com/southpawriter02/camelot-combat-reporter" ?>
+  <?define UpdateUrl = "https://github.com/southpawriter02/camelot-combat-reporter/releases" ?>
+</Include>

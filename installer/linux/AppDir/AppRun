@@ -1,0 +1,23 @@
+#!/bin/bash
+# AppRun - Entry point for AppImage
+#
+# This script is executed when the AppImage is run.
+# It sets up the environment and launches the main application.
+
+SELF=$(readlink -f "$0")
+HERE=${SELF%/*}
+
+# Export library paths
+export LD_LIBRARY_PATH="${HERE}/usr/lib:${HERE}/usr/lib64:${LD_LIBRARY_PATH}"
+
+# Export XDG paths for proper desktop integration
+export XDG_DATA_DIRS="${HERE}/usr/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+
+# Set the path to the application
+export PATH="${HERE}/usr/bin:${PATH}"
+
+# Enable Avalonia on Linux
+export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+# Launch the application
+exec "${HERE}/usr/bin/CamelotCombatReporter.Gui" "$@"

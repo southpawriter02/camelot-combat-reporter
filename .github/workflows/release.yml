@@ -5,6 +5,9 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
+env:
+  DOTNET_VERSION: '9.0.x'
+
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -14,19 +17,59 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Get version from tag
+        id: version
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION="0.0.0"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
 
       - name: Publish Windows x64
-        run: dotnet publish src/CamelotCombatReporter.Gui -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish/win-x64
+        run: |
+          dotnet publish src/CamelotCombatReporter.Gui -c Release -r win-x64 --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true `
+            -o publish/win-x64
 
-      - name: Create ZIP
-        run: Compress-Archive -Path publish/win-x64/* -DestinationPath CamelotCombatReporter-win-x64.zip
+      - name: Create ZIP (portable)
+        run: |
+          Compress-Archive -Path publish/win-x64/* -DestinationPath CamelotCombatReporter-${{ steps.version.outputs.version }}-win-x64.zip
 
-      - name: Upload artifact
+      - name: Install WiX Toolset
+        run: dotnet tool install --global wix --version 4.0.5
+
+      - name: Install WiX UI extension
+        run: wix extension add WixToolset.UI.wixext/4.0.5 -g
+
+      - name: Build MSI Installer
+        working-directory: installer/windows
+        run: |
+          wix build Product.wxs `
+            -d ProductVersion=${{ steps.version.outputs.version }} `
+            -d PublishDir=../../publish/win-x64 `
+            -ext WixToolset.UI.wixext `
+            -o ../../CamelotCombatReporter-${{ steps.version.outputs.version }}-win-x64.msi
+
+      # Signing step (commented out until certificate is available)
+      # - name: Sign MSI
+      #   run: |
+      #     signtool sign /f ${{ secrets.WINDOWS_CERT_PATH }} /p ${{ secrets.WINDOWS_CERT_PASSWORD }} /tr http://timestamp.digicert.com /td sha256 /fd sha256 CamelotCombatReporter-*.msi
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: windows-x64
-          path: CamelotCombatReporter-win-x64.zip
+          path: |
+            CamelotCombatReporter-${{ steps.version.outputs.version }}-win-x64.zip
+            CamelotCombatReporter-${{ steps.version.outputs.version }}-win-x64.msi
 
   build-macos:
     runs-on: macos-latest
@@ -36,7 +79,18 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Get version from tag
+        id: version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION="0.0.0"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
 
       - name: Publish macOS x64
         run: dotnet publish src/CamelotCombatReporter.Gui -c Release -r osx-x64 --self-contained true -o publish/osx-x64
@@ -44,19 +98,68 @@ jobs:
       - name: Publish macOS ARM64
         run: dotnet publish src/CamelotCombatReporter.Gui -c Release -r osx-arm64 --self-contained true -o publish/osx-arm64
 
-      - name: Create ZIPs
+      - name: Create Universal Binary
+        run: |
+          chmod +x installer/macos/create-universal.sh
+          ./installer/macos/create-universal.sh publish
+
+      - name: Create App Bundle
+        run: |
+          chmod +x installer/macos/create-app-bundle.sh
+          ./installer/macos/create-app-bundle.sh publish/osx-universal staging
+
+      - name: Update Info.plist version
+        run: |
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${{ steps.version.outputs.version }}" "staging/Camelot Combat Reporter.app/Contents/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${{ steps.version.outputs.version }}" "staging/Camelot Combat Reporter.app/Contents/Info.plist"
+
+      # Signing and notarization (commented out until certificate is available)
+      # - name: Import signing certificate
+      #   env:
+      #     MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+      #     MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+      #   run: |
+      #     echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
+      #     security create-keychain -p "" build.keychain
+      #     security import certificate.p12 -k build.keychain -P $MACOS_CERTIFICATE_PASSWORD -T /usr/bin/codesign
+      #     security list-keychains -d user -s build.keychain
+      #     security set-keychain-settings build.keychain
+      #     security unlock-keychain -p "" build.keychain
+      #     security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
+      #
+      # - name: Sign and Notarize
+      #   env:
+      #     APPLE_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
+      #     APPLE_ID: ${{ secrets.APPLE_ID }}
+      #     APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+      #     APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      #   run: |
+      #     chmod +x installer/macos/notarize.sh
+      #     ./installer/macos/notarize.sh
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Create DMG
+        run: |
+          mkdir -p dist
+          chmod +x installer/macos/create-dmg.sh
+          VERSION=${{ steps.version.outputs.version }} ./installer/macos/create-dmg.sh ${{ steps.version.outputs.version }}
+
+      - name: Create ZIPs (legacy format)
         run: |
           cd publish
-          zip -r ../CamelotCombatReporter-osx-x64.zip osx-x64
-          zip -r ../CamelotCombatReporter-osx-arm64.zip osx-arm64
+          zip -r ../CamelotCombatReporter-${{ steps.version.outputs.version }}-osx-x64.zip osx-x64
+          zip -r ../CamelotCombatReporter-${{ steps.version.outputs.version }}-osx-arm64.zip osx-arm64
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: macos-builds
           path: |
-            CamelotCombatReporter-osx-x64.zip
-            CamelotCombatReporter-osx-arm64.zip
+            CamelotCombatReporter-${{ steps.version.outputs.version }}-osx-x64.zip
+            CamelotCombatReporter-${{ steps.version.outputs.version }}-osx-arm64.zip
+            dist/CamelotCombatReporter-${{ steps.version.outputs.version }}.dmg
 
   build-linux:
     runs-on: ubuntu-latest
@@ -66,7 +169,18 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Get version from tag
+        id: version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION="0.0.0"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
 
       - name: Publish Linux x64
         run: dotnet publish src/CamelotCombatReporter.Gui -c Release -r linux-x64 --self-contained true -o publish/linux-x64
@@ -74,13 +188,35 @@ jobs:
       - name: Create ZIP
         run: |
           cd publish
-          zip -r ../CamelotCombatReporter-linux-x64.zip linux-x64
+          zip -r ../CamelotCombatReporter-${{ steps.version.outputs.version }}-linux-x64.zip linux-x64
 
-      - name: Upload artifact
+      - name: Create AppImage
+        run: |
+          chmod +x installer/linux/create-appimage.sh
+          ./installer/linux/create-appimage.sh ${{ steps.version.outputs.version }} publish/linux-x64
+
+      - name: Create Debian Package
+        run: |
+          chmod +x installer/linux/create-deb.sh
+          ./installer/linux/create-deb.sh ${{ steps.version.outputs.version }} publish/linux-x64
+
+      - name: Install RPM build tools
+        run: sudo apt-get update && sudo apt-get install -y rpm
+
+      - name: Create RPM Package
+        run: |
+          chmod +x installer/linux/create-rpm.sh
+          ./installer/linux/create-rpm.sh ${{ steps.version.outputs.version }} publish/linux-x64 || echo "RPM build may have failed, continuing..."
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: linux-x64
-          path: CamelotCombatReporter-linux-x64.zip
+          path: |
+            CamelotCombatReporter-${{ steps.version.outputs.version }}-linux-x64.zip
+            dist/CamelotCombatReporter-${{ steps.version.outputs.version }}-x86_64.AppImage
+            dist/camelot-combat-reporter_${{ steps.version.outputs.version }}_amd64.deb
+            dist/camelot-combat-reporter-${{ steps.version.outputs.version }}*.rpm
 
   release:
     needs: [build-windows, build-macos, build-linux]
@@ -89,6 +225,14 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -97,11 +241,66 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R artifacts
 
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          find . -type f \( -name "*.zip" -o -name "*.msi" -o -name "*.dmg" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" \) -exec sha256sum {} \; > ../checksums.txt
+          cd ..
+          cat checksums.txt
+
+      - name: Generate release feed JSON
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          REPO_URL="https://github.com/${{ github.repository }}/releases/download/v${VERSION}"
+
+          # Generate checksums map
+          WIN_MSI_CHECKSUM=$(grep "win-x64.msi" checksums.txt | awk '{print $1}' || echo "")
+          WIN_ZIP_CHECKSUM=$(grep "win-x64.zip" checksums.txt | awk '{print $1}' || echo "")
+          OSX_DMG_CHECKSUM=$(grep ".dmg" checksums.txt | awk '{print $1}' || echo "")
+          LINUX_APPIMAGE_CHECKSUM=$(grep ".AppImage" checksums.txt | awk '{print $1}' || echo "")
+          LINUX_DEB_CHECKSUM=$(grep ".deb" checksums.txt | awk '{print $1}' || echo "")
+          LINUX_RPM_CHECKSUM=$(grep ".rpm" checksums.txt | awk '{print $1}' || echo "")
+
+          cat > latest.json << EOF
+          {
+            "version": "${VERSION}",
+            "releaseDate": "$(date +%Y-%m-%d)",
+            "releaseNotesUrl": "https://github.com/${{ github.repository }}/releases/tag/v${VERSION}",
+            "downloads": {
+              "win-x64-msi": "${REPO_URL}/CamelotCombatReporter-${VERSION}-win-x64.msi",
+              "win-x64-zip": "${REPO_URL}/CamelotCombatReporter-${VERSION}-win-x64.zip",
+              "osx-universal": "${REPO_URL}/CamelotCombatReporter-${VERSION}.dmg",
+              "linux-x64-appimage": "${REPO_URL}/CamelotCombatReporter-${VERSION}-x86_64.AppImage",
+              "linux-x64-deb": "${REPO_URL}/camelot-combat-reporter_${VERSION}_amd64.deb",
+              "linux-x64-rpm": "${REPO_URL}/camelot-combat-reporter-${VERSION}-1.x86_64.rpm"
+            },
+            "checksums": {
+              "win-x64-msi": "sha256:${WIN_MSI_CHECKSUM}",
+              "win-x64-zip": "sha256:${WIN_ZIP_CHECKSUM}",
+              "osx-universal": "sha256:${OSX_DMG_CHECKSUM}",
+              "linux-x64-appimage": "sha256:${LINUX_APPIMAGE_CHECKSUM}",
+              "linux-x64-deb": "sha256:${LINUX_DEB_CHECKSUM}",
+              "linux-x64-rpm": "sha256:${LINUX_RPM_CHECKSUM}"
+            },
+            "isRequired": false,
+            "minimumVersion": null
+          }
+          EOF
+
+          cat latest.json
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             artifacts/windows-x64/*.zip
+            artifacts/windows-x64/*.msi
             artifacts/macos-builds/*.zip
+            artifacts/macos-builds/*.dmg
             artifacts/linux-x64/*.zip
+            artifacts/linux-x64/*.AppImage
+            artifacts/linux-x64/*.deb
+            artifacts/linux-x64/*.rpm
+            checksums.txt
+            latest.json
           generate_release_notes: true

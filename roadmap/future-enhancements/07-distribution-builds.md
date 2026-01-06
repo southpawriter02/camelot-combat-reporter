@@ -1,12 +1,12 @@
 # 7. Distribution Builds
 
-## Status: 📋 Planned
+## Status: ✅ Complete (v1.6.0)
 
 **Prerequisites:**
 - ✅ Cross-platform GUI (Avalonia)
 - ✅ .NET 9.0 project structure
-- ⬚ Build pipeline configuration
-- ⬚ Code signing certificates
+- ✅ Build pipeline configuration
+- ⬚ Code signing certificates (infrastructure ready, certificates optional)
 
 ---
 

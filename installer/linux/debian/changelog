@@ -1,0 +1,23 @@
+camelot-combat-reporter (1.6.0) stable; urgency=medium
+
+  * Distribution Builds Phase 2
+    - Windows MSI installer with file associations
+    - macOS DMG with universal binary support
+    - Linux packages (AppImage, deb, rpm)
+  * Auto-Update System
+    - Background update checking
+    - Download with progress indication
+    - In-place installation
+    - Rollback support
+
+ -- Camelot Combat Reporter Contributors <noreply@github.com>  Mon, 06 Jan 2026 00:00:00 +0000
+
+camelot-combat-reporter (1.5.0) stable; urgency=medium
+
+  * RvR Features
+    - Keep and siege tracking
+    - Relic tracking and raid sessions
+    - Battleground statistics
+    - Siege timeline visualization
+
+ -- Camelot Combat Reporter Contributors <noreply@github.com>  Sun, 05 Jan 2026 00:00:00 +0000
