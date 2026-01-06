@@ -1,0 +1,438 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.GroupAnalysis.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="800"
+             x:Class="CamelotCombatReporter.Gui.GroupAnalysis.Views.GroupAnalysisView"
+             x:DataType="vm:GroupAnalysisViewModel">
+
+    <Design.DataContext>
+        <vm:GroupAnalysisViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="Group Analysis"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontSize="12"
+                               Foreground="Gray"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Content="Reset"
+                        Command="{Binding ResetCommand}"
+                        Margin="0,0,10,0"/>
+                <Button Grid.Column="2"
+                        Content="Analyze Log File"
+                        Command="{Binding AnalyzeFromFileCommand}"
+                        CommandParameter="{Binding $parent[Window]}"/>
+            </Grid>
+
+            <!-- Loading Indicator -->
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding IsLoading}"
+                         Height="4"/>
+
+            <!-- Group Overview Panel -->
+            <Border BorderBrush="#2196F3"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Group Composition"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#2196F3"/>
+
+                    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto">
+                        <!-- Member Count -->
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding MemberCount}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Members"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Size Category -->
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding SizeCategory}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Category"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Balance Score -->
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding BalanceScore, StringFormat={}{0:F0}}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Balance Score"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Matched Template -->
+                        <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding MatchedTemplate}"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock Text="Template"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Two Column Layout -->
+            <Grid ColumnDefinitions="*,*" IsVisible="{Binding HasData}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Left Column: Members List -->
+                <Border Grid.Column="0"
+                        Grid.Row="0"
+                        BorderBrush="#4CAF50"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Group Members"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#4CAF50"/>
+
+                        <DataGrid ItemsSource="{Binding GroupMembers}"
+                                  Height="200"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="Gray">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                                <DataGridTextColumn Header="Class" Binding="{Binding Class}" Width="80"/>
+                                <DataGridTextColumn Header="Role" Binding="{Binding PrimaryRole}" Width="80"/>
+                                <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="60"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- Add Manual Member -->
+                        <TextBlock Text="Add Member Manually"
+                                   FontWeight="SemiBold"
+                                   FontSize="12"
+                                   Margin="0,10,0,0"/>
+                        <Grid ColumnDefinitions="*,120,Auto">
+                            <TextBox Grid.Column="0"
+                                     Watermark="Member Name"
+                                     Text="{Binding NewMemberName}"
+                                     Margin="0,0,5,0"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding AvailableClasses}"
+                                      SelectedItem="{Binding NewMemberClass}"
+                                      PlaceholderText="Class"
+                                      Margin="0,0,5,0"/>
+                            <Button Grid.Column="2"
+                                    Content="Add"
+                                    Command="{Binding AddManualMemberCommand}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Right Column: Role Distribution Chart -->
+                <Border Grid.Column="1"
+                        Grid.Row="0"
+                        BorderBrush="#FF9800"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="7,0,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Role Distribution"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#FF9800"/>
+                        <lvc:PieChart Series="{Binding RoleDistributionSeries}"
+                                      Height="240"
+                                      LegendPosition="Right"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Role Coverage -->
+                <Border Grid.Column="0"
+                        Grid.Row="1"
+                        BorderBrush="#9C27B0"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,15,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Role Coverage"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#9C27B0"/>
+
+                        <ItemsControl ItemsSource="{Binding RoleCoverage}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="100,30,*,50" Margin="0,3">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding Role}"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding MemberCount}"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                        <Border Grid.Column="2"
+                                                Background="#333333"
+                                                CornerRadius="3"
+                                                Height="16"
+                                                Margin="5,0">
+                                            <Border CornerRadius="3"
+                                                    HorizontalAlignment="Left"
+                                                    Width="{Binding FillPercent, StringFormat={}{0}%}">
+                                                <Border.Background>
+                                                    <SolidColorBrush Color="{Binding RoleColor}"/>
+                                                </Border.Background>
+                                            </Border>
+                                        </Border>
+                                        <Border Grid.Column="3"
+                                                CornerRadius="3"
+                                                Padding="5,2"
+                                                HorizontalAlignment="Center">
+                                            <Border.Background>
+                                                <SolidColorBrush Color="{Binding StatusColor}"/>
+                                            </Border.Background>
+                                            <TextBlock Text="{Binding Status}"
+                                                       FontSize="10"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Performance Metrics -->
+                <Border Grid.Column="1"
+                        Grid.Row="1"
+                        BorderBrush="#00BCD4"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="7,15,0,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Performance Metrics"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#00BCD4"/>
+
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                            <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding TotalDps}"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="#F44336"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Total DPS"
+                                           FontSize="10"
+                                           Foreground="Gray"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding TotalHps}"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="#2196F3"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Total HPS"
+                                           FontSize="10"
+                                           Foreground="Gray"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding KillDeathRatio}"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="#4CAF50"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="K/D Ratio"
+                                           FontSize="10"
+                                           Foreground="Gray"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Margin="0,10,0,0">
+                                <TextBlock Text="{Binding TotalKills}"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Kills"
+                                           FontSize="10"
+                                           Foreground="Gray"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Margin="0,10,0,0">
+                                <TextBlock Text="{Binding TotalDeaths}"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Deaths"
+                                           FontSize="10"
+                                           Foreground="Gray"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Margin="0,10,0,0">
+                                <TextBlock Text="{Binding CombatDuration}"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Duration"
+                                           FontSize="10"
+                                           Foreground="Gray"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Contribution Chart -->
+            <Border BorderBrush="#795548"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Member Contributions"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#795548"/>
+                    <lvc:CartesianChart Series="{Binding ContributionSeries}"
+                                        XAxes="{Binding ContributionXAxes}"
+                                        YAxes="{Binding ContributionYAxes}"
+                                        Height="200"
+                                        LegendPosition="Top"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Recommendations -->
+            <Border BorderBrush="#E91E63"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Recommendations"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#E91E63"/>
+
+                    <ItemsControl ItemsSource="{Binding Recommendations}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,3"
+                                        Padding="10,8"
+                                        CornerRadius="3"
+                                        BorderThickness="0,0,0,2">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{Binding PriorityColor}"/>
+                                    </Border.BorderBrush>
+                                    <Grid ColumnDefinitions="30,*,60">
+                                        <Border Grid.Column="0"
+                                                Width="24"
+                                                Height="24"
+                                                CornerRadius="12"
+                                                HorizontalAlignment="Center">
+                                            <Border.Background>
+                                                <SolidColorBrush Color="{Binding PriorityColor}"/>
+                                            </Border.Background>
+                                            <TextBlock Text="{Binding Icon}"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Message}"
+                                                   VerticalAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   Margin="10,0"/>
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding Priority}"
+                                                   FontSize="10"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Right">
+                                            <TextBlock.Foreground>
+                                                <SolidColorBrush Color="{Binding PriorityColor}"/>
+                                            </TextBlock.Foreground>
+                                        </TextBlock>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="No recommendations - your group composition looks good!"
+                               FontStyle="Italic"
+                               Foreground="Gray"
+                               IsVisible="{Binding !Recommendations.Count}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Empty State -->
+            <Border BorderBrush="Gray"
+                    BorderThickness="1"
+                    CornerRadius="5"
+                    Padding="40"
+                    IsVisible="{Binding !HasData}">
+                <StackPanel HorizontalAlignment="Center" Spacing="10">
+                    <TextBlock Text="No Group Data"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Load a combat log to analyze your group composition."
+                               Foreground="Gray"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="The analyzer will detect group members from healing, buffs, and combat patterns."
+                               Foreground="Gray"
+                               FontSize="12"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxWidth="400"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

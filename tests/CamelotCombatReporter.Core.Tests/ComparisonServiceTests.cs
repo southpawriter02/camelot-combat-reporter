@@ -388,15 +388,21 @@ public class PersonalBestTrackerTests
         // Arrange
         var tracker = new PersonalBestTracker(Path.GetTempFileName());
         var sessionId = Guid.NewGuid();
-        tracker.CheckAndUpdateBest("DPS", 100, sessionId);
-        tracker.CheckAndUpdateBest("DPS", 120, sessionId);
-        tracker.CheckAndUpdateBest("DPS", 150, sessionId);
+        // Use different metrics to ensure each is a new entry in history
+        // and add small delays to ensure different timestamps
+        tracker.CheckAndUpdateBest("Metric1", 100, sessionId);
+        Thread.Sleep(10);
+        tracker.CheckAndUpdateBest("Metric2", 120, sessionId);
+        Thread.Sleep(10);
+        tracker.CheckAndUpdateBest("Metric3", 150, sessionId);
 
         // Act
         var recentBests = tracker.GetRecentBests(3);
 
         // Assert
         Assert.Equal(3, recentBests.Count);
-        Assert.Equal(150, recentBests[0].Value); // Most recent first
+        Assert.Equal(150, recentBests[0].Value); // Most recent first (Metric3)
+        Assert.Equal(120, recentBests[1].Value); // Second most recent (Metric2)
+        Assert.Equal(100, recentBests[2].Value); // Oldest (Metric1)
     }
 }

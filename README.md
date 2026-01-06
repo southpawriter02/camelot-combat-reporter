@@ -4,11 +4,11 @@
 
 ### *Master Your Combat. Dominate the Realm.*
 
-[![Version](https://img.shields.io/badge/version-1.3.0-brightgreen.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.4.0-brightgreen.svg)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET 9.0](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/download/dotnet/9.0)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](#installation)
-[![Tests](https://img.shields.io/badge/tests-121%20passing-success.svg)](#testing)
+[![Tests](https://img.shields.io/badge/tests-189%20passing-success.svg)](#testing)
 
 ---
 
@@ -22,27 +22,27 @@ Parse your `chat.log`, visualize your performance, track personal bests, and rec
 
 ---
 
-## What's New in v1.3.0
+## What's New in v1.4.0
 
-> **Alerts & Comparison Release** — January 2026
+> **Group Analysis Release** — January 2026
 
 ```
- REAL-TIME ALERTS          SESSION COMPARISON         TREND ANALYSIS
+ GROUP COMPOSITION         ROLE CLASSIFICATION        RECOMMENDATIONS
 ┌─────────────────────┐   ┌─────────────────────┐   ┌─────────────────────┐
-│  Health < 30%       │   │  Session A vs B     │   │  DPS Over Time      │
-│  ► Sound Alert      │   │  ────────────────   │   │  ╭──────────────╮   │
-│  ► Screen Flash     │   │  DPS:  120 → 145 ↑  │   │  │    ╱╲   ╱    │   │
-│  ► Discord Webhook  │   │  K/D:  2.1 → 2.8 ↑  │   │  │  ╱╲╱  ╲╱     │   │
-│  ► Text-to-Speech   │   │  HPS:   45 →  42 ↓  │   │  ╰──────────────╯   │
+│  Members: 6         │   │  Tank     ██░░  2   │   │  + Add Healer       │
+│  Category: 8-Man    │   │  Healer   ██░░  2   │   │    Critical         │
+│  Balance: 85/100    │   │  CC       █░░░  1   │   │  ~ Reduce Tanks     │
+│  Template: 8-Man RvR│   │  DPS      ██░░  2   │   │    Low              │
 └─────────────────────┘   └─────────────────────┘   └─────────────────────┘
 ```
 
 **New Features:**
-- **Combat Alerts** — 6 condition types, 4 notification methods, configurable rules
-- **Session Comparison** — Side-by-side analysis with delta calculations
-- **Trend Analysis** — Linear regression, rolling averages, predictions
-- **Goal Tracking** — Set targets, monitor progress, celebrate achievements
-- **Personal Bests** — Automatic PB detection with improvement tracking
+- **Group Detection** — Automatic member detection from healing, buffs, combat patterns
+- **Role Classification** — 7 roles with dual-role system for all 48 classes
+- **Group Templates** — 6 pre-defined templates (8-Man RvR, Small-Man, etc.)
+- **Balance Scoring** — 0-100 score based on composition quality
+- **Role Coverage** — Per-role status indicators and member tracking
+- **Recommendations** — Priority-based suggestions for composition improvement
 
 ---
 
@@ -72,6 +72,7 @@ Parse your `chat.log`, visualize your performance, track personal bests, and rec
 | **Realm Abilities** | v1.2.0 |
 | **Buff/Debuff Tracking** | v1.2.0 |
 | **Combat Alerts** | v1.3.0 |
+| **Group Analysis** | v1.4.0 |
 
 </td>
 </tr>
@@ -322,6 +323,7 @@ dotnet run --project src/CamelotCombatReporter.Cli -- <path_to_log_file>
 | **Buff Tracking** | Buff uptime and gap analysis |
 | **Alerts** | Configure real-time notifications |
 | **Session Comparison** | Compare sessions and track trends |
+| **Group Analysis** | Composition analysis and role coverage |
 
 ---
 
@@ -338,7 +340,8 @@ camelot-combat-reporter/
 │   │   ├── RealmAbilities/             # RA database and tracking
 │   │   ├── BuffTracking/               # Buff/debuff monitoring
 │   │   ├── Alerts/                     # Alert engine and conditions
-│   │   └── Comparison/                 # Session comparison services
+│   │   ├── Comparison/                 # Session comparison services
+│   │   └── GroupAnalysis/              # Group composition analysis
 │   │
 │   ├── CamelotCombatReporter.Gui/      # Avalonia UI application
 │   │   ├── Views/                      # XAML views
@@ -349,7 +352,7 @@ camelot-combat-reporter/
 │   ├── CamelotCombatReporter.Plugins/  # Plugin host infrastructure
 │   └── CamelotCombatReporter.PluginSdk/# Plugin development SDK
 │
-├── tests/                              # Unit tests (121 tests)
+├── tests/                              # Unit tests (189 tests)
 ├── data/                               # Sample logs and resources
 ├── docs/                               # Documentation
 └── roadmap/                            # Feature roadmap
@@ -387,8 +390,8 @@ camelot-combat-reporter/
 </tr>
 <tr>
 <td><b>v1.4.0</b></td>
-<td>Group Composition Analysis</td>
-<td>📋 Planned</td>
+<td>Group Composition Analysis, Role Classification</td>
+<td>✅ Released</td>
 </tr>
 <tr>
 <td><b>v1.5.0</b></td>
@@ -402,7 +405,7 @@ camelot-combat-reporter/
 </tr>
 </table>
 
-**Progress:** 12/18 major features complete
+**Progress:** 13/18 major features complete
 
 See the [**Full Roadmap**](roadmap/README.md) for detailed feature specifications.
 

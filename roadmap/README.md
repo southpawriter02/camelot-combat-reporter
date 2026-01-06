@@ -4,9 +4,34 @@ This document outlines the feature roadmap for Camelot Combat Reporter. The proj
 
 ---
 
-## Current Version: v1.3.0
+## Current Version: v1.4.0
 
 Released: January 2026
+
+### What's in v1.4.x
+
+**Group Composition Analysis** (New in v1.4.0)
+- Automatic group member detection from healing, buffs, and combat patterns
+- Manual member configuration with class/realm override capability
+- 7 group roles: Tank, Healer, CrowdControl, MeleeDps, CasterDps, Support, Hybrid
+- Dual-role system (primary + secondary) for all 48 character classes
+- Standard DAoC group size categories: Solo, Small-Man, 8-Man, Battlegroup
+
+**Role Classification** (New in v1.4.0)
+- Complete class-to-role mapping for Albion, Midgard, and Hibernia
+- Role coverage analysis with status indicators
+- Balance scoring (0-100) based on composition quality
+
+**Group Templates** (New in v1.4.0)
+- 6 pre-defined templates: 8-Man RvR, Small-Man, Zerg Support, Gank Group, Keep Defense, Duo
+- Template matching with score-based evaluation
+- Composition recommendations based on template requirements
+
+**Performance Metrics** (New in v1.4.0)
+- Group DPS/HPS totals and averages
+- Kill/Death tracking with ratio calculations
+- Per-member contribution percentages
+- Combat duration tracking
 
 ### What's in v1.3.x
 
@@ -158,7 +183,7 @@ Released: January 2026
 | [Database Integration](advanced-features/03-database-integration.md) | ✅ Complete | v1.0.0 | `src/database/` (TypeScript) |
 | [API Exposure](advanced-features/04-api-exposure.md) | ✅ Complete | v1.0.0 | `src/api/` (TypeScript) |
 
-### Future Enhancements (12/18 Complete)
+### Future Enhancements (13/18 Complete)
 
 | Feature | Status | Target | Location |
 |---------|--------|--------|----------|
@@ -170,7 +195,7 @@ Released: January 2026
 | [Server Type Filters](future-enhancements/06-server-type-filters.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/ServerProfiles/`, `src/CamelotCombatReporter.Gui/Settings/` |
 | [Distribution Builds](future-enhancements/07-distribution-builds.md) | ✅ Phase 1 | v1.0.0 | `.github/workflows/`, `Directory.Build.props` |
 | [Chat Filtering](future-enhancements/08-chat-filtering.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/ChatFiltering/`, `src/CamelotCombatReporter.Gui/Settings/` |
-| [Group Composition Analysis](future-enhancements/09-group-composition-analysis.md) | 📋 Planned | v1.4.0 | — |
+| [Group Composition Analysis](future-enhancements/09-group-composition-analysis.md) | ✅ Complete | v1.4.0 | `src/CamelotCombatReporter.Core/GroupAnalysis/`, `src/CamelotCombatReporter.Gui/GroupAnalysis/` |
 | [Keep and Siege Tracking](future-enhancements/10-keep-siege-tracking.md) | 📋 Planned | v1.5.0 | — |
 | [Combat Replay System](future-enhancements/11-combat-replay.md) | 📋 Planned | v2.0.0 | — |
 | [Voice Chat Integration](future-enhancements/12-voice-integration.md) | 📋 Planned | v2.0.0 | — |
@@ -243,17 +268,21 @@ Released: January 2026
 
 ---
 
-### v1.4.0 - Group Analysis
+### v1.4.0 - Group Analysis ✅ RELEASED
 
+**Released:** January 2026
 **Focus:** Group and team performance
 
-| Item | Type | Description |
-|------|------|-------------|
-| [Group Composition Analysis](future-enhancements/09-group-composition-analysis.md) | Feature | Group member detection and role analysis |
-| Team Performance Metrics | Feature | Coordinated damage/healing tracking |
-| Role Distribution | Feature | Tank, healer, DPS role classification |
-| Performance Correlation | Feature | Link composition to success rates |
-| Bug Fixes | Maintenance | Monthly bug fix cycle |
+| Item | Type | Status | Description |
+|------|------|--------|-------------|
+| [Group Composition Analysis](future-enhancements/09-group-composition-analysis.md) | Feature | ✅ Complete | Automatic member detection + manual config |
+| Role Classification | Feature | ✅ Complete | 7 roles with dual-role system for 48 classes |
+| Group Templates | Feature | ✅ Complete | 6 templates (8-Man RvR, Small-Man, etc.) |
+| Balance Scoring | Feature | ✅ Complete | 0-100 score based on composition quality |
+| Role Coverage Analysis | Feature | ✅ Complete | Per-role status and member tracking |
+| Composition Recommendations | Feature | ✅ Complete | Priority-based suggestions for improvement |
+| Team Performance Metrics | Feature | ✅ Complete | DPS/HPS totals, K/D, contributions |
+| Group Analysis Tab | Feature | ✅ Complete | Full analysis dashboard in MainWindow |
 
 ---
 
@@ -332,6 +361,21 @@ Bug fix releases occur as needed between feature releases:
 ---
 
 ## Version History
+
+### v1.4.0 (January 2026)
+
+**Group Analysis Release:**
+- Group Composition Analysis with automatic member detection from combat patterns
+- Multi-strategy detection: healing received, buff sources, shared combat targets
+- Manual member configuration with class/realm override capability
+- 7 group roles: Tank, Healer, CrowdControl, MeleeDps, CasterDps, Support, Hybrid
+- Dual-role system (primary + secondary) for all 48 character classes
+- Standard DAoC group sizes: Solo, Small-Man, 8-Man, Battlegroup
+- 6 pre-defined templates: 8-Man RvR, Small-Man, Zerg Support, Gank Group, Keep Defense, Duo
+- Composition balance scoring (0-100) with role coverage analysis
+- Priority-based recommendations for composition improvement
+- Team performance metrics (DPS/HPS, K/D, contributions)
+- New Group Analysis tab in main window with full dashboard
 
 ### v1.3.0 (January 2026)
 

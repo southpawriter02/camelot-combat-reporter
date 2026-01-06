@@ -11,6 +11,84 @@ No unreleased changes.
 
 ---
 
+## [1.4.0] - 2026-01-06
+
+### Added
+- **Group Composition Analysis**
+  - Automatic group member detection from combat patterns
+  - Multi-strategy detection: healing received, buff sources, shared combat targets
+  - Manual member configuration with class/realm assignment
+  - Combined inference + manual override capability
+
+- **Role Classification System**
+  - 7 group roles: Tank, Healer, CrowdControl, MeleeDps, CasterDps, Support, Hybrid
+  - Dual-role system (primary + secondary) for all 48 character classes
+  - Complete role mapping database for Albion, Midgard, and Hibernia
+  - `RoleClassificationService` for role lookups and class suggestions
+
+- **Group Size Categories**
+  - Solo (1 player)
+  - Small-Man (2-4 players)
+  - 8-Man (5-8 players)
+  - Battlegroup (9+ players)
+
+- **Group Templates**
+  - 6 pre-defined templates: 8-Man RvR, Small-Man, Zerg Support, Gank Group, Keep Defense, Duo
+  - Template matching with score-based evaluation
+  - Role requirements with min/max counts and required flags
+
+- **Balance Scoring**
+  - Composition balance score (0-100)
+  - Penalties for missing healers (-35), tanks (-20), DPS (-25)
+  - Bonuses for CC (+5), support (+5)
+  - Imbalance detection (>50% one role)
+
+- **Role Coverage Analysis**
+  - Per-role coverage status (Covered, Missing, Over-represented)
+  - Member count and names per role
+  - Visual progress indicators
+
+- **Composition Recommendations**
+  - 5 recommendation types: AddRole, ReduceRole, RebalanceRoles, TemplateMatch, SynergyImprovement
+  - 4 priority levels: Low, Medium, High, Critical
+  - Context-aware suggestions based on group composition
+
+- **Performance Metrics**
+  - Group total DPS/HPS
+  - Total kills and deaths with K/D ratio
+  - Combat duration tracking
+  - Per-member contribution percentages
+
+- **New Core Services**
+  - `IGroupDetectionService` / `GroupDetectionService` - Member detection with configurable thresholds
+  - `IGroupAnalysisService` / `GroupAnalysisService` - Full composition analysis
+  - `RoleClassificationService` - Class-to-role mapping
+
+- **New GUI Components**
+  - `GroupAnalysisView` with comprehensive analysis dashboard
+  - Group overview panel with member count, category, balance score, template match
+  - Members DataGrid with role classification
+  - Manual member input with class selection
+  - Role distribution pie chart (LiveCharts2)
+  - Role coverage bars with status indicators
+  - Performance metrics display (DPS, HPS, K/D, kills, deaths, duration)
+  - Member contribution stacked bar chart
+  - Priority-colored recommendations panel
+  - Empty state guidance
+
+- **New Data Models**
+  - `GroupEnums.cs` - GroupRole, GroupSizeCategory, GroupMemberSource, RecommendationType, RecommendationPriority
+  - `GroupModels.cs` - GroupMember, GroupComposition, GroupTemplate, RoleRequirement, GroupPerformanceMetrics, MemberContribution, RoleCoverage, CompositionRecommendation, GroupAnalysisSummary
+
+- **New Unit Tests**
+  - 68 new tests for GroupAnalysis (RoleClassification, GroupDetection, GroupAnalysis, Templates, Enums)
+
+### Changed
+- MainWindow now includes Group Analysis tab
+- Total tests: 189 (169 Core + 20 GUI)
+
+---
+
 ## [1.3.0] - 2026-01-05
 
 ### Added

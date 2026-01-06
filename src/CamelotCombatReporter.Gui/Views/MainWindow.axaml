@@ -12,6 +12,7 @@
         xmlns:bufftracking="using:CamelotCombatReporter.Gui.BuffTracking.Views"
         xmlns:alerts="using:CamelotCombatReporter.Gui.Alerts.Views"
         xmlns:comparison="using:CamelotCombatReporter.Gui.Comparison.Views"
+        xmlns:groupanalysis="using:CamelotCombatReporter.Gui.GroupAnalysis.Views"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
         x:Class="CamelotCombatReporter.Gui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -996,6 +997,11 @@
         <!-- Session Comparison Tab -->
         <TabItem Header="Session Comparison">
             <comparison:SessionComparisonView x:Name="SessionComparisonView"/>
+        </TabItem>
+
+        <!-- Group Analysis Tab -->
+        <TabItem Header="Group Analysis">
+            <groupanalysis:GroupAnalysisView x:Name="GroupAnalysisView"/>
         </TabItem>
     </TabControl>
     </DockPanel>
