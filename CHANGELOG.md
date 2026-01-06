@@ -11,6 +11,64 @@ No unreleased changes.
 
 ---
 
+## [1.5.0] - 2026-01-06
+
+### Added
+- **Keep and Siege Tracking**
+  - Door/structure damage tracking with per-door damage aggregation
+  - Siege session detection with configurable time gap threshold
+  - Siege phase detection: Approach, Outer Siege, Inner Siege, Lord Fight, Capture
+  - Keep capture event tracking with realm and guild attribution
+  - Guard kill tracking with lord kill detection
+  - Siege contribution scoring formula: `(structureDamage * 0.01) + (playerKills * 50) - (deaths * 25) + (healingDone * 0.005) + (guardKills * 10)`
+  - Siege timeline visualization with phase-colored entries
+  - Statistics aggregation by keep with outcomes tracking
+
+- **Relic Tracking**
+  - Relic pickup, drop, capture, and return event tracking
+  - Relic raid session resolution from event sequences
+  - Relic status tracking (Home, InTransit, Captured)
+  - Relic carrier statistics with delivery success rates
+  - Contribution scoring for relic raids including carrier bonuses
+  - Relic database with all 6 realm relics (2 per realm)
+  - Per-raid statistics with success/failure tracking
+
+- **Battleground Statistics**
+  - Zone-based battleground session detection
+  - Support for Thidranki, Molvik, Cathal Valley, Killaloe, and Open RvR
+  - Per-session combat statistics (kills, deaths, damage, healing, K/D ratio)
+  - Aggregated statistics by battleground type
+  - Best performing battleground detection (highest K/D with minimum kills)
+  - Most played battleground tracking
+  - Total time in battlegrounds calculation
+  - Estimated realm points from kills
+
+- **New Core Services**
+  - `ISiegeTrackingService` / `SiegeTrackingService` - Siege session detection, phase detection, contribution scoring
+  - `IRelicTrackingService` / `RelicTrackingService` - Relic raid tracking, carrier statistics
+  - `IBattlegroundService` / `BattlegroundService` - BG session detection, statistics aggregation
+
+- **New GUI Components**
+  - `SiegeTrackingView` with siege statistics, session list, outcomes chart, and timeline
+  - `RelicTrackingView` with relic status grid, raid history, and carrier statistics
+  - `BattlegroundView` with performance by type, session history, and K/D charts
+
+- **New Data Models**
+  - `RvREnums.cs` - KeepType, SiegeOutcome, SiegePhase, RelicType, RelicStatus, BattlegroundType
+  - `SiegeEvents.cs` - DoorDamageEvent, KeepCapturedEvent, GuardKillEvent, TowerCapturedEvent
+  - `RelicEvents.cs` - RelicPickupEvent, RelicDropEvent, RelicCapturedEvent, RelicReturnedEvent
+  - `SiegeModels.cs` - SiegeSession, SiegeContribution, SiegeStatistics, SiegeTimelineEntry
+  - `BattlegroundModels.cs` - BattlegroundSession, BattlegroundStatistics, AllBattlegroundStatistics
+
+- **New Unit Tests**
+  - 41 new tests for RvR features (SiegeTrackingService, RelicTrackingService, BattlegroundService)
+
+### Changed
+- MainWindow now includes Siege Tracking, Relic Tracking, and Battlegrounds tabs
+- Total tests: 230 (210 Core + 20 GUI)
+
+---
+
 ## [1.4.0] - 2026-01-06
 
 ### Added
@@ -529,6 +587,9 @@ The TypeScript implementation follows the same feature set as the C# version but
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| 1.5.0 | 2026-01-06 | RvR Features: Keep/Siege Tracking, Relic Raids, Battleground Statistics |
+| 1.4.0 | 2026-01-06 | Group Composition Analysis with role classification and templates |
+| 1.3.0 | 2026-01-05 | Combat Alerts, Session Comparison, Trend Analysis, Goal Tracking |
 | 1.2.0 | 2026-01-05 | Realm Ability Tracking (100+ abilities), Buff/Debuff Tracking with uptime analysis |
 | 1.1.0 | 2025-01-05 | Death Analysis, CC Analysis with DR tracking, Server Profiles, Chat Filtering |
 | 1.0.2 | 2025-01-03 | Log parsing fixes, new event types (crit, pet, death, CC) |

@@ -1,0 +1,338 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.RvR.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="800"
+             x:Class="CamelotCombatReporter.Gui.RvR.Views.RelicTrackingView"
+             x:DataType="vm:RelicTrackingViewModel">
+
+    <Design.DataContext>
+        <vm:RelicTrackingViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="Relic Tracking"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontSize="12"
+                               Foreground="Gray"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Content="Reset"
+                        Command="{Binding ResetCommand}"
+                        Margin="0,0,10,0"/>
+                <Button Grid.Column="2"
+                        Content="Analyze Log File"
+                        Command="{Binding AnalyzeFromFileCommand}"
+                        CommandParameter="{Binding $parent[Window]}"/>
+            </Grid>
+
+            <!-- Loading Indicator -->
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding IsLoading}"
+                         Height="4"/>
+
+            <!-- Statistics Overview -->
+            <Border BorderBrush="#9C27B0"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Relic Raid Statistics"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#9C27B0"/>
+
+                    <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto,Auto">
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding TotalRaids}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Total Raids"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding SuccessfulRaids}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#4CAF50"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Successful"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding FailedRaids}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Failed"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding ContributionScore}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#FF9800"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Score"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding AverageDuration}"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Avg Duration"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Second Row -->
+                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <TextBlock Text="{Binding TimesAsCarrier}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Times as Carrier"
+                                       FontSize="10"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <TextBlock Text="{Binding SuccessfulDeliveries}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#4CAF50"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Deliveries"
+                                       FontSize="10"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <TextBlock Text="{Binding EscortKills}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Escort Kills"
+                                       FontSize="10"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Relic Status Grid -->
+            <Border BorderBrush="#E91E63"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Relic Status"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#E91E63"/>
+
+                    <ItemsControl ItemsSource="{Binding RelicStatuses}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="5"
+                                        Padding="10"
+                                        CornerRadius="5"
+                                        BorderThickness="2"
+                                        Width="200">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{Binding RealmColor}"/>
+                                    </Border.BorderBrush>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontWeight="Bold"
+                                                   FontSize="12"
+                                                   TextWrapping="Wrap"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,5,0,0">
+                                            <TextBlock Text="{Binding Type}"
+                                                       FontSize="11"
+                                                       Foreground="Gray"/>
+                                            <TextBlock Text="-"
+                                                       FontSize="11"
+                                                       Foreground="Gray"/>
+                                            <TextBlock Text="{Binding HomeRealm}"
+                                                       FontSize="11">
+                                                <TextBlock.Foreground>
+                                                    <SolidColorBrush Color="{Binding RealmColor}"/>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <Border CornerRadius="3"
+                                                Padding="8,3"
+                                                Margin="0,5,0,0"
+                                                HorizontalAlignment="Left">
+                                            <Border.Background>
+                                                <SolidColorBrush Color="{Binding StatusColor}"/>
+                                            </Border.Background>
+                                            <TextBlock Text="{Binding Status}"
+                                                       FontSize="11"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Two Column Layout -->
+            <Grid ColumnDefinitions="*,*" IsVisible="{Binding HasData}">
+                <!-- Left Column: Raid Sessions -->
+                <Border Grid.Column="0"
+                        BorderBrush="#673AB7"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Raid History"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#673AB7"/>
+
+                        <DataGrid ItemsSource="{Binding RaidSessions}"
+                                  Height="200"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="Gray">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Relic" Binding="{Binding RelicName}" Width="*"/>
+                                <DataGridTextColumn Header="Time" Binding="{Binding StartTime}" Width="70"/>
+                                <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="60"/>
+                                <DataGridTextColumn Header="Outcome" Binding="{Binding Outcome}" Width="70"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Right Column: Charts and Carrier Stats -->
+                <StackPanel Grid.Column="1" Spacing="15" Margin="7,0,0,0">
+                    <!-- Outcomes Chart -->
+                    <Border BorderBrush="#4CAF50"
+                            BorderThickness="2"
+                            CornerRadius="5"
+                            Padding="15">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Raid Outcomes"
+                                       FontWeight="Bold"
+                                       FontSize="14"
+                                       Foreground="#4CAF50"/>
+                            <lvc:PieChart Series="{Binding OutcomesSeries}"
+                                          Height="100"
+                                          LegendPosition="Right"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Top Carriers -->
+                    <Border BorderBrush="#FF9800"
+                            BorderThickness="2"
+                            CornerRadius="5"
+                            Padding="15">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Top Carriers"
+                                       FontWeight="Bold"
+                                       FontSize="14"
+                                       Foreground="#FF9800"/>
+
+                            <ItemsControl ItemsSource="{Binding CarrierStats}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="*,50,50,60" Margin="0,3">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Name}"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding RelicsCarried}"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding Delivered}"
+                                                       Foreground="#4CAF50"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="3"
+                                                       Text="{Binding SuccessRate}"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <!-- Empty State -->
+            <Border BorderBrush="Gray"
+                    BorderThickness="1"
+                    CornerRadius="5"
+                    Padding="40"
+                    IsVisible="{Binding !HasData}">
+                <StackPanel HorizontalAlignment="Center" Spacing="10">
+                    <TextBlock Text="No Relic Data"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Load a combat log to analyze relic events."
+                               Foreground="Gray"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="The analyzer will detect relic pickups, drops, and captures."
+                               Foreground="Gray"
+                               FontSize="12"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxWidth="400"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

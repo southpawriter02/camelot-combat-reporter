@@ -1,0 +1,338 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.RvR.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="800"
+             x:Class="CamelotCombatReporter.Gui.RvR.Views.SiegeTrackingView"
+             x:DataType="vm:SiegeTrackingViewModel">
+
+    <Design.DataContext>
+        <vm:SiegeTrackingViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="Siege Tracking"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontSize="12"
+                               Foreground="Gray"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Content="Reset"
+                        Command="{Binding ResetCommand}"
+                        Margin="0,0,10,0"/>
+                <Button Grid.Column="2"
+                        Content="Analyze Log File"
+                        Command="{Binding AnalyzeFromFileCommand}"
+                        CommandParameter="{Binding $parent[Window]}"/>
+            </Grid>
+
+            <!-- Loading Indicator -->
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding IsLoading}"
+                         Height="4"/>
+
+            <!-- Statistics Overview -->
+            <Border BorderBrush="#FF5722"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Siege Statistics"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#FF5722"/>
+
+                    <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto,Auto">
+                        <!-- Total Sieges -->
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding TotalSieges}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Total Sieges"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Attack Victories -->
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding AttackVictories}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#4CAF50"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Attack Wins"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Defense Victories -->
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding DefenseVictories}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Defense Wins"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Contribution Score -->
+                        <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding ContributionScore}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#FF9800"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Score"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Average Duration -->
+                        <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding AverageDuration}"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Avg Duration"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Second Row: Combat Stats -->
+                        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <TextBlock Text="{Binding StructureDamage}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Structure Dmg"
+                                       FontSize="10"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <TextBlock Text="{Binding PlayerKills}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Player Kills"
+                                       FontSize="10"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <TextBlock Text="{Binding Deaths}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Deaths"
+                                       FontSize="10"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <TextBlock Text="{Binding GuardKills}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Guard Kills"
+                                       FontSize="10"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Two Column Layout -->
+            <Grid ColumnDefinitions="*,*" IsVisible="{Binding HasData}">
+                <!-- Left Column: Sessions List -->
+                <Border Grid.Column="0"
+                        BorderBrush="#9C27B0"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Siege Sessions"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#9C27B0"/>
+
+                        <DataGrid ItemsSource="{Binding SiegeSessions}"
+                                  SelectedItem="{Binding SelectedSession}"
+                                  Height="250"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="1"
+                                  BorderBrush="Gray">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Keep" Binding="{Binding KeepName}" Width="*"/>
+                                <DataGridTextColumn Header="Time" Binding="{Binding StartTime}" Width="70"/>
+                                <DataGridTextColumn Header="Duration" Binding="{Binding Duration}" Width="60"/>
+                                <DataGridTextColumn Header="Outcome" Binding="{Binding Outcome}" Width="80"/>
+                                <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="60"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Right Column: Charts -->
+                <StackPanel Grid.Column="1" Spacing="15" Margin="7,0,0,0">
+                    <!-- Outcomes Chart -->
+                    <Border BorderBrush="#4CAF50"
+                            BorderThickness="2"
+                            CornerRadius="5"
+                            Padding="15">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Outcomes"
+                                       FontWeight="Bold"
+                                       FontSize="14"
+                                       Foreground="#4CAF50"/>
+                            <lvc:PieChart Series="{Binding OutcomesSeries}"
+                                          Height="120"
+                                          LegendPosition="Right"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Sieges by Keep Chart -->
+                    <Border BorderBrush="#2196F3"
+                            BorderThickness="2"
+                            CornerRadius="5"
+                            Padding="15">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Sieges by Keep"
+                                       FontWeight="Bold"
+                                       FontSize="14"
+                                       Foreground="#2196F3"/>
+                            <lvc:CartesianChart Series="{Binding SiegesByKeepSeries}"
+                                                XAxes="{Binding SiegesByKeepXAxes}"
+                                                YAxes="{Binding SiegesByKeepYAxes}"
+                                                Height="120"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <!-- Timeline for Selected Session -->
+            <Border BorderBrush="#795548"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding SelectedSession, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <StackPanel Spacing="10">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="Siege Timeline:"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#795548"/>
+                        <TextBlock Text="{Binding SelectedSession.KeepName}"
+                                   FontSize="16"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <ItemsControl ItemsSource="{Binding TimelineEntries}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,3"
+                                        Padding="10,8"
+                                        CornerRadius="3"
+                                        BorderThickness="0,0,0,2">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{Binding PhaseColor}"/>
+                                    </Border.BorderBrush>
+                                    <Grid ColumnDefinitions="70,30,*,80">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding Timestamp}"
+                                                   FontFamily="Consolas,Monospace"
+                                                   VerticalAlignment="Center"/>
+                                        <Border Grid.Column="1"
+                                                Width="24"
+                                                Height="24"
+                                                CornerRadius="12"
+                                                HorizontalAlignment="Center">
+                                            <Border.Background>
+                                                <SolidColorBrush Color="{Binding PhaseColor}"/>
+                                            </Border.Background>
+                                            <TextBlock Text="{Binding Icon}"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="2" Margin="10,0">
+                                            <TextBlock Text="{Binding EventType}"
+                                                       FontWeight="SemiBold"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontSize="11"
+                                                       Foreground="Gray"
+                                                       TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="3"
+                                                   Text="{Binding Phase}"
+                                                   FontSize="10"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Right">
+                                            <TextBlock.Foreground>
+                                                <SolidColorBrush Color="{Binding PhaseColor}"/>
+                                            </TextBlock.Foreground>
+                                        </TextBlock>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Empty State -->
+            <Border BorderBrush="Gray"
+                    BorderThickness="1"
+                    CornerRadius="5"
+                    Padding="40"
+                    IsVisible="{Binding !HasData}">
+                <StackPanel HorizontalAlignment="Center" Spacing="10">
+                    <TextBlock Text="No Siege Data"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Load a combat log to analyze siege events."
+                               Foreground="Gray"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="The analyzer will detect door attacks, guard kills, and keep captures."
+                               Foreground="Gray"
+                               FontSize="12"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxWidth="400"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

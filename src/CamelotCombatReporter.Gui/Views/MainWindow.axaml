@@ -13,6 +13,7 @@
         xmlns:alerts="using:CamelotCombatReporter.Gui.Alerts.Views"
         xmlns:comparison="using:CamelotCombatReporter.Gui.Comparison.Views"
         xmlns:groupanalysis="using:CamelotCombatReporter.Gui.GroupAnalysis.Views"
+        xmlns:rvr="using:CamelotCombatReporter.Gui.RvR.Views"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
         x:Class="CamelotCombatReporter.Gui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -1002,6 +1003,21 @@
         <!-- Group Analysis Tab -->
         <TabItem Header="Group Analysis">
             <groupanalysis:GroupAnalysisView x:Name="GroupAnalysisView"/>
+        </TabItem>
+
+        <!-- Siege Tracking Tab -->
+        <TabItem Header="Siege Tracking">
+            <rvr:SiegeTrackingView x:Name="SiegeTrackingView"/>
+        </TabItem>
+
+        <!-- Relic Tracking Tab -->
+        <TabItem Header="Relic Tracking">
+            <rvr:RelicTrackingView x:Name="RelicTrackingView"/>
+        </TabItem>
+
+        <!-- Battlegrounds Tab -->
+        <TabItem Header="Battlegrounds">
+            <rvr:BattlegroundView x:Name="BattlegroundView"/>
         </TabItem>
     </TabControl>
     </DockPanel>

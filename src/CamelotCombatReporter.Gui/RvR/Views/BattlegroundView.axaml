@@ -1,0 +1,359 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.RvR.ViewModels"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="800"
+             x:Class="CamelotCombatReporter.Gui.RvR.Views.BattlegroundView"
+             x:DataType="vm:BattlegroundViewModel">
+
+    <Design.DataContext>
+        <vm:BattlegroundViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="Battlegrounds"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontSize="12"
+                               Foreground="Gray"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Content="Reset"
+                        Command="{Binding ResetCommand}"
+                        Margin="0,0,10,0"/>
+                <Button Grid.Column="2"
+                        Content="Analyze Log File"
+                        Command="{Binding AnalyzeFromFileCommand}"
+                        CommandParameter="{Binding $parent[Window]}"/>
+            </Grid>
+
+            <!-- Loading Indicator -->
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding IsLoading}"
+                         Height="4"/>
+
+            <!-- Overall Statistics -->
+            <Border BorderBrush="#3F51B5"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Overall Performance"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#3F51B5"/>
+
+                    <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto,Auto">
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding TotalSessions}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Sessions"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding TotalKills}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#4CAF50"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Kills"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding TotalDeaths}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#F44336"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Deaths"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding KillDeathRatio}"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#FF9800"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="K/D Ratio"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding TotalTime}"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Time Played"
+                                       FontSize="12"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Second Row -->
+                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <TextBlock Text="{Binding TotalDamage}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Total Damage"
+                                       FontSize="10"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <TextBlock Text="{Binding TotalHealing}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Total Healing"
+                                       FontSize="10"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <TextBlock Text="{Binding EstimatedRp}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#9C27B0"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Est. Realm Points"
+                                       FontSize="10"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Best/Most Played -->
+                    <Grid ColumnDefinitions="*,*" Margin="0,10,0,0">
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                            <TextBlock Text="Best Performance"
+                                       FontSize="11"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding BestBattleground}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="#4CAF50"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="Most Played"
+                                       FontSize="11"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding MostPlayedBattleground}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="#2196F3"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Two Column Layout -->
+            <Grid ColumnDefinitions="*,*" IsVisible="{Binding HasData}">
+                <!-- Left Column: Stats by BG Type -->
+                <Border Grid.Column="0"
+                        BorderBrush="#009688"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15"
+                        Margin="0,0,7,0">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Performance by Battleground"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="#009688"/>
+
+                        <ItemsControl ItemsSource="{Binding StatsByType}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,5"
+                                            Padding="10"
+                                            CornerRadius="5"
+                                            BorderThickness="0,0,0,3">
+                                        <Border.BorderBrush>
+                                            <SolidColorBrush Color="{Binding Color}"/>
+                                        </Border.BorderBrush>
+                                        <Grid RowDefinitions="Auto,Auto">
+                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                <TextBlock Text="{Binding Name}"
+                                                           FontWeight="Bold"
+                                                           FontSize="14"/>
+                                                <TextBlock Text="{Binding LevelRange}"
+                                                           FontSize="11"
+                                                           Foreground="Gray"
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*" Margin="0,5,0,0">
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="{Binding Sessions}"
+                                                               FontWeight="Bold"
+                                                               HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Sessions"
+                                                               FontSize="9"
+                                                               Foreground="Gray"
+                                                               HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock Text="{Binding Kills}"
+                                                               FontWeight="Bold"
+                                                               Foreground="#4CAF50"
+                                                               HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Kills"
+                                                               FontSize="9"
+                                                               Foreground="Gray"
+                                                               HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="{Binding Deaths}"
+                                                               FontWeight="Bold"
+                                                               Foreground="#F44336"
+                                                               HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Deaths"
+                                                               FontSize="9"
+                                                               Foreground="Gray"
+                                                               HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="3">
+                                                    <TextBlock Text="{Binding KillDeathRatio}"
+                                                               FontWeight="Bold"
+                                                               Foreground="#FF9800"
+                                                               HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="K/D"
+                                                               FontSize="9"
+                                                               Foreground="Gray"
+                                                               HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Right Column: Charts -->
+                <StackPanel Grid.Column="1" Spacing="15" Margin="7,0,0,0">
+                    <!-- Sessions by Type Chart -->
+                    <Border BorderBrush="#E91E63"
+                            BorderThickness="2"
+                            CornerRadius="5"
+                            Padding="15">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Sessions by Type"
+                                       FontWeight="Bold"
+                                       FontSize="14"
+                                       Foreground="#E91E63"/>
+                            <lvc:PieChart Series="{Binding SessionsByTypeSeries}"
+                                          Height="130"
+                                          LegendPosition="Right"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- K/D by Type Chart -->
+                    <Border BorderBrush="#FF9800"
+                            BorderThickness="2"
+                            CornerRadius="5"
+                            Padding="15">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="K/D Ratio by Type"
+                                       FontWeight="Bold"
+                                       FontSize="14"
+                                       Foreground="#FF9800"/>
+                            <lvc:CartesianChart Series="{Binding KdByTypeSeries}"
+                                                XAxes="{Binding KdByTypeXAxes}"
+                                                YAxes="{Binding KdByTypeYAxes}"
+                                                Height="130"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <!-- Session History -->
+            <Border BorderBrush="#795548"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="15"
+                    IsVisible="{Binding HasData}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Session History"
+                               FontWeight="Bold"
+                               FontSize="16"
+                               Foreground="#795548"/>
+
+                    <DataGrid ItemsSource="{Binding Sessions}"
+                              Height="200"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="Gray">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Zone" Binding="{Binding Zone}" Width="*"/>
+                            <DataGridTextColumn Header="Type" Binding="{Binding BgType}" Width="100"/>
+                            <DataGridTextColumn Header="Time" Binding="{Binding StartTime}" Width="70"/>
+                            <DataGridTextColumn Header="Duration" Binding="{Binding Duration}" Width="60"/>
+                            <DataGridTextColumn Header="Kills" Binding="{Binding Kills}" Width="50"/>
+                            <DataGridTextColumn Header="Deaths" Binding="{Binding Deaths}" Width="50"/>
+                            <DataGridTextColumn Header="K/D" Binding="{Binding KillDeathRatio}" Width="50"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Empty State -->
+            <Border BorderBrush="Gray"
+                    BorderThickness="1"
+                    CornerRadius="5"
+                    Padding="40"
+                    IsVisible="{Binding !HasData}">
+                <StackPanel HorizontalAlignment="Center" Spacing="10">
+                    <TextBlock Text="No Battleground Data"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Load a combat log to analyze battleground performance."
+                               Foreground="Gray"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="The analyzer will detect zone entries and combat in Thidranki, Molvik, Cathal Valley, Killaloe, and frontier zones."
+                               Foreground="Gray"
+                               FontSize="12"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxWidth="450"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

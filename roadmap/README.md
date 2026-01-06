@@ -4,9 +4,33 @@ This document outlines the feature roadmap for Camelot Combat Reporter. The proj
 
 ---
 
-## Current Version: v1.4.0
+## Current Version: v1.5.0
 
 Released: January 2026
+
+### What's in v1.5.x
+
+**Keep and Siege Tracking** (New in v1.5.0)
+- Door/structure damage tracking with per-door damage aggregation
+- Siege session detection with configurable time gap threshold
+- Siege phase detection: Approach, Outer Siege, Inner Siege, Lord Fight, Capture
+- Keep capture event tracking with realm and guild attribution
+- Guard kill tracking with lord kill detection
+- Siege contribution scoring and timeline visualization
+
+**Relic Tracking** (New in v1.5.0)
+- Relic pickup, drop, capture, and return event tracking
+- Relic raid session resolution from event sequences
+- Relic status tracking (Home, InTransit, Captured)
+- Relic carrier statistics with delivery success rates
+- Contribution scoring for relic raids including carrier bonuses
+
+**Battleground Statistics** (New in v1.5.0)
+- Zone-based battleground session detection
+- Support for Thidranki, Molvik, Cathal Valley, Killaloe, and Open RvR
+- Per-session and aggregated combat statistics
+- Best performing and most played battleground tracking
+- Total time in battlegrounds and estimated realm points
 
 ### What's in v1.4.x
 
@@ -183,7 +207,7 @@ Released: January 2026
 | [Database Integration](advanced-features/03-database-integration.md) | ✅ Complete | v1.0.0 | `src/database/` (TypeScript) |
 | [API Exposure](advanced-features/04-api-exposure.md) | ✅ Complete | v1.0.0 | `src/api/` (TypeScript) |
 
-### Future Enhancements (13/18 Complete)
+### Future Enhancements (14/18 Complete)
 
 | Feature | Status | Target | Location |
 |---------|--------|--------|----------|
@@ -196,7 +220,7 @@ Released: January 2026
 | [Distribution Builds](future-enhancements/07-distribution-builds.md) | ✅ Phase 1 | v1.0.0 | `.github/workflows/`, `Directory.Build.props` |
 | [Chat Filtering](future-enhancements/08-chat-filtering.md) | ✅ Complete | v1.1.0 | `src/CamelotCombatReporter.Core/ChatFiltering/`, `src/CamelotCombatReporter.Gui/Settings/` |
 | [Group Composition Analysis](future-enhancements/09-group-composition-analysis.md) | ✅ Complete | v1.4.0 | `src/CamelotCombatReporter.Core/GroupAnalysis/`, `src/CamelotCombatReporter.Gui/GroupAnalysis/` |
-| [Keep and Siege Tracking](future-enhancements/10-keep-siege-tracking.md) | 📋 Planned | v1.5.0 | — |
+| [Keep and Siege Tracking](future-enhancements/10-keep-siege-tracking.md) | ✅ Complete | v1.5.0 | `src/CamelotCombatReporter.Core/RvR/`, `src/CamelotCombatReporter.Gui/RvR/` |
 | [Combat Replay System](future-enhancements/11-combat-replay.md) | 📋 Planned | v2.0.0 | — |
 | [Voice Chat Integration](future-enhancements/12-voice-integration.md) | 📋 Planned | v2.0.0 | — |
 | [In-Game Overlay HUD](future-enhancements/13-overlay-hud.md) | 📋 Planned | v2.0.0 | — |
@@ -286,17 +310,20 @@ Released: January 2026
 
 ---
 
-### v1.5.0 - RvR Features
+### v1.5.0 - RvR Features ✅ RELEASED
 
+**Released:** January 2026
 **Focus:** Realm vs Realm combat tracking
 
-| Item | Type | Description |
-|------|------|-------------|
-| [Keep and Siege Tracking](future-enhancements/10-keep-siege-tracking.md) | Feature | Door/structure damage, siege scoring |
-| Keep Capture History | Feature | Track keep take participation |
-| Relic Tracking | Feature | Relic raid contribution metrics |
-| Battleground Statistics | Feature | BG-specific performance tracking |
-| Bug Fixes | Maintenance | Monthly bug fix cycle |
+| Item | Type | Status | Description |
+|------|------|--------|-------------|
+| [Keep and Siege Tracking](future-enhancements/10-keep-siege-tracking.md) | Feature | ✅ Complete | Door/structure damage, siege phases, contribution scoring |
+| Keep Capture History | Feature | ✅ Complete | Track keep take participation with timeline |
+| Relic Tracking | Feature | ✅ Complete | Relic raid sessions, carrier tracking, contribution metrics |
+| Battleground Statistics | Feature | ✅ Complete | BG-specific performance tracking by type |
+| Siege Tracking Tab | Feature | ✅ Complete | New tab in MainWindow with siege sessions and outcomes |
+| Relic Tracking Tab | Feature | ✅ Complete | New tab in MainWindow with relic status grid |
+| Battlegrounds Tab | Feature | ✅ Complete | New tab in MainWindow with BG statistics |
 
 ---
 
@@ -361,6 +388,23 @@ Bug fix releases occur as needed between feature releases:
 ---
 
 ## Version History
+
+### v1.5.0 (January 2026)
+
+**RvR Features Release:**
+- Keep and Siege Tracking with door damage, phase detection, and contribution scoring
+- Siege session resolution with configurable time gap threshold
+- Siege phases: Approach, Outer Siege, Inner Siege, Lord Fight, Capture
+- Keep capture event tracking with realm and guild attribution
+- Guard kill and lord kill detection
+- Relic raid tracking with pickup, drop, capture, and return events
+- Relic carrier statistics with delivery success rates
+- Relic status tracking (Home, InTransit, Captured) for all 6 realm relics
+- Battleground session detection for Thidranki, Molvik, Cathal Valley, Killaloe, Open RvR
+- Per-session and aggregated battleground statistics
+- Best performing and most played battleground tracking
+- New Siege Tracking, Relic Tracking, and Battlegrounds tabs in main window
+- 41 new unit tests for RvR services
 
 ### v1.4.0 (January 2026)
 

@@ -2,6 +2,8 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using CamelotCombatReporter.Core.Models;
 using CamelotCombatReporter.Core.RealmAbilities.Models;
+using CamelotCombatReporter.Core.RvR;
+using CamelotCombatReporter.Core.RvR.Models;
 
 namespace CamelotCombatReporter.Core.Parsing;
 
@@ -259,6 +261,78 @@ public class LogParser
     private static readonly Regex ChatLogBoundaryPattern = new(
         @"^\*\*\*\s+Chat Log (?<action>Opened|Closed):\s+(?<datetime>.+)$",
         RegexOptions.Compiled);
+
+    // ==================== RVR / SIEGE PATTERNS ====================
+
+    // Door damage: "[HH:mm:ss] You hit the Outer Door of Caer Benowyc for 234 damage!"
+    // Also matches: "The ram hits the Outer Door..." or "Player hits the Inner Gate..."
+    private static readonly Regex DoorDamagePattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<source>.+?) hits? the (?<door>(?:Outer|Inner) (?:Door|Gate)) of (?<keep>.+?) for (?<amount>\d+)(?: (?<type>\w+))? damage[!.]?$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Door destroyed: "[HH:mm:ss] The Outer Door of Caer Benowyc has been destroyed!"
+    private static readonly Regex DoorDestroyedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+The (?<door>(?:Outer|Inner) (?:Door|Gate)) of (?<keep>.+?) has been destroyed!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Keep captured: "[HH:mm:ss] Caer Benowyc has been captured by Midgard!" or with guild claim
+    private static readonly Regex KeepCapturedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<keep>.+?) has been captured by (?<realm>Albion|Midgard|Hibernia)(?:\s*\((?<guild>.+?)\))?!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Lord/Lady killed: "[HH:mm:ss] Lord Benowyc has been slain!" or "Lady X dies!"
+    private static readonly Regex LordKilledPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?:Lord|Lady) (?<name>.+?) (?:has been slain|dies)!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Guard killed: "[HH:mm:ss] You killed the Keep Guard!" or "Player kills the Tower Guard!"
+    private static readonly Regex GuardKillPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<killer>.+?) (?:killed|kills) the (?<guard>Keep Guard|Tower Guard|Castle Guard)!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Tower captured: "[HH:mm:ss] Dun Crauchon Tower 1 has been captured by Albion!"
+    private static readonly Regex TowerCapturedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<tower>.+?(?:Tower|Keep Tower)(?: \d+)?) has been captured by (?<realm>Albion|Midgard|Hibernia)!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Siege weapon deployed: "[HH:mm:ss] You deploy a ram!" or "Player deploys a trebuchet!"
+    private static readonly Regex SiegeDeployPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<player>.+?) deploy(?:s|ed)? (?:a |an )?(?<weapon>ram|trebuchet|ballista|catapult|boiling oil)[!.]?$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Siege weapon destroyed: "[HH:mm:ss] The ram has been destroyed!"
+    private static readonly Regex SiegeDestroyedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+The (?<weapon>ram|trebuchet|ballista|catapult) has been destroyed!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // ==================== RELIC PATTERNS ====================
+
+    // Relic picked up: "[HH:mm:ss] PlayerName has picked up Thor's Hammer!"
+    private static readonly Regex RelicPickupPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<player>.+?) has picked up (?<relic>.+?)!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Relic dropped: "[HH:mm:ss] PlayerName has dropped Thor's Hammer!"
+    private static readonly Regex RelicDropPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<player>.+?) has dropped (?<relic>.+?)!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Relic captured: "[HH:mm:ss] Midgard has captured Merlin's Staff!"
+    private static readonly Regex RelicCapturedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<realm>Albion|Midgard|Hibernia) has captured (?<relic>.+?)!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // Relic returned: "[HH:mm:ss] Thor's Hammer has been returned to Midgard!"
+    private static readonly Regex RelicReturnedPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+(?<relic>.+?) has been returned to (?<realm>Albion|Midgard|Hibernia)!$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // ==================== ZONE / BATTLEGROUND PATTERNS ====================
+
+    // Zone entry: "[HH:mm:ss] You have entered Thidranki!" or "You enter Emain Macha."
+    private static readonly Regex ZoneEnterPattern = new(
+        @"^\[(?<timestamp>\d{2}:\d{2}:\d{2})\]\s+You (?:have entered|enter) (?<zone>.+?)[!.]?$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public LogParser(string logFilePath)
     {
@@ -1137,6 +1211,314 @@ public class LogParser
                 }
                 continue;
             }
+
+            // ==================== RVR / SIEGE PARSING ====================
+
+            // Door damage pattern
+            var doorDamageMatch = DoorDamagePattern.Match(line);
+            if (doorDamageMatch.Success)
+            {
+                var groups = doorDamageMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var source = groups["source"].Value.Trim();
+                var door = groups["door"].Value.Trim();
+                var keep = groups["keep"].Value.Trim();
+                var amount = int.Parse(groups["amount"].Value);
+
+                var evt = new DoorDamageEvent(
+                    Timestamp: timestamp,
+                    KeepName: keep,
+                    DoorName: door,
+                    DamageAmount: amount,
+                    Source: source,
+                    IsDestroyed: false
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Door destroyed pattern
+            var doorDestroyedMatch = DoorDestroyedPattern.Match(line);
+            if (doorDestroyedMatch.Success)
+            {
+                var groups = doorDestroyedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var door = groups["door"].Value.Trim();
+                var keep = groups["keep"].Value.Trim();
+
+                var evt = new DoorDamageEvent(
+                    Timestamp: timestamp,
+                    KeepName: keep,
+                    DoorName: door,
+                    DamageAmount: 0,
+                    Source: "Unknown",
+                    IsDestroyed: true
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Keep captured pattern
+            var keepCapturedMatch = KeepCapturedPattern.Match(line);
+            if (keepCapturedMatch.Success)
+            {
+                var groups = keepCapturedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var keep = groups["keep"].Value.Trim();
+                var realmStr = groups["realm"].Value.Trim();
+                var guild = groups["guild"].Success ? groups["guild"].Value.Trim() : null;
+
+                var newOwner = ParseRealm(realmStr);
+
+                var evt = new KeepCapturedEvent(
+                    Timestamp: timestamp,
+                    KeepName: keep,
+                    NewOwner: newOwner,
+                    PreviousOwner: null,
+                    ClaimingGuild: guild
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Lord killed pattern
+            var lordKilledMatch = LordKilledPattern.Match(line);
+            if (lordKilledMatch.Success)
+            {
+                var groups = lordKilledMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var name = groups["name"].Value.Trim();
+
+                // Try to find the keep from the lord name or recent events
+                var keepName = ExtractKeepFromLordName(name) ?? "Unknown Keep";
+
+                var evt = new GuardKillEvent(
+                    Timestamp: timestamp,
+                    KeepName: keepName,
+                    GuardName: $"Lord {name}",
+                    Killer: "Unknown",
+                    IsLordKill: true
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Guard killed pattern
+            var guardKillMatch = GuardKillPattern.Match(line);
+            if (guardKillMatch.Success)
+            {
+                var groups = guardKillMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var killer = groups["killer"].Value.Trim();
+                var guard = groups["guard"].Value.Trim();
+
+                // Try to find keep context from recent events
+                var keepName = FindRecentKeepName(recentEvents) ?? "Unknown Keep";
+
+                var evt = new GuardKillEvent(
+                    Timestamp: timestamp,
+                    KeepName: keepName,
+                    GuardName: guard,
+                    Killer: killer,
+                    IsLordKill: false
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Tower captured pattern
+            var towerCapturedMatch = TowerCapturedPattern.Match(line);
+            if (towerCapturedMatch.Success)
+            {
+                var groups = towerCapturedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var tower = groups["tower"].Value.Trim();
+                var realmStr = groups["realm"].Value.Trim();
+
+                var newOwner = ParseRealm(realmStr);
+
+                var evt = new TowerCapturedEvent(
+                    Timestamp: timestamp,
+                    TowerName: tower,
+                    NewOwner: newOwner
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Siege weapon deployed pattern
+            var siegeDeployMatch = SiegeDeployPattern.Match(line);
+            if (siegeDeployMatch.Success)
+            {
+                var groups = siegeDeployMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var player = groups["player"].Value.Trim();
+                var weaponStr = groups["weapon"].Value.Trim();
+
+                var weaponType = ParseSiegeWeaponType(weaponStr);
+                var keepName = FindRecentKeepName(recentEvents) ?? "Unknown Keep";
+
+                var evt = new SiegeWeaponEvent(
+                    Timestamp: timestamp,
+                    KeepName: keepName,
+                    WeaponType: weaponType,
+                    PlayerName: player,
+                    IsDeployed: true
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Siege weapon destroyed pattern
+            var siegeDestroyedMatch = SiegeDestroyedPattern.Match(line);
+            if (siegeDestroyedMatch.Success)
+            {
+                var groups = siegeDestroyedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var weaponStr = groups["weapon"].Value.Trim();
+
+                var weaponType = ParseSiegeWeaponType(weaponStr);
+                var keepName = FindRecentKeepName(recentEvents) ?? "Unknown Keep";
+
+                var evt = new SiegeWeaponEvent(
+                    Timestamp: timestamp,
+                    KeepName: keepName,
+                    WeaponType: weaponType,
+                    PlayerName: "Unknown",
+                    IsDeployed: false
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // ==================== RELIC PARSING ====================
+
+            // Relic pickup pattern
+            var relicPickupMatch = RelicPickupPattern.Match(line);
+            if (relicPickupMatch.Success)
+            {
+                var groups = relicPickupMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var player = groups["player"].Value.Trim();
+                var relicName = groups["relic"].Value.Trim();
+
+                // Look up relic info
+                var relicInfo = RelicDatabase.GetByName(relicName);
+                var relicType = relicInfo?.Type ?? RelicType.Strength;
+                var originRealm = relicInfo?.HomeRealm ?? Realm.Albion;
+
+                var evt = new RelicPickupEvent(
+                    Timestamp: timestamp,
+                    RelicName: relicName,
+                    Type: relicType,
+                    CarrierName: player,
+                    OriginRealm: originRealm
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Relic dropped pattern
+            var relicDropMatch = RelicDropPattern.Match(line);
+            if (relicDropMatch.Success)
+            {
+                var groups = relicDropMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var player = groups["player"].Value.Trim();
+                var relicName = groups["relic"].Value.Trim();
+
+                var relicInfo = RelicDatabase.GetByName(relicName);
+                var relicType = relicInfo?.Type ?? RelicType.Strength;
+
+                var evt = new RelicDropEvent(
+                    Timestamp: timestamp,
+                    RelicName: relicName,
+                    Type: relicType,
+                    CarrierName: player,
+                    KillerName: null
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Relic captured pattern
+            var relicCapturedMatch = RelicCapturedPattern.Match(line);
+            if (relicCapturedMatch.Success)
+            {
+                var groups = relicCapturedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var realmStr = groups["realm"].Value.Trim();
+                var relicName = groups["relic"].Value.Trim();
+
+                var capturingRealm = ParseRealm(realmStr);
+                var relicInfo = RelicDatabase.GetByName(relicName);
+                var relicType = relicInfo?.Type ?? RelicType.Strength;
+                var originRealm = relicInfo?.HomeRealm ?? Realm.Albion;
+
+                var evt = new RelicCapturedEvent(
+                    Timestamp: timestamp,
+                    RelicName: relicName,
+                    Type: relicType,
+                    CapturingRealm: capturingRealm,
+                    OriginRealm: originRealm
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // Relic returned pattern
+            var relicReturnedMatch = RelicReturnedPattern.Match(line);
+            if (relicReturnedMatch.Success)
+            {
+                var groups = relicReturnedMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var relicName = groups["relic"].Value.Trim();
+                var realmStr = groups["realm"].Value.Trim();
+
+                var homeRealm = ParseRealm(realmStr);
+                var relicInfo = RelicDatabase.GetByName(relicName);
+                var relicType = relicInfo?.Type ?? RelicType.Strength;
+
+                var evt = new RelicReturnedEvent(
+                    Timestamp: timestamp,
+                    RelicName: relicName,
+                    Type: relicType,
+                    HomeRealm: homeRealm
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
+
+            // ==================== ZONE / BATTLEGROUND PARSING ====================
+
+            // Zone entry pattern
+            var zoneEnterMatch = ZoneEnterPattern.Match(line);
+            if (zoneEnterMatch.Success)
+            {
+                var groups = zoneEnterMatch.Groups;
+                var timestamp = TimeOnly.ParseExact(groups["timestamp"].Value, "HH:mm:ss", CultureInfo.InvariantCulture);
+                var zone = groups["zone"].Value.Trim();
+
+                var evt = new ZoneEntryEvent(
+                    Timestamp: timestamp,
+                    ZoneName: zone
+                );
+                AddToRecentEvents(recentEvents, evt, MaxRecentEvents);
+                yield return evt;
+                continue;
+            }
         }
     }
 
@@ -1163,5 +1545,65 @@ public class LogParser
         {
             recentEvents.RemoveAt(0);
         }
+    }
+
+    /// <summary>
+    /// Parses a realm name string to the Realm enum.
+    /// </summary>
+    private static Realm ParseRealm(string realmStr)
+    {
+        return realmStr.ToLowerInvariant() switch
+        {
+            "albion" => Realm.Albion,
+            "midgard" => Realm.Midgard,
+            "hibernia" => Realm.Hibernia,
+            _ => Realm.Albion // Default fallback
+        };
+    }
+
+    /// <summary>
+    /// Parses a siege weapon type string to the SiegeWeaponType enum.
+    /// </summary>
+    private static SiegeWeaponType ParseSiegeWeaponType(string weaponStr)
+    {
+        return weaponStr.ToLowerInvariant() switch
+        {
+            "ram" => SiegeWeaponType.Ram,
+            "trebuchet" => SiegeWeaponType.Trebuchet,
+            "ballista" => SiegeWeaponType.Ballista,
+            "catapult" => SiegeWeaponType.Catapult,
+            "boiling oil" => SiegeWeaponType.BoilingOil,
+            _ => SiegeWeaponType.Ram // Default fallback
+        };
+    }
+
+    /// <summary>
+    /// Attempts to extract a keep name from a lord name (e.g., "Benowyc" -> "Caer Benowyc").
+    /// </summary>
+    private static string? ExtractKeepFromLordName(string lordName)
+    {
+        // Try to find a matching keep in the database
+        var keep = KeepDatabase.FindByPartialName(lordName);
+        return keep?.Name;
+    }
+
+    /// <summary>
+    /// Attempts to find the name of a recent keep from siege events in the history.
+    /// </summary>
+    private static string? FindRecentKeepName(List<LogEvent> recentEvents)
+    {
+        // Look backwards through recent events for a siege event with a keep name
+        for (var i = recentEvents.Count - 1; i >= 0; i--)
+        {
+            if (recentEvents[i] is SiegeEvent siegeEvent)
+            {
+                return siegeEvent.KeepName;
+            }
+            if (recentEvents[i] is DoorDamageEvent doorEvent)
+            {
+                return doorEvent.KeepName;
+            }
+        }
+        return null;
     }
 }
