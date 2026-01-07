@@ -1,0 +1,283 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.CharacterBuilding.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="950" d:DesignHeight="800"
+             x:Class="CamelotCombatReporter.Gui.CharacterBuilding.Views.CharacterProfilesView"
+             x:DataType="vm:CharacterProfilesViewModel">
+
+    <Design.DataContext>
+        <vm:CharacterProfilesViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel>
+                    <TextBlock Text="Character Profiles"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               Foreground="#E91E63"/>
+                    <TextBlock Text="Create and manage character profiles to track performance across builds"
+                               Foreground="Gray"
+                               FontSize="12"/>
+                </StackPanel>
+
+                <!-- Status and Loading -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding StatusMessage}"
+                               Foreground="Gray"
+                               FontSize="11"
+                               VerticalAlignment="Center"/>
+                    <ProgressBar IsIndeterminate="True"
+                                 IsVisible="{Binding IsLoading}"
+                                 Width="100"
+                                 Height="4"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Main Content Grid -->
+            <Grid ColumnDefinitions="280,*" MinHeight="400">
+                <!-- Left Panel: Profile List -->
+                <Border BorderBrush="#9C27B0"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="10"
+                        Margin="0,0,10,0">
+                    <Grid RowDefinitions="Auto,*,Auto">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Profiles"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Foreground="#9C27B0"/>
+                            
+                            <Button Content="+ New Profile"
+                                    Command="{Binding CreateProfileCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="10,8"/>
+                        </StackPanel>
+
+                        <!-- Profile TreeView grouped by realm -->
+                        <TreeView Grid.Row="1" 
+                                  ItemsSource="{Binding GroupedProfiles}"
+                                  Margin="0,10,0,0"
+                                  SelectedItem="{Binding SelectedProfile}">
+                            <TreeView.ItemTemplate>
+                                <TreeDataTemplate ItemsSource="{Binding Profiles}">
+                                    <TextBlock Text="{Binding RealmName}" FontWeight="SemiBold"/>
+                                </TreeDataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
+
+                        <!-- Profile List (flat view as fallback) -->
+                        <ListBox Grid.Row="1"
+                                 ItemsSource="{Binding Profiles}"
+                                 SelectedItem="{Binding SelectedProfile}"
+                                 Margin="0,10,0,0">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="5">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                        <TextBlock FontSize="11" Foreground="Gray">
+                                            <Run Text="{Binding Class}"/>
+                                            <Run Text=" • "/>
+                                            <Run Text="{Binding Realm}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <!-- Filter -->
+                        <StackPanel Grid.Row="2" Spacing="5" Margin="0,10,0,0">
+                            <TextBox Watermark="Filter profiles..."
+                                     Text="{Binding FilterText}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Right Panel: Profile Details -->
+                <Border Grid.Column="1"
+                        BorderBrush="#2196F3"
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="15">
+                    <Grid RowDefinitions="Auto,Auto,*,Auto">
+                        
+                        <!-- Profile Header (when selected) -->
+                        <StackPanel IsVisible="{Binding HasSelectedProfile}" Spacing="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding SelectedProfile.Name}"
+                                               FontSize="20"
+                                               FontWeight="Bold"
+                                               Foreground="#2196F3"/>
+                                    <TextBlock Foreground="Gray">
+                                        <Run Text="{Binding SelectedProfile.Class}"/>
+                                        <Run Text=" • "/>
+                                        <Run Text="{Binding SelectedProfile.Realm}"/>
+                                        <Run Text=" • Level "/>
+                                        <Run Text="{Binding SelectedProfile.Level}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                                    <Button Content="Edit" 
+                                            Command="{Binding EditProfileCommand}"
+                                            Padding="10,5"/>
+                                    <Button Content="Delete" 
+                                            Command="{Binding DeleteProfileCommand}"
+                                            Padding="10,5"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Active Build Card -->
+                        <Border Grid.Row="1"
+                                Background="#E3F2FD"
+                                CornerRadius="5"
+                                Padding="10"
+                                Margin="0,15,0,0"
+                                IsVisible="{Binding HasActiveBuild}">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Active Build" FontWeight="SemiBold" Foreground="#1565C0"/>
+                                <TextBlock Text="{Binding SelectedProfile.ActiveBuild.Name}" FontSize="14"/>
+                                <TextBlock Text="{Binding SelectedProfile.ActiveBuild.RealmRankDisplay}" 
+                                           FontSize="12" Foreground="Gray"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Attached Sessions -->
+                        <StackPanel Grid.Row="2" Margin="0,15,0,0" Spacing="10"
+                                    IsVisible="{Binding HasSelectedProfile}">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="Attached Combat Sessions"
+                                           FontWeight="Bold"
+                                           FontSize="14"/>
+                                <Button Grid.Column="1"
+                                        Content="Attach Session"
+                                        Command="{Binding AttachSessionCommand}"
+                                        Padding="10,5"/>
+                            </Grid>
+
+                            <DataGrid ItemsSource="{Binding AttachedSessions}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      GridLinesVisibility="Horizontal"
+                                      BorderThickness="1"
+                                      BorderBrush="#CCCCCC"
+                                      MaxHeight="200">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Date" Binding="{Binding SessionStartUtc, StringFormat='{}{0:yyyy-MM-dd}'}" Width="90"/>
+                                    <DataGridTextColumn Header="Duration" Binding="{Binding DurationMinutes, StringFormat='{}{0:F1}m'}" Width="70"/>
+                                    <DataGridTextColumn Header="DPS" Binding="{Binding Dps, StringFormat=F1}" Width="60"/>
+                                    <DataGridTextColumn Header="HPS" Binding="{Binding Hps, StringFormat=F1}" Width="60"/>
+                                    <DataGridTextColumn Header="K/D" Binding="{Binding Kills}" Width="50"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <!-- Empty sessions state -->
+                            <TextBlock Text="No sessions attached yet. Parse a combat log and attach it to this profile."
+                                       Foreground="Gray"
+                                       FontSize="12"
+                                       IsVisible="{Binding !HasAttachedSessions}"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <!-- Performance Summary -->
+                        <Border Grid.Row="3"
+                                Background="#E8F5E9"
+                                CornerRadius="5"
+                                Padding="10"
+                                Margin="0,15,0,0"
+                                IsVisible="{Binding HasPerformanceMetrics}">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Performance Summary" FontWeight="SemiBold" Foreground="#2E7D32"/>
+                                <Grid ColumnDefinitions="*,*,*,*">
+                                    <StackPanel>
+                                        <TextBlock Text="Avg DPS" FontSize="11" Foreground="Gray"/>
+                                        <TextBlock Text="{Binding PerformanceMetrics.AverageDps, StringFormat=F1}" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Avg HPS" FontSize="11" Foreground="Gray"/>
+                                        <TextBlock Text="{Binding PerformanceMetrics.AverageHps, StringFormat=F1}" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="K/D Ratio" FontSize="11" Foreground="Gray"/>
+                                        <TextBlock Text="{Binding PerformanceMetrics.KillDeathRatio, StringFormat=F2}" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="3">
+                                        <TextBlock Text="Sessions" FontSize="11" Foreground="Gray"/>
+                                        <TextBlock Text="{Binding PerformanceMetrics.SessionCount}" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Empty State (no profile selected) -->
+                        <StackPanel IsVisible="{Binding !HasSelectedProfile}"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Spacing="10">
+                            <TextBlock Text="No Profile Selected"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Select a profile from the list or create a new one."
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Empty State (no profiles) -->
+            <Border BorderBrush="#FFC107"
+                    BorderThickness="2"
+                    CornerRadius="5"
+                    Padding="20"
+                    IsVisible="{Binding !HasProfiles}">
+                <StackPanel Spacing="10" HorizontalAlignment="Center">
+                    <TextBlock Text="No Character Profiles"
+                               FontWeight="Bold"
+                               FontSize="18"
+                               Foreground="#FFC107"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Create your first character profile to start tracking combat performance:"
+                               HorizontalAlignment="Center"/>
+                    <StackPanel Spacing="5" Margin="0,10">
+                        <TextBlock Text="1. Click '+ New Profile' to create a character"/>
+                        <TextBlock Text="2. Set your realm, class, and other details"/>
+                        <TextBlock Text="3. Attach combat sessions to track performance over time"/>
+                    </StackPanel>
+                    <Button Content="Create First Profile"
+                            Command="{Binding CreateProfileCommand}"
+                            HorizontalAlignment="Center"
+                            Padding="20,10"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Advanced Options -->
+            <Expander Header="Import / Export" IsExpanded="False">
+                <StackPanel Spacing="10" Margin="0,10,0,0">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Export Profile"
+                                Command="{Binding ExportProfileCommand}"
+                                IsEnabled="{Binding HasSelectedProfile}"
+                                Padding="10,5"/>
+                        <Button Content="Import Profile"
+                                Command="{Binding ImportProfileCommand}"
+                                Padding="10,5"/>
+                        <TextBlock Text="Export and share profiles as JSON files."
+                                   Foreground="Gray"
+                                   FontSize="11"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </Expander>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

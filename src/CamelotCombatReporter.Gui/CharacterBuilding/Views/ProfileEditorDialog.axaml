@@ -1,0 +1,80 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:CamelotCombatReporter.Gui.CharacterBuilding.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="400"
+        x:Class="CamelotCombatReporter.Gui.CharacterBuilding.Views.ProfileEditorDialog"
+        x:DataType="vm:ProfileEditorViewModel"
+        Title="{Binding DialogTitle}"
+        Width="450" Height="420"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <Design.DataContext>
+        <vm:ProfileEditorViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*,Auto" Margin="20">
+        <StackPanel Spacing="15">
+            <!-- Character Name -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="Character Name" FontWeight="SemiBold"/>
+                <TextBox Text="{Binding Name}" Watermark="Enter character name..."/>
+            </StackPanel>
+
+            <!-- Realm Selection -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="Realm" FontWeight="SemiBold"/>
+                <ComboBox ItemsSource="{Binding AvailableRealms}"
+                          SelectedItem="{Binding SelectedRealm}"
+                          HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
+            <!-- Class Selection (filtered by realm) -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="Class" FontWeight="SemiBold"/>
+                <ComboBox ItemsSource="{Binding AvailableClasses}"
+                          SelectedItem="{Binding SelectedClass}"
+                          HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
+            <!-- Level -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="Level" FontWeight="SemiBold"/>
+                <NumericUpDown Value="{Binding Level}"
+                               Minimum="1"
+                               Maximum="50"
+                               Increment="1"
+                               FormatString="0"/>
+            </StackPanel>
+
+            <!-- Server (optional) -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="Server (Optional)" FontWeight="SemiBold"/>
+                <TextBox Text="{Binding ServerName}" Watermark="e.g., Ywain"/>
+            </StackPanel>
+
+            <!-- Validation Message -->
+            <TextBlock Text="{Binding ValidationMessage}"
+                       Foreground="Red"
+                       FontSize="12"
+                       IsVisible="{Binding HasValidationError}"/>
+        </StackPanel>
+
+        <!-- Dialog Buttons -->
+        <StackPanel Grid.Row="1" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Spacing="10"
+                    Margin="0,20,0,0">
+            <Button Content="Cancel" 
+                    Command="{Binding CancelCommand}"
+                    Padding="20,8"/>
+            <Button Content="Save" 
+                    Command="{Binding SaveCommand}"
+                    IsEnabled="{Binding CanSave}"
+                    Padding="20,8"/>
+        </StackPanel>
+    </Grid>
+</Window>

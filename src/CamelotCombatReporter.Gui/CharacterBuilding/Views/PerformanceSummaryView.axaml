@@ -1,0 +1,145 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.CharacterBuilding.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
+             x:Class="CamelotCombatReporter.Gui.CharacterBuilding.Views.PerformanceSummaryView"
+             x:DataType="vm:PerformanceSummaryViewModel">
+    
+    <UserControl.Styles>
+        <Style Selector="Border.metric-card">
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style Selector="TextBlock.metric-value">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style Selector="TextBlock.metric-label">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+        </Style>
+    </UserControl.Styles>
+    
+    <StackPanel>
+        <!-- Header with Session Count -->
+        <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+            <TextBlock Text="Performance Summary" FontSize="16" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="1" 
+                       Text="{Binding SessionCountDisplay}"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+        </Grid>
+        
+        <!-- No Data Message -->
+        <Border IsVisible="{Binding !HasData}" 
+                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                CornerRadius="8" Padding="24">
+            <StackPanel HorizontalAlignment="Center">
+                <TextBlock Text="No Performance Data" 
+                           FontSize="14" FontWeight="SemiBold" 
+                           HorizontalAlignment="Center"/>
+                <TextBlock Text="Attach combat sessions to this profile to see metrics."
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                           TextWrapping="Wrap" TextAlignment="Center" Margin="0,4"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Metrics Grid (visible when data exists) -->
+        <StackPanel IsVisible="{Binding HasData}">
+            <!-- Combat Summary Row -->
+            <WrapPanel Margin="0,0,0,8">
+                <Border Classes="metric-card" Width="120">
+                    <StackPanel>
+                        <TextBlock Text="{Binding CombatTimeDisplay}" Classes="metric-value"/>
+                        <TextBlock Text="Combat Time" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+                
+                <Border Classes="metric-card" Width="120">
+                    <StackPanel>
+                        <TextBlock Text="{Binding AverageDpsDisplay}" Classes="metric-value"/>
+                        <TextBlock Text="Avg DPS" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+                
+                <Border Classes="metric-card" Width="120">
+                    <StackPanel>
+                        <TextBlock Text="{Binding PeakDpsDisplay}" Classes="metric-value"/>
+                        <TextBlock Text="Peak DPS" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+            
+            <!-- K/D/A Row -->
+            <WrapPanel Margin="0,0,0,8">
+                <Border Classes="metric-card" Width="80">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Kills}" Classes="metric-value" Foreground="LimeGreen"/>
+                        <TextBlock Text="Kills" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+                
+                <Border Classes="metric-card" Width="80">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Deaths}" Classes="metric-value" Foreground="Crimson"/>
+                        <TextBlock Text="Deaths" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+                
+                <Border Classes="metric-card" Width="80">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Assists}" Classes="metric-value"/>
+                        <TextBlock Text="Assists" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+                
+                <Border Classes="metric-card" Width="100">
+                    <StackPanel>
+                        <TextBlock Text="{Binding KdRatioDisplay}" Classes="metric-value" 
+                                   Foreground="{Binding KdRatioColor}"/>
+                        <TextBlock Text="K/D Ratio" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+            
+            <!-- Healing Row (if applicable) -->
+            <WrapPanel IsVisible="{Binding HasHealingData}" Margin="0,0,0,8">
+                <Border Classes="metric-card" Width="120">
+                    <StackPanel>
+                        <TextBlock Text="{Binding AverageHpsDisplay}" Classes="metric-value"/>
+                        <TextBlock Text="Avg HPS" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+                
+                <Border Classes="metric-card" Width="150">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TotalHealingDisplay}" Classes="metric-value"/>
+                        <TextBlock Text="Total Healing" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+            
+            <!-- Damage Totals -->
+            <Grid ColumnDefinitions="*,*" Margin="0,8">
+                <Border Classes="metric-card" Grid.Column="0">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TotalDamageDealtDisplay}" Classes="metric-value" 
+                                   Foreground="Orange"/>
+                        <TextBlock Text="Total Damage Dealt" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+                
+                <Border Classes="metric-card" Grid.Column="1">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TotalDamageTakenDisplay}" Classes="metric-value" 
+                                   Foreground="DodgerBlue"/>
+                        <TextBlock Text="Total Damage Taken" Classes="metric-label"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

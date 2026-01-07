@@ -1,0 +1,138 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.CharacterBuilding.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="400"
+             x:Class="CamelotCombatReporter.Gui.CharacterBuilding.Views.ProgressionChartView"
+             x:DataType="vm:ProgressionChartViewModel">
+    
+    <UserControl.Styles>
+        <Style Selector="Border.stat-card">
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style Selector="Border.milestone-row">
+            <Setter Property="BorderBrush" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="8"/>
+        </Style>
+    </UserControl.Styles>
+    
+    <ScrollViewer>
+        <StackPanel Margin="16">
+            <!-- Header -->
+            <TextBlock Text="Realm Rank Progression" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+            
+            <!-- No Data Message -->
+            <Border IsVisible="{Binding !HasMilestones}" 
+                    Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                    CornerRadius="8" Padding="24">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="No Progression Data" FontSize="14" FontWeight="SemiBold" 
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Milestones will be recorded as you progress through realm ranks."
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                               TextWrapping="Wrap" TextAlignment="Center" Margin="0,4"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Progression Content -->
+            <StackPanel IsVisible="{Binding HasMilestones}">
+                
+                <!-- Summary Cards -->
+                <WrapPanel Margin="0,0,0,16">
+                    <Border Classes="stat-card" Width="100">
+                        <StackPanel>
+                            <TextBlock Text="{Binding CurrentRankDisplay}" FontSize="24" FontWeight="Bold" 
+                                       Foreground="Gold"/>
+                            <TextBlock Text="Current Rank" FontSize="11" 
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Classes="stat-card" Width="120">
+                        <StackPanel>
+                            <TextBlock Text="{Binding TotalRpDisplay}" FontSize="24" FontWeight="Bold"/>
+                            <TextBlock Text="Total RP" FontSize="11" 
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Classes="stat-card" Width="100">
+                        <StackPanel>
+                            <TextBlock Text="{Binding MilestoneCount}" FontSize="24" FontWeight="Bold"/>
+                            <TextBlock Text="Milestones" FontSize="11" 
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Classes="stat-card" Width="120">
+                        <StackPanel>
+                            <TextBlock Text="{Binding AvgRpPerSessionDisplay}" FontSize="24" FontWeight="Bold" 
+                                       Foreground="LimeGreen"/>
+                            <TextBlock Text="RP/Session" FontSize="11" 
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                    </Border>
+                </WrapPanel>
+                
+                <!-- Trends -->
+                <Grid ColumnDefinitions="*,*" Margin="0,0,0,16">
+                    <Border Classes="stat-card" Grid.Column="0">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="DPS Trend:" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="{Binding DpsTrendDisplay}" Foreground="{Binding DpsTrendColor}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+                                <TextBlock Text="K/D Trend:" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                <TextBlock Text="{Binding KdTrendDisplay}" Foreground="{Binding KdTrendColor}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Classes="stat-card" Grid.Column="1">
+                        <StackPanel>
+                            <TextBlock Text="{Binding AvgDaysBetweenRanksDisplay}" FontSize="16"/>
+                            <TextBlock Text="Avg. days between ranks" FontSize="11" 
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                            <TextBlock Text="{Binding EstimatedTimeToNextDisplay}" FontSize="12" Margin="0,8,0,0"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                       IsVisible="{Binding HasNextRankEstimate}"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                
+                <!-- Milestone Timeline -->
+                <TextBlock Text="Milestone History" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <Border BorderBrush="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        BorderThickness="1" CornerRadius="4">
+                    <ItemsControl ItemsSource="{Binding Milestones}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Classes="milestone-row">
+                                    <Grid ColumnDefinitions="60,*,Auto">
+                                        <TextBlock Text="{Binding RankDisplay}" FontWeight="Bold" 
+                                                   Foreground="Gold"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16">
+                                            <TextBlock Text="{Binding DateDisplay}" 
+                                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                            <TextBlock Text="{Binding RpDisplay}"/>
+                                            <TextBlock Text="{Binding StatsDisplay}" 
+                                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2" Text="{Binding SessionsDisplay}" 
+                                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

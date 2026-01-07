@@ -1,0 +1,158 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CamelotCombatReporter.Gui.CharacterBuilding.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+             x:Class="CamelotCombatReporter.Gui.CharacterBuilding.Views.BuildComparisonView"
+             x:DataType="vm:BuildComparisonViewModel">
+    
+    <UserControl.Styles>
+        <Style Selector="TextBlock.delta-positive">
+            <Setter Property="Foreground" Value="LimeGreen"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="TextBlock.delta-negative">
+            <Setter Property="Foreground" Value="Crimson"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="Border.section">
+            <Setter Property="BorderBrush" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,8"/>
+        </Style>
+    </UserControl.Styles>
+    
+    <ScrollViewer>
+        <StackPanel Margin="16">
+            <!-- Build Selectors -->
+            <Grid ColumnDefinitions="*,Auto,*" Margin="0,0,0,16">
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Build A (Baseline)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <ComboBox ItemsSource="{Binding AvailableBuilds}" 
+                              SelectedItem="{Binding SelectedBuildA}"
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                
+                <TextBlock Grid.Column="1" Text="vs" VerticalAlignment="Center" 
+                           Margin="16,20,16,0" FontWeight="Bold"/>
+                
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Build B" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <ComboBox ItemsSource="{Binding AvailableBuilds}" 
+                              SelectedItem="{Binding SelectedBuildB}"
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+            
+            <!-- No Selection Message -->
+            <TextBlock Text="Select two builds to compare" 
+                       IsVisible="{Binding !HasComparison}"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                       FontStyle="Italic" HorizontalAlignment="Center" Margin="0,20"/>
+            
+            <!-- Comparison Content -->
+            <StackPanel IsVisible="{Binding HasComparison}">
+                
+                <!-- Summary -->
+                <Border Classes="section" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding SummaryText}" FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,8,0,0">
+                            <TextBlock>
+                                <Run Text="Spec Points: "/>
+                                <Run Text="{Binding SpecPointsDeltaDisplay}" 
+                                     Foreground="{Binding SpecPointsDeltaColor}"/>
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="RA Points: "/>
+                                <Run Text="{Binding RAPointsDeltaDisplay}" 
+                                     Foreground="{Binding RAPointsDeltaColor}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Spec Deltas -->
+                <TextBlock Text="Specialization Differences" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                <Border Classes="section">
+                    <ItemsControl ItemsSource="{Binding SpecDeltas}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="150,60,Auto,60" Margin="0,2">
+                                    <TextBlock Text="{Binding SpecName}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding ValueA}" 
+                                               HorizontalAlignment="Right"/>
+                                    <TextBlock Grid.Column="2" Text="→" Margin="8,0"
+                                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding ValueB}"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding DeltaDisplay}" 
+                                               Foreground="{Binding DeltaColor}"
+                                               HorizontalAlignment="Right" Margin="20,0,0,0"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+                
+                <!-- RA Deltas (if any) -->
+                <StackPanel IsVisible="{Binding HasRADeltas}">
+                    <TextBlock Text="Realm Ability Changes" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                    <Border Classes="section">
+                        <ItemsControl ItemsSource="{Binding RADeltas}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="*,Auto" Margin="0,2">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{Binding ChangeTypeIcon}" Width="20"/>
+                                            <TextBlock Text="{Binding AbilityName}"/>
+                                            <TextBlock Text="{Binding RankDisplay}" 
+                                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{Binding PointsDisplay}"
+                                                   Foreground="{Binding PointsDeltaColor}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </StackPanel>
+                
+                <!-- Performance Comparison (if available) -->
+                <StackPanel IsVisible="{Binding HasPerformanceDeltas}">
+                    <TextBlock Text="Performance Comparison" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                    <Border Classes="section">
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                            <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding DpsDeltaDisplay}" FontSize="18"/>
+                                <TextBlock Text="DPS" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding HpsDeltaDisplay}" FontSize="18"/>
+                                <TextBlock Text="HPS" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding KdDeltaDisplay}" FontSize="18"/>
+                                <TextBlock Text="K/D" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

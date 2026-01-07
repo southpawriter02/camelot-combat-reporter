@@ -14,6 +14,7 @@
         xmlns:comparison="using:CamelotCombatReporter.Gui.Comparison.Views"
         xmlns:groupanalysis="using:CamelotCombatReporter.Gui.GroupAnalysis.Views"
         xmlns:rvr="using:CamelotCombatReporter.Gui.RvR.Views"
+        xmlns:characterbuilding="using:CamelotCombatReporter.Gui.CharacterBuilding.Views"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
         x:Class="CamelotCombatReporter.Gui.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -989,6 +990,11 @@
         <!-- Cross-Realm Analysis Tab -->
         <TabItem Header="Cross-Realm Analysis">
             <crossrealm:CrossRealmView x:Name="CrossRealmView"/>
+        </TabItem>
+
+        <!-- Character Profiles Tab -->
+        <TabItem Header="Character Profiles">
+            <characterbuilding:CharacterProfilesView x:Name="CharacterProfilesView"/>
         </TabItem>
 
         <!-- Loot Tracking Tab -->
