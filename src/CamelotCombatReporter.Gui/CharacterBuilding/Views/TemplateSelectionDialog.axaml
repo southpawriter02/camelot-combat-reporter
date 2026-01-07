@@ -1,0 +1,247 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:CamelotCombatReporter.Gui.CharacterBuilding.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="CamelotCombatReporter.Gui.CharacterBuilding.Views.TemplateSelectionDialog"
+        x:DataType="vm:TemplateSelectionViewModel"
+        Title="{Binding DialogTitle}"
+        Width="850" Height="650"
+        MinWidth="700" MinHeight="500"
+        WindowStartupLocation="CenterOwner"
+        CanResize="True">
+    
+    <!-- Keyboard Shortcuts -->
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
+        <KeyBinding Gesture="Enter" Command="{Binding SelectCommand}"/>
+    </Window.KeyBindings>
+    
+    <Grid RowDefinitions="Auto,*,Auto">
+        
+        <!-- Header with Filters -->
+        <Border Grid.Row="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                Padding="16">
+            <StackPanel Spacing="12">
+                <TextBlock Text="{Binding DialogTitle}" FontSize="18" FontWeight="Bold"/>
+                
+                <!-- Filter Row -->
+                <Grid ColumnDefinitions="*,150,150,Auto">
+                    <TextBox Grid.Column="0"
+                             Text="{Binding SearchQuery}"
+                             Watermark="Search templates..."
+                             Margin="0,0,10,0"/>
+                    
+                    <ComboBox Grid.Column="1"
+                              ItemsSource="{Binding AvailableRealms}"
+                              SelectedItem="{Binding SelectedRealm}"
+                              Margin="0,0,10,0">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}">
+                                            <Binding/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    
+                    <ComboBox Grid.Column="2"
+                              ItemsSource="{Binding AvailableRoles}"
+                              SelectedItem="{Binding SelectedRole}"
+                              PlaceholderText="All Roles"
+                              Margin="0,0,10,0"/>
+                    
+                    <Button Grid.Column="3" 
+                            Content="Clear" 
+                            Command="{Binding ClearFiltersCommand}"
+                            Padding="12,6"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+        
+        <!-- Template List and Preview -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,350" Margin="16">
+            
+            <!-- Template List -->
+            <Border BorderBrush="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Margin="0,0,8,0">
+                <ListBox ItemsSource="{Binding FilteredTemplates}"
+                         SelectedItem="{Binding SelectedTemplate}"
+                         Padding="4">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto,*" Margin="8,6">
+                                <!-- Realm Icon -->
+                                <Border Width="40" Height="40" 
+                                        CornerRadius="4"
+                                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                                        Margin="0,0,12,0"
+                                        VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Realm, StringFormat={}{0:G}}"
+                                               FontSize="10"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" 
+                                               FontWeight="SemiBold"
+                                               FontSize="14"/>
+                                    <TextBlock>
+                                        <Run Text="{Binding TargetClass}"/>
+                                        <Run Text=" • "/>
+                                        <Run Text="{Binding Role}"/>
+                                        <Run Text=" • RR"/>
+                                        <Run Text="{Binding RecommendedRealmRank}"/>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding Description}"
+                                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                               FontSize="11"
+                                               TextTrimming="CharacterEllipsis"
+                                               MaxWidth="300"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+            
+            <!-- Template Preview -->
+            <Border Grid.Column="1"
+                    BorderBrush="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="16"
+                    Margin="8,0,0,0">
+                <Panel>
+                    <!-- Empty State -->
+                    <StackPanel IsVisible="{Binding !HasSelectedTemplate}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                        <TextBlock Text="Select a Template"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Choose a template from the list to preview its details"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   FontSize="12"
+                                   HorizontalAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+                    
+                    <!-- Template Details -->
+                    <ScrollViewer IsVisible="{Binding HasSelectedTemplate}">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="{Binding SelectedTemplate.Name}"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+                            
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Class:" FontWeight="SemiBold" Margin="0,0,12,4"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedTemplate.TargetClass}"/>
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Realm:" FontWeight="SemiBold" Margin="0,0,12,4"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTemplate.Realm}"/>
+                                
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Role:" FontWeight="SemiBold" Margin="0,0,12,4"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedTemplate.Role}"/>
+                                
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Rec. RR:" FontWeight="SemiBold" Margin="0,0,12,4"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedTemplate.RecommendedRealmRank}"/>
+                            </Grid>
+                            
+                            <TextBlock Text="{Binding SelectedTemplate.Description}"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                            
+                            <Separator/>
+                            
+                            <!-- Spec Lines -->
+                            <TextBlock Text="Specializations" FontWeight="SemiBold"/>
+                            <ItemsControl ItemsSource="{Binding SelectedTemplate.SpecLines}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Text="{Binding Key}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Value}" FontWeight="SemiBold"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <Separator/>
+                            
+                            <!-- Realm Abilities -->
+                            <TextBlock Text="Realm Abilities" FontWeight="SemiBold"/>
+                            <ItemsControl ItemsSource="{Binding SelectedTemplate.RealmAbilities}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Text="{Binding AbilityName}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Rank, StringFormat='Rank {0}'}" 
+                                                       FontWeight="SemiBold"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <!-- Tags -->
+                            <ItemsControl ItemsSource="{Binding SelectedTemplate.Tags}" Margin="0,8,0,0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                                                CornerRadius="10"
+                                                Padding="8,4"
+                                                Margin="0,0,4,4">
+                                            <TextBlock Text="{Binding}" FontSize="11"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <!-- Author -->
+                            <TextBlock Text="{Binding SelectedTemplate.Author, StringFormat='by {0}'}"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                       FontSize="11"
+                                       FontStyle="Italic"
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Panel>
+            </Border>
+        </Grid>
+        
+        <!-- Footer Buttons -->
+        <Border Grid.Row="2" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                Padding="16">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                <TextBlock Text="{Binding FilteredTemplates.Count, StringFormat='{}{0} templates'}"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                
+                <Button Grid.Column="2" Content="Cancel" 
+                        Command="{Binding CancelCommand}"
+                        Width="100" Margin="0,0,8,0"/>
+                <Button Grid.Column="3" Content="Use Template" 
+                        Command="{Binding SelectCommand}"
+                        IsEnabled="{Binding HasSelectedTemplate}"
+                        Classes="accent"
+                        Width="120"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

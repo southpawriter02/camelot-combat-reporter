@@ -1169,7 +1169,7 @@
 
                 <!-- Version -->
                 <TextBlock Grid.Column="4"
-                           Text="v1.8.3"
+                           Text="v1.9.0"
                            FontSize="11"
                            Foreground="#9E9E9E"
                            VerticalAlignment="Center"/>

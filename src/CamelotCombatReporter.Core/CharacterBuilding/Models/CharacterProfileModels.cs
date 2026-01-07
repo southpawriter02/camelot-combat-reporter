@@ -139,3 +139,52 @@ public record StatValue(int Base, int Bonus)
     /// </summary>
     public int Total => Base + Bonus;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Export Models
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// <summary>
+/// Options for profile export.
+/// </summary>
+public record ProfileExportOptions
+{
+    /// <summary>Whether to include build history in the export.</summary>
+    public bool IncludeBuildHistory { get; init; } = true;
+    
+    /// <summary>Whether to include session IDs (not full session data).</summary>
+    public bool IncludeSessionReferences { get; init; } = false;
+    
+    /// <summary>Whether to replace the character name with a placeholder.</summary>
+    public bool AnonymizeCharacterName { get; init; } = false;
+    
+    /// <summary>Optional custom name for the exported profile.</summary>
+    public string? CustomExportName { get; init; }
+    
+    /// <summary>Whether to include performance metrics in builds.</summary>
+    public bool IncludePerformanceMetrics { get; init; } = false;
+}
+
+/// <summary>
+/// Result of a profile export operation.
+/// </summary>
+public record ProfileExportResult
+{
+    /// <summary>The exported JSON content.</summary>
+    public required string Json { get; init; }
+    
+    /// <summary>Suggested filename for the export.</summary>
+    public required string SuggestedFileName { get; init; }
+    
+    /// <summary>Size of the export in bytes.</summary>
+    public int SizeBytes { get; init; }
+    
+    /// <summary>Number of builds included in the export.</summary>
+    public int BuildCount { get; init; }
+    
+    /// <summary>Number of session references included.</summary>
+    public int SessionReferenceCount { get; init; }
+    
+    /// <summary>Whether the profile name was anonymized.</summary>
+    public bool WasAnonymized { get; init; }
+}

@@ -11,6 +11,16 @@
         <vm:CharacterProfilesViewModel/>
     </Design.DataContext>
 
+    <!-- Keyboard Shortcuts -->
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Ctrl+N" Command="{Binding CreateProfileCommand}"/>
+        <KeyBinding Gesture="Ctrl+E" Command="{Binding ExportProfileCommand}"/>
+        <KeyBinding Gesture="Ctrl+I" Command="{Binding ImportProfileCommand}"/>
+        <KeyBinding Gesture="Delete" Command="{Binding DeleteProfileCommand}"/>
+        <KeyBinding Gesture="F2" Command="{Binding EditProfileCommand}"/>
+    </UserControl.KeyBindings>
+
+
     <ScrollViewer>
         <StackPanel Margin="20" Spacing="15">
             <!-- Header -->

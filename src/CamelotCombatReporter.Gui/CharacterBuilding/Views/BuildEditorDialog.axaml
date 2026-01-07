@@ -12,6 +12,12 @@
         WindowStartupLocation="CenterOwner"
         CanResize="True">
     
+    <!-- Keyboard Shortcuts -->
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
+        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveCommand}"/>
+    </Window.KeyBindings>
+    
     <Window.Styles>
         <Style Selector="TextBlock.section-header">
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -45,7 +51,15 @@
             <StackPanel>
                 
                 <!-- Build Info Section -->
-                <TextBlock Text="Build Information" Classes="section-header"/>
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="Build Information" Classes="section-header"/>
+                    <Button Grid.Column="1" 
+                            Content="📋 Load Template"
+                            Command="{Binding LoadTemplateCommand}"
+                            ToolTip.Tip="Load a community meta build template"
+                            Padding="12,6"
+                            Margin="0,8,0,4"/>
+                </Grid>
                 <Border Classes="section">
                     <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto,Auto">
                         <TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"

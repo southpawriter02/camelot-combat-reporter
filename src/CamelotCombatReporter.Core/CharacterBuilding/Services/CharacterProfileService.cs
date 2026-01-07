@@ -472,6 +472,89 @@ public class CharacterProfileService : ICharacterProfileService, IDisposable
         return JsonSerializer.Serialize(profile, _jsonOptions);
     }
 
+    public async Task<ProfileExportResult> ExportProfileWithOptionsAsync(
+        Guid profileId, 
+        ProfileExportOptions options,
+        CancellationToken cancellationToken = default)
+    {
+        var profile = await GetProfileAsync(profileId, cancellationToken)
+            ?? throw new InvalidOperationException($"Profile {profileId} not found");
+
+        // Apply options to create export version
+        var exportProfile = profile;
+        var wasAnonymized = false;
+
+        // Anonymize if requested
+        if (options.AnonymizeCharacterName)
+        {
+            exportProfile = exportProfile with { Name = "Anonymous" };
+            wasAnonymized = true;
+        }
+
+        // Apply custom name if provided
+        if (!string.IsNullOrWhiteSpace(options.CustomExportName))
+        {
+            exportProfile = exportProfile with { Name = options.CustomExportName };
+        }
+
+        // Handle build history
+        var buildCount = exportProfile.BuildHistory.Count;
+        if (!options.IncludeBuildHistory)
+        {
+            // Keep only active build
+            exportProfile = exportProfile with 
+            { 
+                BuildHistory = exportProfile.ActiveBuild != null 
+                    ? [exportProfile.ActiveBuild] 
+                    : [] 
+            };
+            buildCount = exportProfile.BuildHistory.Count;
+        }
+
+        // Handle session references
+        var sessionCount = exportProfile.AttachedSessionIds.Count;
+        if (!options.IncludeSessionReferences)
+        {
+            exportProfile = exportProfile with { AttachedSessionIds = [] };
+            sessionCount = 0;
+        }
+
+        // Handle performance metrics (strip from builds if not included)
+        if (!options.IncludePerformanceMetrics && exportProfile.BuildHistory.Count > 0)
+        {
+            var cleanedBuilds = exportProfile.BuildHistory
+                .Select(b => b with { PerformanceMetrics = null })
+                .ToList();
+            exportProfile = exportProfile with { BuildHistory = cleanedBuilds };
+            
+            if (exportProfile.ActiveBuild != null)
+            {
+                exportProfile = exportProfile with 
+                { 
+                    ActiveBuild = exportProfile.ActiveBuild with { PerformanceMetrics = null } 
+                };
+            }
+        }
+
+        var json = JsonSerializer.Serialize(exportProfile, _jsonOptions);
+        var sanitizedName = string.Join("", (options.CustomExportName ?? profile.Name)
+            .Split(Path.GetInvalidFileNameChars()));
+
+        _logger.LogInformation(
+            "Exported profile '{Name}' with {BuildCount} builds, {SessionCount} sessions, anonymized: {Anon}",
+            profile.Name, buildCount, sessionCount, wasAnonymized);
+
+        return new ProfileExportResult
+        {
+            Json = json,
+            SuggestedFileName = $"{sanitizedName}_{DateTime.UtcNow:yyyyMMdd}.ccr-profile",
+            SizeBytes = System.Text.Encoding.UTF8.GetByteCount(json),
+            BuildCount = buildCount,
+            SessionReferenceCount = sessionCount,
+            WasAnonymized = wasAnonymized
+        };
+    }
+
     public async Task<CharacterProfile> ImportProfileAsync(string json, CancellationToken cancellationToken = default)
     {
         var imported = JsonSerializer.Deserialize<CharacterProfile>(json, _jsonOptions)

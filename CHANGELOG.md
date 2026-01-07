@@ -11,6 +11,62 @@ No unreleased changes.
 
 ---
 
+## [1.9.0] - 2026-01-07
+
+### Added
+- **Combat Style Class Detection**
+  - `ICombatLogClassDetector` interface and implementation
+  - Comprehensive DAoC combat style-to-class mappings (45+ classes)
+  - Confidence scoring based on style frequency and uniqueness
+  - Support for all three realms: Albion, Midgard, Hibernia
+  - `ClassInferenceResult` with candidate classes and usage statistics
+
+- **Meta Build Templates (45+ Templates)**
+  - `IMetaBuildTemplateService` with template management
+  - 2-3 meta builds per class covering different playstyles
+  - Albion: Armsman, Cabalist, Cleric, Friar, Infiltrator, Mercenary, Minstrel, Paladin, Reaver, Scout, Theurgist, Wizard
+  - Midgard: Berserker, Healer, Hunter, Savage, Shadowblade, Shaman, Skald, Thane, Warrior
+  - Hibernia: Bard, Blademaster, Champion, Druid, Hero, Nightshade, Ranger, Valewalker, Warden
+  - Each template includes spec lines, realm abilities, role, and author
+
+- **Enhanced Profile Export**
+  - `ProfileExportOptions` record for configurable exports
+  - Include/exclude build history option
+  - Include/exclude session references option
+  - Character name anonymization option
+  - Custom export name support
+  - Performance metrics stripping option
+  - `ProfileExportResult` with metadata (size, counts, suggested filename)
+
+- **Keyboard Shortcuts**
+  - Character Profiles View:
+    - `Ctrl+N`: New Profile
+    - `Ctrl+E`: Export Profile
+    - `Ctrl+I`: Import Profile
+    - `Delete`: Delete Selected Profile
+    - `F2`: Edit Selected Profile
+  - Build Editor Dialog:
+    - `Escape`: Cancel and close
+    - `Ctrl+S`: Save build
+
+- **Template Selection Dialog**
+  - Browse all meta build templates by realm, role, or search
+  - Preview template details: spec lines, realm abilities, tags
+  - Filter by realm (Albion/Midgard/Hibernia) and role (Tank/DPS/Healer/Support)
+  - "Load Template" button in Build Editor dialog
+
+- **Enhanced Profile Export Dialog**
+  - Configurable export with privacy options
+  - Include/exclude build history and session references
+  - Character name anonymization
+  - Custom export filename support
+  - Performance metrics stripping
+
+### Changed
+- Updated version to v1.9.0
+
+---
+
 ## [1.8.3] - 2026-01-07
 
 ### Added

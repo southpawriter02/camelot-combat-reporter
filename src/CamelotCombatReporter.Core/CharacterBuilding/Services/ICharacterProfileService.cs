@@ -110,6 +110,14 @@ public interface ICharacterProfileService
     Task<string> ExportProfileAsync(Guid profileId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Exports a profile to JSON with configurable options.
+    /// </summary>
+    Task<ProfileExportResult> ExportProfileWithOptionsAsync(
+        Guid profileId, 
+        ProfileExportOptions options,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Imports a profile from JSON.
     /// </summary>
     Task<CharacterProfile> ImportProfileAsync(string json, CancellationToken cancellationToken = default);

@@ -17,9 +17,15 @@ namespace CamelotCombatReporter.Gui.CharacterBuilding.ViewModels;
 public partial class BuildEditorViewModel : ObservableObject
 {
     private readonly ISpecializationTemplateService _specService;
+    private readonly IMetaBuildTemplateService _templateService;
     private readonly CharacterProfile _profile;
     private readonly CharacterBuild? _existingBuild;
     private readonly Action<CharacterBuild?, bool> _onClose;
+
+    /// <summary>
+    /// Event raised when the user wants to load a template (UI should show dialog).
+    /// </summary>
+    public event Func<CharacterClass, MetaBuildTemplate?>? RequestLoadTemplate;
 
     [ObservableProperty]
     private string _buildName = string.Empty;
@@ -61,11 +67,13 @@ public partial class BuildEditorViewModel : ObservableObject
         CharacterProfile profile,
         CharacterBuild? existingBuild,
         ISpecializationTemplateService specService,
+        IMetaBuildTemplateService templateService,
         Action<CharacterBuild?, bool> onClose)
     {
         _profile = profile;
         _existingBuild = existingBuild;
         _specService = specService;
+        _templateService = templateService;
         _onClose = onClose;
 
         InitializeFromProfile();
@@ -225,6 +233,73 @@ public partial class BuildEditorViewModel : ObservableObject
     private void Cancel()
     {
         _onClose(null, false);
+    }
+
+    [RelayCommand]
+    private void LoadTemplate()
+    {
+        // Raise event to show template selection dialog
+        var selectedTemplate = RequestLoadTemplate?.Invoke(_profile.Class);
+        if (selectedTemplate != null)
+        {
+            ApplyTemplate(selectedTemplate);
+        }
+    }
+
+    /// <summary>
+    /// Applies a meta build template to the current build.
+    /// </summary>
+    public void ApplyTemplate(MetaBuildTemplate template)
+    {
+        // Apply build name
+        BuildName = template.Name;
+        
+        // Apply realm rank
+        RealmRank = template.RecommendedRealmRank;
+        RealmRankLevel = 0;
+        
+        // Apply spec lines
+        foreach (var specVm in SpecLineViewModels)
+        {
+            if (template.SpecLines.TryGetValue(specVm.Name, out var level))
+            {
+                specVm.Level = Math.Min(level, specVm.MaxLevel);
+            }
+            else
+            {
+                specVm.Level = 1; // Reset unlisted specs
+            }
+        }
+        
+        // Clear and apply realm abilities
+        SelectedRealmAbilities.Clear();
+        foreach (var raSelection in template.RealmAbilities)
+        {
+            var def = RealmAbilityCatalog.GetAllAbilities()
+                .FirstOrDefault(a => a.Name == raSelection.AbilityName);
+            if (def != null)
+            {
+                var vm = new RealmAbilityViewModel(def, raSelection.Rank);
+                vm.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == nameof(RealmAbilityViewModel.PointCost))
+                    {
+                        OnPropertyChanged(nameof(AllocatedRAPoints));
+                        ValidatePoints();
+                    }
+                };
+                SelectedRealmAbilities.Add(vm);
+            }
+        }
+        
+        // Update notes with template info
+        Notes = $"Based on template: {template.Name}\nRole: {template.Role}\n{template.Description}";
+        
+        // Refresh computed properties
+        OnPropertyChanged(nameof(AllocatedSpecPoints));
+        OnPropertyChanged(nameof(SpecPointsRemaining));
+        OnPropertyChanged(nameof(AllocatedRAPoints));
+        ValidatePoints();
     }
 
     private CharacterBuild CreateBuild()

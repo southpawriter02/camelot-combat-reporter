@@ -1,0 +1,136 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:CamelotCombatReporter.Gui.CharacterBuilding.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+        x:Class="CamelotCombatReporter.Gui.CharacterBuilding.Views.ExportProfileDialog"
+        x:DataType="vm:ExportProfileViewModel"
+        Title="{Binding DialogTitle}"
+        Width="500" Height="480"
+        MinWidth="400" MinHeight="400"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+    
+    <!-- Keyboard Shortcuts -->
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
+        <KeyBinding Gesture="Ctrl+Enter" Command="{Binding ExportCommand}"/>
+    </Window.KeyBindings>
+    
+    <Grid RowDefinitions="Auto,*,Auto">
+        
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                Padding="20">
+            <StackPanel>
+                <TextBlock Text="Export Profile" FontSize="20" FontWeight="Bold"/>
+                <TextBlock Margin="0,4,0,0">
+                    <Run Text="{Binding ProfileName}" FontWeight="SemiBold"/>
+                    <Run Text=" • "/>
+                    <Run Text="{Binding ProfileClass}"/>
+                    <Run Text=" ("/>
+                    <Run Text="{Binding ProfileRealm}"/>
+                    <Run Text=")"/>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+        
+        <!-- Options -->
+        <ScrollViewer Grid.Row="1" Padding="20">
+            <StackPanel Spacing="16">
+                
+                <!-- Profile Stats -->
+                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        CornerRadius="6"
+                        Padding="16">
+                    <Grid ColumnDefinitions="*,*">
+                        <StackPanel>
+                            <TextBlock Text="Builds" FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                            <TextBlock Text="{Binding BuildCount}" FontSize="24" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Sessions" FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                            <TextBlock Text="{Binding SessionCount}" FontSize="24" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                
+                <!-- Export Options -->
+                <TextBlock Text="Export Options" FontWeight="SemiBold" FontSize="14"/>
+                
+                <StackPanel Spacing="12">
+                    <CheckBox IsChecked="{Binding IncludeBuildHistory}">
+                        <StackPanel>
+                            <TextBlock Text="Include Build History"/>
+                            <TextBlock Text="Export all builds, not just the active one"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                    </CheckBox>
+                    
+                    <CheckBox IsChecked="{Binding IncludeSessionReferences}">
+                        <StackPanel>
+                            <TextBlock Text="Include Session References"/>
+                            <TextBlock Text="Include IDs of attached combat sessions"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                    </CheckBox>
+                    
+                    <CheckBox IsChecked="{Binding IncludePerformanceMetrics}">
+                        <StackPanel>
+                            <TextBlock Text="Include Performance Metrics"/>
+                            <TextBlock Text="Include DPS/HPS stats and other metrics"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                    </CheckBox>
+                </StackPanel>
+                
+                <Separator/>
+                
+                <!-- Privacy Options -->
+                <TextBlock Text="Privacy Options" FontWeight="SemiBold" FontSize="14"/>
+                
+                <StackPanel Spacing="12">
+                    <CheckBox IsChecked="{Binding AnonymizeCharacterName}">
+                        <StackPanel>
+                            <TextBlock Text="Anonymize Character Name"/>
+                            <TextBlock Text="Replace character name with 'Anonymous'"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </StackPanel>
+                    </CheckBox>
+                    
+                    <CheckBox IsChecked="{Binding UseCustomName}">
+                        <TextBlock Text="Use Custom Export Name"/>
+                    </CheckBox>
+                    
+                    <TextBox Text="{Binding CustomExportName}"
+                             IsEnabled="{Binding UseCustomName}"
+                             Watermark="Custom profile name..."
+                             Margin="24,0,0,0"/>
+                </StackPanel>
+                
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                Padding="20">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                <Button Content="Reset Defaults"
+                        Command="{Binding ResetDefaultsCommand}"/>
+                
+                <Button Grid.Column="2" Content="Cancel" 
+                        Command="{Binding CancelCommand}"
+                        Width="100" Margin="0,0,8,0"/>
+                <Button Grid.Column="3" Content="Export" 
+                        Command="{Binding ExportCommand}"
+                        Classes="accent"
+                        Width="100"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
