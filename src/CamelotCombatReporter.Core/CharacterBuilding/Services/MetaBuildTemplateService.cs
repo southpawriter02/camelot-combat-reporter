@@ -233,6 +233,26 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             Tags = ["damage", "dual wield", "fast", "solo"]
         };
 
+        // ─── Reaver ────────────────────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "alb-reav-flex",
+            Name = "Flexible Reaver",
+            Description = "Flexible weapon specialist with Soulrending magic. High damage hybrid.",
+            TargetClass = CharacterClass.Reaver,
+            Realm = Realm.Albion,
+            Role = "Hybrid DPS",
+            RecommendedRealmRank = 6,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Flexible", 50 },
+                { "Shield", 42 },
+                { "Soulrending", 36 }
+            },
+            RealmAbilities = CreateRAs(("Determination", 5), ("Purge", 3), ("Mastery of Pain", 3)),
+            Tags = ["hybrid", "melee", "flexible", "lifetap"]
+        };
+
         // ─── Infiltrator ─────────────────────────────────────────────────────
         yield return new MetaBuildTemplate
         {
@@ -345,7 +365,7 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             {
                 { "Fire", 48 },
                 { "Earth", 26 },
-                { "Cold", 6 }
+                { "Ice", 6 }
             },
             RealmAbilities = CreateRAs(("Wild Power", 5), ("Mastery of Concentration", 3), ("Purge", 3)),
             Tags = ["caster", "aoe", "fire", "zerg"]
@@ -362,12 +382,32 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             RecommendedRealmRank = 6,
             SpecLines = new Dictionary<string, int>
             {
-                { "Cold", 48 },
+                { "Ice", 48 },
                 { "Fire", 22 },
                 { "Earth", 18 }
             },
             RealmAbilities = CreateRAs(("Wild Power", 5), ("Mastery of Concentration", 3), ("Purge", 3)),
             Tags = ["caster", "single target", "ice", "8man"]
+        };
+
+        // ─── Cabalist ──────────────────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "alb-cab-matter",
+            Name = "Matter Cabalist",
+            Description = "DoT and pet focus with Nearsight. Excellent for PvE and solo RvR.",
+            TargetClass = CharacterClass.Cabalist,
+            Realm = Realm.Albion,
+            Role = "Pet Caster / DoT",
+            RecommendedRealmRank = 5,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Matter", 46 },
+                { "Body", 26 },
+                { "Spirit", 6 }
+            },
+            RealmAbilities = CreateRAs(("Mastery of Concentration", 3), ("Purge", 3), ("Wild Power", 3)),
+            Tags = ["caster", "pet", "dot", "nearsight"]
         };
 
         // ─── Sorcerer ────────────────────────────────────────────────────────
@@ -403,11 +443,50 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             SpecLines = new Dictionary<string, int>
             {
                 { "Earth", 48 },
-                { "Air", 24 },
+                { "Wind", 24 },
                 { "Ice", 6 }
             },
             RealmAbilities = CreateRAs(("Wild Power", 3), ("Mastery of Concentration", 3), ("Purge", 3)),
             Tags = ["caster", "pet", "siege", "keep"]
+        };
+
+        // ─── Necromancer ────────────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "alb-necro-deathsight",
+            Name = "Deathsight Necromancer",
+            Description = "Lifetap and AoE damage focus. Best for PvE and solo RvR.",
+            TargetClass = CharacterClass.Necromancer,
+            Realm = Realm.Albion,
+            Role = "Pet Caster",
+            RecommendedRealmRank = 5,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Deathsight", 47 },
+                { "Death Servant", 25 },
+                { "Painworking", 6 }
+            },
+            RealmAbilities = CreateRAs(("Wild Power", 3), ("Mastery of Concentration", 3), ("Purge", 3)),
+            Tags = ["caster", "pet", "lifetap", "solo"]
+        };
+        
+        yield return new MetaBuildTemplate
+        {
+            Id = "alb-necro-servant",
+            Name = "Death Servant Necromancer",
+            Description = "Pet-centric build with tanking servant. Strong in group play.",
+            TargetClass = CharacterClass.Necromancer,
+            Realm = Realm.Albion,
+            Role = "Pet Caster",
+            RecommendedRealmRank = 5,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Death Servant", 47 },
+                { "Deathsight", 25 },
+                { "Painworking", 6 }
+            },
+            RealmAbilities = CreateRAs(("Wild Power", 3), ("Mastery of Concentration", 3), ("Purge", 3)),
+            Tags = ["caster", "pet", "group", "support"]
         };
 
         // ─── Friar ───────────────────────────────────────────────────────────
@@ -430,6 +509,26 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             Tags = ["hybrid", "melee", "healer", "solo"]
         };
 
+        // ─── Heretic ───────────────────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "alb-here-focus",
+            Name = "Focus Heretic",
+            Description = "Focus DD spells with strong buffs. Caster-oriented hybrid.",
+            TargetClass = CharacterClass.Heretic,
+            Realm = Realm.Albion,
+            Role = "Hybrid Caster",
+            RecommendedRealmRank = 6,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Rejuvenation", 48 },
+                { "Enhancement", 50 },
+                { "Crush", 18 }
+            },
+            RealmAbilities = CreateRAs(("Mastery of Concentration", 5), ("Purge", 3), ("Wild Power", 3)),
+            Tags = ["hybrid", "caster", "focus", "buffs"]
+        };
+
         // ─── Minstrel ────────────────────────────────────────────────────────
         yield return new MetaBuildTemplate
         {
@@ -448,6 +547,26 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             },
             RealmAbilities = CreateRAs(("Purge", 3), ("Determination", 3), ("Mastery of Concentration", 3)),
             Tags = ["support", "speed", "cc", "group"]
+        };
+
+        // ─── Mauler (Albion) ───────────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "alb-maul-fist",
+            Name = "Fist Wraps Brawler",
+            Description = "Melee hybrid with earth magic. Power from taking damage.",
+            TargetClass = CharacterClass.MaulerAlb,
+            Realm = Realm.Albion,
+            Role = "Melee Hybrid",
+            RecommendedRealmRank = 5,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Fist Wraps", 50 },
+                { "Power Strikes", 42 },
+                { "Magnetism", 28 }
+            },
+            RealmAbilities = CreateRAs(("Determination", 5), ("Purge", 3), ("Mastery of Pain", 3)),
+            Tags = ["melee", "hybrid", "brawler"]
         };
     }
 
@@ -514,6 +633,26 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             },
             RealmAbilities = CreateRAs(("Determination", 5), ("Purge", 3), ("Mastery of Pain", 3)),
             Tags = ["damage", "dual wield", "axe", "zerk"]
+        };
+
+        // ─── Bonedancer ───────────────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "mid-bd-bone",
+            Name = "Bone Army Bonedancer",
+            Description = "Pet army commander with DoT damage. Strong leveling and solo class.",
+            TargetClass = CharacterClass.Bonedancer,
+            Realm = Realm.Midgard,
+            Role = "Pet Caster",
+            RecommendedRealmRank = 5,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Bone Army", 48 },
+                { "Suppression", 24 },
+                { "Darkness", 13 }
+            },
+            RealmAbilities = CreateRAs(("Wild Power", 3), ("Mastery of Concentration", 3), ("Purge", 3)),
+            Tags = ["caster", "pet", "dot", "solo"]
         };
 
         // ─── Savage ──────────────────────────────────────────────────────────
@@ -635,6 +774,26 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             Tags = ["hybrid", "caster", "melee", "lightning"]
         };
 
+        // ─── Valkyrie ───────────────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "mid-valk-spear",
+            Name = "Odin's Will Valkyrie",
+            Description = "Spear melee with Odin's Will magic and Shield slam. Hybrid fighter.",
+            TargetClass = CharacterClass.Valkyrie,
+            Realm = Realm.Midgard,
+            Role = "Hybrid DPS",
+            RecommendedRealmRank = 6,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Spear", 50 },
+                { "Odin's Will", 35 },
+                { "Shield", 42 }
+            },
+            RealmAbilities = CreateRAs(("Determination", 5), ("Purge", 3), ("Mastery of Focus", 2)),
+            Tags = ["hybrid", "melee", "caster", "shield"]
+        };
+
         // ─── Healer ──────────────────────────────────────────────────────────
         yield return new MetaBuildTemplate
         {
@@ -733,6 +892,65 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             RealmAbilities = CreateRAs(("Wild Power", 3), ("Mastery of Concentration", 3), ("Purge", 3)),
             Tags = ["caster", "pet", "suppression"]
         };
+
+        // ─── Warlock ──────────────────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "mid-wlck-curse",
+            Name = "Cursing Warlock",
+            Description = "DPS-focused warlock with chamber system. High burst damage caster.",
+            TargetClass = CharacterClass.Warlock,
+            Realm = Realm.Midgard,
+            Role = "Caster DPS",
+            RecommendedRealmRank = 6,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Cursing", 48 },
+                { "Hexing", 25 },
+                { "Witchcraft", 20 }
+            },
+            RealmAbilities = CreateRAs(("Wild Power", 3), ("Mastery of Concentration", 3), ("Purge", 3)),
+            Tags = ["caster", "burst", "chamber", "dps"]
+        };
+
+        // ─── Mauler ─────────────────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "mid-mauler-fist",
+            Name = "Fist Mauler",
+            Description = "Fist combat with Magnetism control. High damage with CC utility.",
+            TargetClass = CharacterClass.MaulerMid,
+            Realm = Realm.Midgard,
+            Role = "Melee DPS / CC",
+            RecommendedRealmRank = 6,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Fist", 50 },
+                { "Magnetism", 39 },
+                { "Aura Manipulation", 20 }
+            },
+            RealmAbilities = CreateRAs(("Determination", 5), ("Purge", 3), ("Mastery of Pain", 3)),
+            Tags = ["melee", "fist", "cc", "control"]
+        };
+        
+        yield return new MetaBuildTemplate
+        {
+            Id = "mid-mauler-staff",
+            Name = "Staff Mauler",
+            Description = "Mauler Staff with Power Strikes. High burst damage build.",
+            TargetClass = CharacterClass.MaulerMid,
+            Realm = Realm.Midgard,
+            Role = "Melee DPS",
+            RecommendedRealmRank = 5,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Mauler Staff", 50 },
+                { "Power Strikes", 39 },
+                { "Aura Manipulation", 20 }
+            },
+            RealmAbilities = CreateRAs(("Determination", 5), ("Purge", 3), ("Mastery of Pain", 3)),
+            Tags = ["melee", "staff", "burst", "damage"]
+        };
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -773,7 +991,7 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             SpecLines = new Dictionary<string, int>
             {
                 { "Large Weapons", 50 },
-                { "Celtic Dual", 39 },
+                { "Shield", 42 },
                 { "Parry", 28 }
             },
             RealmAbilities = CreateRAs(("Determination", 5), ("Purge", 3), ("Mastery of Pain", 3)),
@@ -1057,6 +1275,26 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             Tags = ["caster", "pet", "siege", "turret"]
         };
 
+        // ─── Bainshee ───────────────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "hib-bain-shriek",
+            Name = "Ethereal Shriek Bainshee",
+            Description = "Ranged AoE nuker with sound-based magic. Zerg specialist.",
+            TargetClass = CharacterClass.Bainshee,
+            Realm = Realm.Hibernia,
+            Role = "Ranged AoE DPS",
+            RecommendedRealmRank = 6,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Ethereal Shriek", 48 },
+                { "Spectral Guard", 24 },
+                { "Phantasmal Wail", 10 }
+            },
+            RealmAbilities = CreateRAs(("Wild Power", 5), ("Mastery of Concentration", 3), ("Purge", 3)),
+            Tags = ["caster", "aoe", "shriek", "zerg"]
+        };
+
         // ─── Valewalker ──────────────────────────────────────────────────────
         yield return new MetaBuildTemplate
         {
@@ -1095,6 +1333,26 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
             },
             RealmAbilities = CreateRAs(("Determination", 5), ("Purge", 3), ("Mastery of Pain", 3)),
             Tags = ["melee", "piercing", "lifesteal", "solo"]
+        };
+
+        // ─── Mauler (Hibernia) ──────────────────────────────────────────────
+        yield return new MetaBuildTemplate
+        {
+            Id = "hib-maul-fist",
+            Name = "Fist Wraps Brawler",
+            Description = "Fist wraps with Power Strikes. Martial artist fighter.",
+            TargetClass = CharacterClass.MaulerHib,
+            Realm = Realm.Hibernia,
+            Role = "Melee DPS",
+            RecommendedRealmRank = 6,
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Fist Wraps", 50 },
+                { "Power Strikes", 42 },
+                { "Magnetism", 28 }
+            },
+            RealmAbilities = CreateRAs(("Determination", 5), ("Purge", 3), ("Mastery of Pain", 3)),
+            Tags = ["melee", "fist", "brawler", "martial"]
         };
     }
 

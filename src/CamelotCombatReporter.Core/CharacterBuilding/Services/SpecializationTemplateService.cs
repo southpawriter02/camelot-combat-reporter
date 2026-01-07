@@ -166,7 +166,7 @@ public class SpecializationTemplateService : ISpecializationTemplateService
             [
                 new SpecLine { Name = "Rejuvenation", Type = SpecLineType.Magic },
                 new SpecLine { Name = "Enhancement", Type = SpecLineType.Magic },
-                new SpecLine { Name = "Smiting", Type = SpecLineType.Magic }
+                new SpecLine { Name = "Smite", Type = SpecLineType.Magic }
             ]
         };
 
@@ -190,7 +190,8 @@ public class SpecializationTemplateService : ISpecializationTemplateService
                 new SpecLine { Name = "Rejuvenation", Type = SpecLineType.Magic },
                 new SpecLine { Name = "Enhancement", Type = SpecLineType.Magic },
                 new SpecLine { Name = "Crush", Type = SpecLineType.Weapon },
-                new SpecLine { Name = "Flexible", Type = SpecLineType.Weapon }
+                new SpecLine { Name = "Flexible", Type = SpecLineType.Weapon },
+                new SpecLine { Name = "Shield", Type = SpecLineType.Utility }
             ]
         };
 
@@ -305,7 +306,7 @@ public class SpecializationTemplateService : ISpecializationTemplateService
             SpecLines =
             [
                 new SpecLine { Name = "Earth", Type = SpecLineType.Magic },
-                new SpecLine { Name = "Cold", Type = SpecLineType.Magic },
+                new SpecLine { Name = "Ice", Type = SpecLineType.Magic },
                 new SpecLine { Name = "Wind", Type = SpecLineType.Magic }
             ]
         };
@@ -316,7 +317,7 @@ public class SpecializationTemplateService : ISpecializationTemplateService
             SpecLines =
             [
                 new SpecLine { Name = "Earth", Type = SpecLineType.Magic },
-                new SpecLine { Name = "Cold", Type = SpecLineType.Magic },
+                new SpecLine { Name = "Ice", Type = SpecLineType.Magic },
                 new SpecLine { Name = "Fire", Type = SpecLineType.Magic }
             ]
         };
@@ -326,10 +327,11 @@ public class SpecializationTemplateService : ISpecializationTemplateService
             Class = CharacterClass.MaulerAlb,
             SpecLines =
             [
-                new SpecLine { Name = "Fist", Type = SpecLineType.Weapon },
+                new SpecLine { Name = "Fist Wraps", Type = SpecLineType.Weapon },
+                new SpecLine { Name = "Mauler Staff", Type = SpecLineType.Weapon },
                 new SpecLine { Name = "Aura Manipulation", Type = SpecLineType.Magic },
                 new SpecLine { Name = "Magnetism", Type = SpecLineType.Magic },
-                new SpecLine { Name = "Power Strikes", Type = SpecLineType.Weapon }
+                new SpecLine { Name = "Power Strikes", Type = SpecLineType.Magic }
             ]
         };
     }
@@ -430,7 +432,7 @@ public class SpecializationTemplateService : ISpecializationTemplateService
             [
                 new SpecLine { Name = "Mending", Type = SpecLineType.Magic },
                 new SpecLine { Name = "Augmentation", Type = SpecLineType.Magic },
-                new SpecLine { Name = "Subterranean", Type = SpecLineType.Magic }
+                new SpecLine { Name = "Cave Magic", Type = SpecLineType.Magic }
             ]
         };
 
@@ -517,9 +519,10 @@ public class SpecializationTemplateService : ISpecializationTemplateService
             SpecLines =
             [
                 new SpecLine { Name = "Fist", Type = SpecLineType.Weapon },
+                new SpecLine { Name = "Mauler Staff", Type = SpecLineType.Weapon },
                 new SpecLine { Name = "Aura Manipulation", Type = SpecLineType.Magic },
                 new SpecLine { Name = "Magnetism", Type = SpecLineType.Magic },
-                new SpecLine { Name = "Power Strikes", Type = SpecLineType.Weapon }
+                new SpecLine { Name = "Power Strikes", Type = SpecLineType.Magic }
             ]
         };
     }
@@ -719,10 +722,11 @@ public class SpecializationTemplateService : ISpecializationTemplateService
             Class = CharacterClass.MaulerHib,
             SpecLines =
             [
-                new SpecLine { Name = "Fist", Type = SpecLineType.Weapon },
+                new SpecLine { Name = "Fist Wraps", Type = SpecLineType.Weapon },
+                new SpecLine { Name = "Mauler Staff", Type = SpecLineType.Weapon },
                 new SpecLine { Name = "Aura Manipulation", Type = SpecLineType.Magic },
                 new SpecLine { Name = "Magnetism", Type = SpecLineType.Magic },
-                new SpecLine { Name = "Power Strikes", Type = SpecLineType.Weapon }
+                new SpecLine { Name = "Power Strikes", Type = SpecLineType.Magic }
             ]
         };
     }
