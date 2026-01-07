@@ -4,6 +4,7 @@
         xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="using:CamelotCombatReporter.Gui.Controls"
         xmlns:crossrealm="using:CamelotCombatReporter.Gui.CrossRealm.Views"
         xmlns:loottracking="using:CamelotCombatReporter.Gui.LootTracking.Views"
         xmlns:deathanalysis="using:CamelotCombatReporter.Gui.DeathAnalysis.Views"
@@ -39,10 +40,14 @@
         <!-- Tools -->
         <KeyBinding Gesture="Ctrl+P" Command="{Binding ShowPluginManagerCommand}"/>
 
+        <!-- View -->
+        <KeyBinding Gesture="Ctrl+T" Command="{Binding ToggleThemeCommand}"/>
+
         <!-- Help -->
         <KeyBinding Gesture="F1" Command="{Binding ShowKeyboardShortcutsCommand}"/>
     </Window.KeyBindings>
 
+    <Panel>
     <DockPanel>
         <!-- Menu Bar -->
         <Menu DockPanel.Dock="Top">
@@ -53,6 +58,13 @@
                 <MenuItem Header="Export _JSON..." Command="{Binding ExportJsonCommand}" InputGesture="Ctrl+Shift+E"/>
                 <Separator/>
                 <MenuItem Header="E_xit" Click="OnExitClick"/>
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="Toggle _Theme" Command="{Binding ToggleThemeCommand}" InputGesture="Ctrl+T"/>
+                <Separator/>
+                <MenuItem Header="_System Theme" Command="{Binding SetThemeCommand}" CommandParameter="System"/>
+                <MenuItem Header="_Light Theme" Command="{Binding SetThemeCommand}" CommandParameter="Light"/>
+                <MenuItem Header="_Dark Theme" Command="{Binding SetThemeCommand}" CommandParameter="Dark"/>
             </MenuItem>
             <MenuItem Header="_Tools">
                 <MenuItem Header="_Plugin Manager..." Command="{Binding ShowPluginManagerCommand}" InputGesture="Ctrl+P"/>
@@ -1102,5 +1114,22 @@
             </Grid>
         </Border>
     </DockPanel>
+
+    <!-- Loading Overlay - displayed during log analysis -->
+    <controls:LoadingOverlay IsLoading="{Binding IsAnalyzing}"
+                              Message="{Binding LoadingMessage}"
+                              Progress="{Binding AnalysisProgress}"
+                              ShowProgress="True"
+                              SpinnerSize="64">
+        <!-- Cancel button inside overlay -->
+        <controls:LoadingOverlay.Content>
+            <Button Content="Cancel"
+                    Command="{Binding CancelAnalysisCommand}"
+                    Margin="0,20,0,0"
+                    Padding="20,8"
+                    HorizontalAlignment="Center"/>
+        </controls:LoadingOverlay.Content>
+    </controls:LoadingOverlay>
+</Panel>
 
 </Window>

@@ -93,32 +93,54 @@ public partial class MainWindow : Window
         var dialog = new Window
         {
             Title = "About Camelot Combat Reporter",
-            Width = 400,
-            Height = 200,
+            Width = 450,
+            Height = 280,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            CanResize = false,
             Content = new StackPanel
             {
-                Margin = new Avalonia.Thickness(20),
-                Spacing = 10,
+                Margin = new Avalonia.Thickness(30),
+                Spacing = 12,
                 Children =
                 {
                     new TextBlock
                     {
                         Text = "Camelot Combat Reporter",
-                        FontSize = 20,
+                        FontSize = 24,
                         FontWeight = Avalonia.Media.FontWeight.Bold,
                         HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
                     },
                     new TextBlock
                     {
-                        Text = "Version 1.1.0",
+                        Text = "Version 1.7.0",
+                        FontSize = 14,
+                        Foreground = Avalonia.Media.Brushes.Gray,
                         HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                    },
+                    new Separator { Margin = new Avalonia.Thickness(0, 5) },
+                    new TextBlock
+                    {
+                        Text = "A comprehensive combat log analyzer for Dark Age of Camelot",
+                        TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                        TextAlignment = Avalonia.Media.TextAlignment.Center
                     },
                     new TextBlock
                     {
-                        Text = "A combat log analyzer for Dark Age of Camelot",
+                        Text = "Features: DPS Analysis, Death Analysis, Group Composition,\nRealm Abilities, Buff Tracking, Alerts, and more.",
                         TextWrapping = Avalonia.Media.TextWrapping.Wrap,
-                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                        TextAlignment = Avalonia.Media.TextAlignment.Center,
+                        FontSize = 12,
+                        Foreground = Avalonia.Media.Brushes.Gray
+                    },
+                    new TextBlock
+                    {
+                        Text = "Built with .NET 9.0 and Avalonia UI",
+                        FontSize = 11,
+                        Foreground = Avalonia.Media.Brushes.DimGray,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                        Margin = new Avalonia.Thickness(0, 10, 0, 0)
                     }
                 }
             }

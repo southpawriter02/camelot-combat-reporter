@@ -11,6 +11,63 @@ No unreleased changes.
 
 ---
 
+## [1.7.0] - 2026-01-07
+
+### Added
+- **GUI Polish & Professional Styling**
+  - View menu with theme toggle options (System/Light/Dark)
+  - Ctrl+T keyboard shortcut for quick theme cycling
+  - Enhanced About dialog with version, features, and build information
+  - Loading overlay with progress bar during log analysis
+  - Cancel button for in-progress analysis operations
+  - Improved status bar with reactive theme indicator
+
+- **Async Log Parsing with Progress**
+  - Real-time progress reporting during file analysis
+  - Line count and event count display during parsing
+  - Cancellation support for long-running analyses
+  - Integration with loading overlay UI components
+
+- **Statistics Caching System**
+  - Generic caching interface with type-safe retrieval
+  - SHA256 file hash validation for cache integrity
+  - LRU eviction policy for memory management
+  - Optional disk persistence with configurable cache directory
+  - Comprehensive logging for cache operations
+
+- **Performance Optimizations**
+  - StringPool for string interning with LRU eviction
+  - ObjectPool<T> for generic object reuse
+  - DataGrid virtualization for large event lists
+  - Memory-efficient event storage
+
+- **Enhanced Keyboard Shortcuts**
+  - Ctrl+T: Toggle theme (System -> Light -> Dark -> System)
+  - Updated keyboard shortcuts help window with View section
+  - All shortcuts documented in F1 help dialog
+
+### Changed
+- MainWindowViewModel now uses async parsing with progress reporting
+- ThemeStatus property is now reactive and updates on theme change
+- About dialog updated from v1.1.0 to v1.7.0
+- StatisticsCacheService now supports generic caching with keys
+- Cache service constructor accepts optional directory and logger
+
+### Fixed
+- About dialog displaying incorrect version (was 1.1.0, now 1.7.0)
+- Theme status in status bar not updating after theme change
+- Missing View menu in menu bar
+- Ctrl+T keybinding was not implemented
+
+### Technical
+- Added comprehensive logging throughout caching service
+- Added ILogger support to StatisticsCacheService
+- Extended IStatisticsCacheService with generic GetCachedStatisticsAsync<T> and CacheStatisticsAsync<T>
+- MainWindowViewModel properly disposes cancellation tokens
+- Loading overlay control properly bound to IsAnalyzing, LoadingMessage, and AnalysisProgress
+
+---
+
 ## [1.6.0] - 2026-01-06
 
 ### Added

@@ -52,6 +52,24 @@ public interface IStatisticsCacheService
     Task CacheAsync(string filePath, IReadOnlyList<LogEvent> events, CombatStatistics statistics);
 
     /// <summary>
+    /// Attempts to retrieve a cached value for a file with a specific key.
+    /// </summary>
+    /// <typeparam name="T">The type of the cached value.</typeparam>
+    /// <param name="filePath">Path to the log file.</param>
+    /// <param name="key">A key identifying the cached value type.</param>
+    /// <returns>The cached value if valid cache exists, default otherwise.</returns>
+    Task<T?> GetCachedStatisticsAsync<T>(string filePath, string key) where T : class;
+
+    /// <summary>
+    /// Caches a value for a file with a specific key.
+    /// </summary>
+    /// <typeparam name="T">The type of the value to cache.</typeparam>
+    /// <param name="filePath">Path to the log file.</param>
+    /// <param name="key">A key identifying the cached value type.</param>
+    /// <param name="value">The value to cache.</param>
+    Task CacheStatisticsAsync<T>(string filePath, string key, T value) where T : class;
+
+    /// <summary>
     /// Invalidates the cache for a specific file.
     /// </summary>
     /// <param name="filePath">Path to the log file.</param>

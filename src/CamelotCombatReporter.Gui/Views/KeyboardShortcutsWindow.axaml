@@ -58,6 +58,19 @@
                 </StackPanel>
             </Border>
 
+            <!-- View -->
+            <Border Classes="Card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="View" Classes="Title"/>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto" Margin="0,8,0,0">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Toggle Theme (System/Light/Dark)" VerticalAlignment="Center"/>
+                        <Border Grid.Row="0" Grid.Column="1" Classes="BadgePrimary">
+                            <TextBlock Text="Ctrl+T" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
             <!-- Tools -->
             <Border Classes="Card">
                 <StackPanel Spacing="8">

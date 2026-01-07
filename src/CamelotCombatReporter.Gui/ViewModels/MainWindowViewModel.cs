@@ -4,9 +4,12 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using CamelotCombatReporter.Core.Caching;
 using CamelotCombatReporter.Core.Exporting;
 using CamelotCombatReporter.Core.InstanceTracking;
 using CamelotCombatReporter.Core.Logging;
@@ -14,6 +17,7 @@ using CamelotCombatReporter.Core.Models;
 using CamelotCombatReporter.Core.Parsing;
 using CamelotCombatReporter.Gui.Plugins.ViewModels;
 using CamelotCombatReporter.Gui.Plugins.Views;
+using CamelotCombatReporter.Gui.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore;
@@ -45,6 +49,30 @@ public partial class MainWindowViewModel : ViewModelBase
     private bool _hasStatusMessage = false;
 
     /// <summary>
+    /// Indicates whether a log file is currently being analyzed.
+    /// </summary>
+    [ObservableProperty]
+    private bool _isAnalyzing = false;
+
+    /// <summary>
+    /// The loading progress message displayed during analysis.
+    /// </summary>
+    [ObservableProperty]
+    private string _loadingMessage = "Analyzing log file...";
+
+    /// <summary>
+    /// The current analysis progress (0-100).
+    /// </summary>
+    [ObservableProperty]
+    private double _analysisProgress = 0;
+
+    /// <summary>
+    /// Current theme mode value for reactive binding.
+    /// </summary>
+    [ObservableProperty]
+    private string _currentThemeMode = "System";
+
+    /// <summary>
     /// Gets the event count status text for the status bar.
     /// </summary>
     public string EventCountStatus => _analyzedEvents != null
@@ -54,7 +82,7 @@ public partial class MainWindowViewModel : ViewModelBase
     /// <summary>
     /// Gets the current theme status text for the status bar.
     /// </summary>
-    public string ThemeStatus => App.ThemeService?.CurrentTheme.ToString() ?? "System";
+    public string ThemeStatus => CurrentThemeMode;
 
     #endregion
 
@@ -348,12 +376,19 @@ public partial class MainWindowViewModel : ViewModelBase
     private TimeOnly _lastEventTime;
     private readonly ICombatInstanceResolver _instanceResolver;
     private readonly ICombatSessionResolver _sessionResolver;
+    private readonly IStatisticsCacheService _cacheService;
     private IReadOnlyList<CombatSession>? _resolvedSessions;
+    private CancellationTokenSource? _analysisCancellationSource;
 
     private static readonly string PreferencesPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "CamelotCombatReporter",
         "preferences.json");
+
+    private static readonly string CachePath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "CamelotCombatReporter",
+        "cache");
 
     #endregion
 
@@ -362,7 +397,14 @@ public partial class MainWindowViewModel : ViewModelBase
         _logger = App.CreateLogger<MainWindowViewModel>();
         _instanceResolver = new CombatInstanceResolver();
         _sessionResolver = new CombatSessionResolver();
+        _cacheService = new StatisticsCacheService(CachePath, App.CreateLogger<StatisticsCacheService>());
+
+        // Initialize theme mode from current theme service
+        CurrentThemeMode = App.ThemeService?.CurrentTheme.ToString() ?? "System";
+
         LoadPreferences();
+
+        _logger.LogInformation("MainWindowViewModel initialized successfully");
     }
 
     #region Commands
@@ -420,27 +462,73 @@ public partial class MainWindowViewModel : ViewModelBase
         if (string.IsNullOrEmpty(SelectedLogFile) || SelectedLogFile == "No file selected")
             return;
 
+        // Cancel any previous analysis
+        _analysisCancellationSource?.Cancel();
+        _analysisCancellationSource = new CancellationTokenSource();
+        var cancellationToken = _analysisCancellationSource.Token;
+
         _logger.LogAnalyzingFile(SelectedLogFile);
         StatusMessage = "";
         HasStatusMessage = false;
+
+        // Show loading overlay
+        IsAnalyzing = true;
+        AnalysisProgress = 0;
+        LoadingMessage = "Initializing analysis...";
 
         try
         {
             var fileName = Path.GetFileName(SelectedLogFile);
             var noCombatEvents = false;
 
-            await Task.Run(() =>
+            // Create progress reporter for async parsing
+            var progress = new Progress<ParseProgress>(p =>
             {
-                var logParser = new LogParser(SelectedLogFile);
-                var events = logParser.Parse().ToList();
-
-                if (events.Count == 0)
+                Dispatcher.UIThread.Post(() =>
                 {
-                    HasAnalyzedData = false;
-                    noCombatEvents = true;
-                    return;
-                }
+                    AnalysisProgress = p.PercentComplete;
+                    LoadingMessage = p.LinesProcessed > 0
+                        ? $"Processing log... ({p.LinesProcessed:N0} lines, {p.EventsFound:N0} events)"
+                        : "Reading file...";
+                });
+            });
 
+            // Check cache first
+            var cachedEvents = await _cacheService.GetCachedStatisticsAsync<List<LogEvent>>(SelectedLogFile, "ParsedEvents");
+            List<LogEvent> events;
+
+            if (cachedEvents != null)
+            {
+                _logger.LogDebug("Using cached events for {FilePath}", SelectedLogFile);
+                events = cachedEvents;
+                AnalysisProgress = 100;
+                LoadingMessage = "Loading from cache...";
+            }
+            else
+            {
+                // Use async parser with progress reporting
+                var logParser = new LogParser(SelectedLogFile);
+                events = await logParser.ParseAsync(progress, cancellationToken);
+
+                // Cache the parsed events
+                if (events.Count > 0)
+                {
+                    await _cacheService.CacheStatisticsAsync(SelectedLogFile, "ParsedEvents", events);
+                    _logger.LogDebug("Cached {EventCount} events for {FilePath}", events.Count, SelectedLogFile);
+                }
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            LoadingMessage = "Analyzing combat data...";
+
+            if (events.Count == 0)
+            {
+                HasAnalyzedData = false;
+                noCombatEvents = true;
+            }
+            else
+            {
                 _analyzedEvents = events;
                 _firstEventTime = events.First().Timestamp;
                 _lastEventTime = events.Last().Timestamp;
@@ -459,9 +547,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 // Parse comparison file if in comparison mode
                 if (IsComparisonMode && !string.IsNullOrEmpty(ComparisonLogFile) && ComparisonLogFile != "No file selected")
                 {
+                    LoadingMessage = "Parsing comparison file...";
                     var compParser = new LogParser(ComparisonLogFile);
-                    _comparisonEvents = compParser.Parse().ToList();
+                    _comparisonEvents = await compParser.ParseAsync(null, cancellationToken);
                 }
+
+                LoadingMessage = "Generating statistics...";
 
                 // Analyze and update UI
                 RefreshAnalysis();
@@ -470,7 +561,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 OnPropertyChanged(nameof(EventCountStatus));
 
                 _logger.LogAnalysisCompleted(events.Count, LogDuration, DamagePerSecond);
-            });
+            }
 
             if (noCombatEvents)
             {
@@ -479,12 +570,25 @@ public partial class MainWindowViewModel : ViewModelBase
                 _logger.LogInformation("No combat events found in log file: {FilePath}", SelectedLogFile);
             }
         }
+        catch (OperationCanceledException)
+        {
+            _logger.LogInformation("Analysis cancelled for: {FilePath}", SelectedLogFile);
+            StatusMessage = "Analysis was cancelled.";
+            HasStatusMessage = true;
+        }
         catch (Exception ex)
         {
             _logger.LogAnalysisError(SelectedLogFile, ex);
             HasAnalyzedData = false;
             StatusMessage = $"Error analyzing log file: {ex.Message}";
             HasStatusMessage = true;
+        }
+        finally
+        {
+            // Hide loading overlay
+            IsAnalyzing = false;
+            AnalysisProgress = 0;
+            LoadingMessage = "Analyzing log file...";
         }
 
         SavePreferences();
@@ -663,6 +767,65 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var window = new Views.KeyboardShortcutsWindow();
         await window.ShowDialog(mainWindow);
+    }
+
+    /// <summary>
+    /// Toggles between light and dark themes (cycles: System -> Light -> Dark -> System).
+    /// </summary>
+    [RelayCommand]
+    private void ToggleTheme()
+    {
+        if (App.ThemeService == null) return;
+
+        var nextTheme = App.ThemeService.CurrentTheme switch
+        {
+            ThemeMode.System => ThemeMode.Light,
+            ThemeMode.Light => ThemeMode.Dark,
+            ThemeMode.Dark => ThemeMode.System,
+            _ => ThemeMode.System
+        };
+
+        App.ThemeService.SetTheme(nextTheme);
+        CurrentThemeMode = nextTheme.ToString();
+        OnPropertyChanged(nameof(ThemeStatus));
+
+        _logger.LogInformation("Theme toggled to {Theme}", nextTheme);
+    }
+
+    /// <summary>
+    /// Sets a specific theme mode.
+    /// </summary>
+    /// <param name="themeMode">The theme mode string: "System", "Light", or "Dark".</param>
+    [RelayCommand]
+    private void SetTheme(string themeMode)
+    {
+        if (App.ThemeService == null) return;
+
+        var theme = themeMode switch
+        {
+            "Light" => ThemeMode.Light,
+            "Dark" => ThemeMode.Dark,
+            _ => ThemeMode.System
+        };
+
+        App.ThemeService.SetTheme(theme);
+        CurrentThemeMode = theme.ToString();
+        OnPropertyChanged(nameof(ThemeStatus));
+
+        _logger.LogInformation("Theme set to {Theme}", theme);
+    }
+
+    /// <summary>
+    /// Cancels the current analysis operation if one is in progress.
+    /// </summary>
+    [RelayCommand]
+    private void CancelAnalysis()
+    {
+        if (_analysisCancellationSource != null && !_analysisCancellationSource.IsCancellationRequested)
+        {
+            _analysisCancellationSource.Cancel();
+            _logger.LogInformation("Analysis cancellation requested");
+        }
     }
 
     #endregion
