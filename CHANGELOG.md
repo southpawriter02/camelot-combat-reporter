@@ -11,6 +11,121 @@ No unreleased changes.
 
 ---
 
+## [1.8.1] - 2026-01-07
+
+### Added
+- **Build Comparison System**
+  - Side-by-side comparison of any two character builds
+  - Spec line delta calculations with point allocation differences
+  - Realm ability delta tracking: Added, Removed, RankChanged categorization
+  - RA point cost calculations using triangular formula
+  - Performance metrics delta comparison (DPS, HPS, K/D, Kills, Deaths)
+  - `BuildComparisonService` with comprehensive logging
+
+- **Progression Tracking**
+  - Realm rank milestone recording (RR1-RR14)
+  - RP thresholds for all 14 realm ranks from DAoC
+  - Average days between rank-ups calculation
+  - Average RP per session calculation
+  - DPS and K/D trend analysis (first-half vs second-half comparison)
+  - Estimated time to next rank based on current RP rate
+  - Auto-detection and recording of rank-up events
+  - `ProgressionTrackingService` with structured logging
+
+- **Performance Analytics**
+  - Session-based performance metric aggregation
+  - DPS, HPS, and damage taken rate calculations
+  - K/D ratio with proper zero-death handling
+  - Peak DPS tracking across sessions
+  - Date range filtering for metrics
+  - Build metrics auto-update after session attachment
+  - `PerformanceAnalysisService` with optional date filtering
+
+- **New GUI Components**
+  - `BuildComparisonView` with side-by-side layout and delta indicators
+  - `ProgressionChartView` with milestone timeline and trend display
+  - `PerformanceSummaryView` for detailed metrics visualization
+
+- **Service Polish**
+  - Comprehensive logging added to all Character Building services
+  - XML documentation with detailed remarks for all public APIs
+  - Inline comments explaining DAoC-specific formulas and algorithms
+
+- **New Unit Tests**
+  - 7 tests for BuildComparisonService
+  - 7 tests for PerformanceAnalysisService
+  - 7 tests for ProgressionTrackingService
+
+### Changed
+- Total tests: 343 (313 Core + 30 GUI)
+
+---
+
+## [1.8.0] - 2026-01-07
+
+### Added
+- **Character Profile System**
+  - Create, update, and delete character profiles with realm/class/name
+  - JSON file storage with profile index for fast lookups
+  - Thread-safe implementation with SemaphoreSlim locking
+  - Profile import/export to JSON for sharing
+  - Session attachment to profiles for performance correlation
+  - Auto-matching suggestions based on class, realm, and name similarity
+  - `CharacterProfileService` with comprehensive logging
+
+- **Build Management**
+  - Immutable build snapshots with version history
+  - Active build tracking per profile
+  - Build cloning with new name and reset metrics
+  - Build history retrieval for rollback
+  - `CharacterBuild` record with specs, realm abilities, and performance metrics
+
+- **Specialization Templates**
+  - Complete templates for all 48 DAoC character classes
+  - 16 Albion classes (Armsman, Cabalist, Cleric, Friar, Heretic, Infiltrator, Mercenary, Minstrel, Necromancer, Paladin, Reaver, Scout, Sorcerer, Theurgist, Wizard, MaulerAlb)
+  - 16 Midgard classes (Berserker, Bonedancer, Healer, Hunter, Runemaster, Savage, Shadowblade, Shaman, Skald, Spiritmaster, Thane, Valkyrie, Warlock, Warrior, MaulerMid)
+  - 16 Hibernia classes (Animist, Bainshee, Bard, Blademaster, Champion, Druid, Eldritch, Enchanter, Hero, Mentalist, Nightshade, Ranger, Valewalker, Vampiir, Warden, MaulerHib)
+  - Spec line types: Weapon, Magic, Utility, Hybrid
+  - Point multipliers for balanced-cost specs
+  - `SpecializationTemplateService` for template lookups
+
+- **Spec Point Calculations**
+  - DAoC formula: `(level * 2) + (level / 2) + 1` = 126 points at level 50
+  - Triangular cost formula: `n(n+1)/2` for spec point costs
+  - Spec multiplier support for hybrid classes
+  - Validation of total allocation against level cap
+  - Remaining points calculation
+
+- **Realm Ability Catalog**
+  - 40+ realm abilities with accurate point costs
+  - Triangular cost scaling: 1→1, 2→3, 3→6, 4→10, 5→15
+  - Master Level abilities (ML1-10)
+  - Realm-specific and universal abilities
+  - RA point budget tracking
+
+- **New Data Models**
+  - `CharacterProfile` - Profile with name, realm, class, builds, sessions
+  - `CharacterBuild` - Immutable build snapshot with specs and RAs
+  - `SpecializationTemplate` / `SpecLine` - Class spec definitions
+  - `RealmAbilitySlot` - Equipped RA with rank
+  - `BuildPerformanceMetrics` - Aggregated combat statistics
+  - `RealmRankProgression` / `RankMilestone` - Progression data
+
+- **New GUI Components**
+  - `BuildEditorView` with spec line sliders and point tracking
+  - `RealmAbilityEditorView` with RA selection and budget display
+  - `CharacterProfileView` for profile management
+
+- **New Unit Tests**
+  - 12 tests for CharacterProfileService
+  - 27 tests for SpecializationTemplateService and RealmAbilityCatalog
+
+### Changed
+- MainWindow includes new Character Building tab
+- Total tests: 322 (302 Core + 20 GUI)
+
+---
+
 ## [1.6.0] - 2026-01-06
 
 ### Added
@@ -654,6 +769,8 @@ The TypeScript implementation follows the same feature set as the C# version but
 
 | Version | Date | Highlights |
 |---------|------|------------|
+| 1.8.1 | 2026-01-07 | Character Building Tools: Build Comparison, Progression Tracking, Performance Analytics |
+| 1.8.0 | 2026-01-07 | Character Building Tools: Profiles, 48 Class Templates, RA Catalog, Spec Point System |
 | 1.6.0 | 2026-01-06 | Distribution & Auto-Update: MSI, DMG, AppImage, deb, rpm, Auto-Update System |
 | 1.5.0 | 2026-01-06 | RvR Features: Keep/Siege Tracking, Relic Raids, Battleground Statistics |
 | 1.4.0 | 2026-01-06 | Group Composition Analysis with role classification and templates |
@@ -665,6 +782,7 @@ The TypeScript implementation follows the same feature set as the C# version but
 | 1.0.0 | 2025-01-02 | Full feature release: GUI, plugins, cross-realm, loot tracking |
 | 0.2.0 | 2024-12-31 | Enhanced statistics, damage taken |
 | 0.1.0 | 2024-12-30 | Initial C# port from Python |
+
 
 ---
 

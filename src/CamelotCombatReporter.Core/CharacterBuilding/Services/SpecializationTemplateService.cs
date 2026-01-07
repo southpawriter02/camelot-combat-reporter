@@ -7,15 +7,43 @@ namespace CamelotCombatReporter.Core.CharacterBuilding.Services;
 /// <summary>
 /// Provides class-specific specialization templates and validation.
 /// </summary>
+/// <remarks>
+/// <para>
+/// This service is the authoritative source for class specialization data,
+/// providing templates that define which spec lines are available for each
+/// of the 48 character classes across all three realms.
+/// </para>
+/// <para>
+/// Key features include:
+/// </para>
+/// <list type="bullet">
+///   <item><description>Spec line definitions per class (weapon, magic, utility types)</description></item>
+///   <item><description>Point cost calculations using DAoC's triangular formula</description></item>
+///   <item><description>Validation of spec point allocations against level caps</description></item>
+///   <item><description>Realm-to-class mappings for UI filtering</description></item>
+/// </list>
+/// <para>
+/// The DAoC spec point formula is: cost = level × (level + 1) ÷ 2 × multiplier.
+/// Standard level 50 characters have 126 spec points to allocate.
+/// </para>
+/// </remarks>
 public class SpecializationTemplateService : ISpecializationTemplateService
 {
+    // Pre-loaded templates indexed by class for O(1) lookup
     private readonly Dictionary<CharacterClass, SpecializationTemplate> _templates;
 
+    /// <summary>
+    /// Initializes the service with all class templates pre-loaded.
+    /// </summary>
     public SpecializationTemplateService()
     {
         _templates = InitializeTemplates();
     }
 
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Returns an empty template if the class is not found (defensive).
+    /// </remarks>
     public SpecializationTemplate GetTemplateForClass(CharacterClass charClass)
     {
         return _templates.TryGetValue(charClass, out var template)
@@ -23,13 +51,21 @@ public class SpecializationTemplateService : ISpecializationTemplateService
             : new SpecializationTemplate { Class = charClass, SpecLines = [] };
     }
 
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Uses the DAoC formula: (level × 2) + (level ÷ 2) + 1.
+    /// At level 50: 100 + 25 + 1 = 126 total spec points.
+    /// </remarks>
     public int GetMaxSpecPoints(int level)
     {
-        // DAoC formula: (level * 2) + (level / 2) + 1
-        // At level 50: 100 + 25 + 1 = 126
+        // DAoC spec point formula
         return (level * 2) + (level / 2) + 1;
     }
 
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Accounts for per-spec multipliers (e.g., some hybrid specs cost 1.5x).
+    /// </remarks>
     public int GetAllocatedSpecPoints(CharacterBuild build, CharacterClass charClass)
     {
         if (build.SpecLines.Count == 0) return 0;
@@ -37,6 +73,7 @@ public class SpecializationTemplateService : ISpecializationTemplateService
         var template = GetTemplateForClass(charClass);
         var specLookup = template.SpecLines.ToDictionary(s => s.Name, s => s);
 
+        // Sum cost of each allocated spec line
         return build.SpecLines.Sum(kvp =>
         {
             var multiplier = specLookup.TryGetValue(kvp.Key, out var spec) ? spec.PointMultiplier : 1.0;
@@ -44,24 +81,32 @@ public class SpecializationTemplateService : ISpecializationTemplateService
         });
     }
 
+    /// <inheritdoc/>
     public int GetRemainingSpecPoints(CharacterBuild build, CharacterClass charClass, int level)
     {
         return GetMaxSpecPoints(level) - GetAllocatedSpecPoints(build, charClass);
     }
 
+    /// <inheritdoc/>
     public bool ValidateSpecAllocation(CharacterBuild build, CharacterClass charClass, int level)
     {
         return GetAllocatedSpecPoints(build, charClass) <= GetMaxSpecPoints(level);
     }
 
+    /// <inheritdoc/>
     public IReadOnlyList<CharacterClass> GetClassesForRealm(Realm realm)
     {
         return realm.GetClasses().ToList();
     }
 
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The triangular number formula: n(n+1)/2 gives the base cost.
+    /// This is then multiplied by the spec line's cost multiplier.
+    /// </remarks>
     public int CalculateSpecPointCost(int specLevel, double multiplier = 1.0)
     {
-        // Standard formula: sum of 1 to specLevel = n(n+1)/2
+        // Triangular number formula: sum of 1 to specLevel
         var baseCost = specLevel * (specLevel + 1) / 2;
         return (int)(baseCost * multiplier);
     }
@@ -69,22 +114,21 @@ public class SpecializationTemplateService : ISpecializationTemplateService
     // ─────────────────────────────────────────────────────────────────────────
     // Template Initialization
     // ─────────────────────────────────────────────────────────────────────────
+    // Templates are organized by realm for maintainability.
+    // Each class has its available spec lines defined with type and multiplier.
 
     private static Dictionary<CharacterClass, SpecializationTemplate> InitializeTemplates()
     {
         var templates = new Dictionary<CharacterClass, SpecializationTemplate>();
 
-        // Albion Classes
-        InitializeAlbionTemplates(templates);
-        
-        // Midgard Classes
-        InitializeMidgardTemplates(templates);
-        
-        // Hibernia Classes
-        InitializeHiberniaTemplates(templates);
+        // Initialize all 48 classes across 3 realms
+        InitializeAlbionTemplates(templates);   // 16 Albion classes
+        InitializeMidgardTemplates(templates);  // 16 Midgard classes
+        InitializeHiberniaTemplates(templates); // 16 Hibernia classes
 
         return templates;
     }
+
 
     private static void InitializeAlbionTemplates(Dictionary<CharacterClass, SpecializationTemplate> templates)
     {
