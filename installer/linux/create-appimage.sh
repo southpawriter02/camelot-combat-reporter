@@ -40,6 +40,10 @@ cp -r "$PUBLISH_DIR"/* "$STAGING_DIR/usr/bin/"
 chmod +x "$STAGING_DIR/usr/bin/CamelotCombatReporter.Gui"
 chmod +x "$STAGING_DIR/AppRun"
 
+# Ensure required directories exist (empty dirs may not be tracked by git)
+mkdir -p "$STAGING_DIR/usr/share/applications"
+mkdir -p "$STAGING_DIR/usr/share/icons/hicolor/256x256/apps"
+
 # Copy desktop file to share/applications
 cp "$STAGING_DIR/camelot-combat-reporter.desktop" "$STAGING_DIR/usr/share/applications/"
 
