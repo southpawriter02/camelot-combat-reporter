@@ -1,0 +1,21 @@
+# Auto-detect text files and normalize line endings
+* text=auto
+
+# Force shell scripts to always use LF endings (Unix)
+*.sh text eol=lf
+
+# Force batch files to always use CRLF endings (Windows)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Force PowerShell scripts to use CRLF
+*.ps1 text eol=crlf
+
+# Binary files that should not be modified
+*.png binary
+*.ico binary
+*.icns binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
