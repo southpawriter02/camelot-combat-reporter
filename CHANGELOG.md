@@ -11,6 +11,44 @@ No unreleased changes.
 
 ---
 
+## [1.8.2] - 2026-01-07
+
+### Added
+- **Premium Gradient Brushes**
+  - Primary, Success, Danger, Warning, Accent gradients
+  - Realm-specific gradients (Albion, Midgard, Hibernia)
+  - Header, Subtle, Shimmer, and Glass effect gradients
+
+- **Enhanced Button Styles**
+  - Smooth color transitions (150ms)
+  - Press scale animation (0.97 scale)
+  - PrimaryGradient button variant with lift effect
+  - Cursor and hover transitions for all button types
+
+- **New Card Styles**
+  - `CardHover` - Lift effect on hover with shadow animation
+  - `CardInteractive` - Clickable with border highlight
+  - `CardGlass` - Glassmorphism effect
+  - Enhanced shadows on all card types
+
+- **Component Polish**
+  - StatCard hover scaling with shadow animation
+  - Badge hover scaling effects
+  - Tab hover color transitions
+  - Realm badge hover animations
+  - Enhanced tooltip styling
+  - DataGrid row hover effects
+  - Progress bar variants (Thin, Primary, Success, Warning, Error)
+  - QuickStatsBar enhanced styling
+
+### Changed
+- Increased button padding (12,6 → 16,8)
+- Increased corner radius (5 → 6-8)
+- Updated card padding (15 → 16)
+- Enhanced separator margins (10 → 12)
+
+---
+
 ## [1.8.1] - 2026-01-07
 
 ### Added

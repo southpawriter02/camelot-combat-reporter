@@ -170,6 +170,94 @@
     <SolidColorBrush x:Key="ScrimBrush" Color="{StaticResource ScrimColor}"/>
 
     <!-- ================================================================== -->
+    <!-- GRADIENT BRUSHES (v1.8.2)                                          -->
+    <!-- ================================================================== -->
+    <!-- Premium gradient brushes for buttons, headers, and visual effects. -->
+
+    <!-- Primary Gradients -->
+    <LinearGradientBrush x:Key="PrimaryGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#42A5F5" Offset="0"/>
+        <GradientStop Color="#1E88E5" Offset="0.5"/>
+        <GradientStop Color="#1565C0" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PrimaryVerticalGradientBrush" StartPoint="50%,0%" EndPoint="50%,100%">
+        <GradientStop Color="#42A5F5" Offset="0"/>
+        <GradientStop Color="#1E88E5" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Success Gradients -->
+    <LinearGradientBrush x:Key="SuccessGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#81C784" Offset="0"/>
+        <GradientStop Color="#4CAF50" Offset="0.5"/>
+        <GradientStop Color="#388E3C" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Danger/Error Gradients -->
+    <LinearGradientBrush x:Key="DangerGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#EF5350" Offset="0"/>
+        <GradientStop Color="#F44336" Offset="0.5"/>
+        <GradientStop Color="#D32F2F" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Warning Gradients -->
+    <LinearGradientBrush x:Key="WarningGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#FFD54F" Offset="0"/>
+        <GradientStop Color="#FFC107" Offset="0.5"/>
+        <GradientStop Color="#FFA000" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Accent Gradients -->
+    <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#FF8A65" Offset="0"/>
+        <GradientStop Color="#FF5722" Offset="0.5"/>
+        <GradientStop Color="#E64A19" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Realm Gradients -->
+    <LinearGradientBrush x:Key="AlbionGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#EF5350" Offset="0"/>
+        <GradientStop Color="#E53935" Offset="0.5"/>
+        <GradientStop Color="#C62828" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="MidgardGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#42A5F5" Offset="0"/>
+        <GradientStop Color="#1E88E5" Offset="0.5"/>
+        <GradientStop Color="#1565C0" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HiberniaGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#66BB6A" Offset="0"/>
+        <GradientStop Color="#43A047" Offset="0.5"/>
+        <GradientStop Color="#2E7D32" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Header/Display Gradients -->
+    <LinearGradientBrush x:Key="HeaderGradientBrush" StartPoint="0%,50%" EndPoint="100%,50%">
+        <GradientStop Color="#1E88E5" Offset="0"/>
+        <GradientStop Color="#7B1FA2" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="SubtleGradientBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+        <GradientStop Color="#FAFAFA" Offset="0"/>
+        <GradientStop Color="#F5F5F5" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Shimmer Effect Gradient (for progress bars) -->
+    <LinearGradientBrush x:Key="ShimmerGradientBrush" StartPoint="0%,50%" EndPoint="100%,50%">
+        <GradientStop Color="#00FFFFFF" Offset="0"/>
+        <GradientStop Color="#80FFFFFF" Offset="0.5"/>
+        <GradientStop Color="#00FFFFFF" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Glass Effect Background -->
+    <LinearGradientBrush x:Key="GlassBackgroundBrush" StartPoint="50%,0%" EndPoint="50%,100%">
+        <GradientStop Color="#E0FFFFFF" Offset="0"/>
+        <GradientStop Color="#80FFFFFF" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- ================================================================== -->
     <!-- TRANSPARENT BRUSH                                                 -->
     <!-- ================================================================== -->
 

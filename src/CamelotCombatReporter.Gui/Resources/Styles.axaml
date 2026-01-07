@@ -10,94 +10,186 @@
     <!-- ================================================================== -->
 
     <!-- ================================================================== -->
-    <!-- BUTTON STYLES                                                     -->
+    <!-- BUTTON STYLES (Enhanced v1.8.2)                                   -->
     <!-- ================================================================== -->
 
-    <!-- Primary Button - Main action button -->
+    <!-- Primary Button - Main action button with transitions -->
     <Style Selector="Button.Primary">
         <Setter Property="Background" Value="#1E88E5"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Padding" Value="12,6"/>
-        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Padding" Value="16,8"/>
+        <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.Primary:pointerover">
-        <Setter Property="Background" Value="#1565C0"/>
+        <Setter Property="Background" Value="#42A5F5"/>
     </Style>
     <Style Selector="Button.Primary:pressed">
         <Setter Property="Background" Value="#1565C0"/>
-        <Setter Property="RenderTransform" Value="scale(0.98)"/>
+        <Setter Property="RenderTransform" Value="scale(0.97)"/>
     </Style>
 
-    <!-- Secondary Button - Secondary action -->
+    <!-- Primary Gradient Button - Premium gradient variant -->
+    <Style Selector="Button.PrimaryGradient">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="16,8"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Button.PrimaryGradient:pointerover">
+        <Setter Property="RenderTransform" Value="translateY(-1px)"/>
+    </Style>
+    <Style Selector="Button.PrimaryGradient:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.97)"/>
+    </Style>
+
+    <!-- Secondary Button - Secondary action with subtle styling -->
     <Style Selector="Button.Secondary">
         <Setter Property="Background" Value="#F5F5F5"/>
         <Setter Property="BorderBrush" Value="#E0E0E0"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="12,6"/>
-        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Padding" Value="16,8"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.Secondary:pointerover">
         <Setter Property="Background" Value="#EEEEEE"/>
+        <Setter Property="BorderBrush" Value="#BDBDBD"/>
+    </Style>
+    <Style Selector="Button.Secondary:pressed">
+        <Setter Property="Background" Value="#E0E0E0"/>
+        <Setter Property="RenderTransform" Value="scale(0.97)"/>
     </Style>
 
     <!-- Success Button - Positive actions -->
     <Style Selector="Button.Success">
         <Setter Property="Background" Value="#4CAF50"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Padding" Value="12,6"/>
-        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Padding" Value="16,8"/>
+        <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.Success:pointerover">
+        <Setter Property="Background" Value="#81C784"/>
+    </Style>
+    <Style Selector="Button.Success:pressed">
         <Setter Property="Background" Value="#388E3C"/>
+        <Setter Property="RenderTransform" Value="scale(0.97)"/>
     </Style>
 
     <!-- Danger Button - Destructive actions -->
     <Style Selector="Button.Danger">
         <Setter Property="Background" Value="#F44336"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Padding" Value="12,6"/>
-        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Padding" Value="16,8"/>
+        <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.Danger:pointerover">
+        <Setter Property="Background" Value="#EF5350"/>
+    </Style>
+    <Style Selector="Button.Danger:pressed">
         <Setter Property="Background" Value="#D32F2F"/>
+        <Setter Property="RenderTransform" Value="scale(0.97)"/>
     </Style>
 
     <!-- Warning Button -->
     <Style Selector="Button.Warning">
         <Setter Property="Background" Value="#FFC107"/>
         <Setter Property="Foreground" Value="#212121"/>
-        <Setter Property="Padding" Value="12,6"/>
-        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Padding" Value="16,8"/>
+        <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.Warning:pointerover">
+        <Setter Property="Background" Value="#FFD54F"/>
+    </Style>
+    <Style Selector="Button.Warning:pressed">
         <Setter Property="Background" Value="#FFA000"/>
+        <Setter Property="RenderTransform" Value="scale(0.97)"/>
     </Style>
 
-    <!-- Link Button - Text-only button -->
+    <!-- Link Button - Text-only button with color transition -->
     <Style Selector="Button.Link">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="#1E88E5"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.Link:pointerover">
+        <Setter Property="Foreground" Value="#42A5F5"/>
+    </Style>
+    <Style Selector="Button.Link:pressed">
         <Setter Property="Foreground" Value="#1565C0"/>
     </Style>
 
     <!-- Icon Button - Small square button for icons -->
     <Style Selector="Button.Icon">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Padding" Value="6"/>
-        <Setter Property="MinWidth" Value="32"/>
-        <Setter Property="MinHeight" Value="32"/>
-        <Setter Property="CornerRadius" Value="3"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="MinWidth" Value="36"/>
+        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
     </Style>
     <Style Selector="Button.Icon:pointerover">
-        <Setter Property="Background" Value="#F5F5F5"/>
+        <Setter Property="Background" Value="#F0F0F0"/>
+    </Style>
+    <Style Selector="Button.Icon:pressed">
+        <Setter Property="Background" Value="#E0E0E0"/>
+        <Setter Property="RenderTransform" Value="scale(0.92)"/>
     </Style>
 
     <!-- ================================================================== -->
@@ -145,92 +237,195 @@
     </Style>
 
     <!-- ================================================================== -->
-    <!-- CARD STYLES                                                       -->
+    <!-- CARD STYLES (Enhanced v1.8.2)                                     -->
     <!-- ================================================================== -->
 
-    <!-- Base Card - Content container -->
+    <!-- Base Card - Content container with subtle shadow -->
     <Style Selector="Border.Card">
         <Setter Property="Background" Value="White"/>
         <Setter Property="BorderBrush" Value="#E0E0E0"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Padding" Value="15"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="BoxShadow" Value="0 1 3 0 #15000000"/>
     </Style>
 
-    <!-- Elevated Card - With shadow effect -->
+    <!-- Elevated Card - With enhanced shadow effect -->
     <Style Selector="Border.CardElevated">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="BoxShadow" Value="0 4 16 0 #20000000"/>
+    </Style>
+
+    <!-- Hover Card - Interactive card with lift effect on hover -->
+    <Style Selector="Border.CardHover">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="BoxShadow" Value="0 2 8 0 #18000000"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.CardHover:pointerover">
+        <Setter Property="BoxShadow" Value="0 8 24 0 #25000000"/>
+        <Setter Property="RenderTransform" Value="translateY(-2px)"/>
+    </Style>
+
+    <!-- Interactive Card - Clickable with press feedback -->
+    <Style Selector="Border.CardInteractive">
         <Setter Property="Background" Value="White"/>
         <Setter Property="BorderBrush" Value="#E0E0E0"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Padding" Value="15"/>
-        <Setter Property="BoxShadow" Value="0 2 8 0 #20000000"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BoxShadow" Value="0 2 6 0 #15000000"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.15"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.CardInteractive:pointerover">
+        <Setter Property="BoxShadow" Value="0 6 18 0 #221E88E5"/>
+        <Setter Property="BorderBrush" Value="#1E88E5"/>
+        <Setter Property="RenderTransform" Value="translateY(-1px)"/>
     </Style>
 
-    <!-- Primary Card - Highlighted container -->
+    <!-- Primary Card - Highlighted container with gradient border -->
     <Style Selector="Border.CardPrimary">
-        <Setter Property="Background" Value="#BBDEFB"/>
+        <Setter Property="Background" Value="#F3F9FF"/>
         <Setter Property="BorderBrush" Value="#1E88E5"/>
         <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Padding" Value="15"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="BoxShadow" Value="0 2 8 0 #201E88E5"/>
+    </Style>
+
+    <!-- Glass Card - Glassmorphism effect -->
+    <Style Selector="Border.CardGlass">
+        <Setter Property="Background" Value="#D0FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#40FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="BoxShadow" Value="0 4 20 0 #15000000"/>
     </Style>
 
     <!-- ================================================================== -->
-    <!-- STAT CARD STYLES                                                  -->
+    <!-- STAT CARD STYLES (Enhanced v1.8.2)                                -->
     <!-- ================================================================== -->
 
-    <!-- Stat Card - For statistics display -->
+    <!-- Stat Card - For statistics display with gradient -->
     <Style Selector="Border.StatCard">
-        <Setter Property="Background" Value="#F5F5F5"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="MinWidth" Value="100"/>
+        <Setter Property="Background" Value="#F8F9FA"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16,12"/>
+        <Setter Property="MinWidth" Value="120"/>
+        <Setter Property="BoxShadow" Value="0 1 4 0 #10000000"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+                <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.StatCard:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.02)"/>
+        <Setter Property="BoxShadow" Value="0 4 12 0 #20000000"/>
     </Style>
 
-    <!-- Stat Value - Large number display -->
+    <!-- Stat Value - Large number display with accent color -->
     <Style Selector="TextBlock.StatValue">
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="24"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="#1E88E5"/>
     </Style>
 
     <!-- Stat Label - Description below value -->
     <Style Selector="TextBlock.StatLabel">
-        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontSize" Value="11"/>
         <Setter Property="Foreground" Value="#757575"/>
+        <Setter Property="FontWeight" Value="Medium"/>
     </Style>
 
     <!-- ================================================================== -->
-    <!-- BADGE STYLES                                                      -->
+    <!-- BADGE STYLES (Enhanced v1.8.2)                                    -->
     <!-- ================================================================== -->
 
-    <!-- Primary Badge -->
+    <!-- Primary Badge with hover effect -->
     <Style Selector="Border.BadgePrimary">
         <Setter Property="Background" Value="#1E88E5"/>
-        <Setter Property="CornerRadius" Value="15"/>
-        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="BoxShadow" Value="0 1 3 0 #301E88E5"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.BadgePrimary:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.05)"/>
     </Style>
 
     <!-- Success Badge -->
     <Style Selector="Border.BadgeSuccess">
         <Setter Property="Background" Value="#4CAF50"/>
-        <Setter Property="CornerRadius" Value="15"/>
-        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="BoxShadow" Value="0 1 3 0 #304CAF50"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.BadgeSuccess:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.05)"/>
     </Style>
 
     <!-- Warning Badge -->
     <Style Selector="Border.BadgeWarning">
         <Setter Property="Background" Value="#FFC107"/>
-        <Setter Property="CornerRadius" Value="15"/>
-        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="BoxShadow" Value="0 1 3 0 #30FFC107"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.BadgeWarning:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.05)"/>
     </Style>
 
     <!-- Error Badge -->
     <Style Selector="Border.BadgeError">
         <Setter Property="Background" Value="#F44336"/>
-        <Setter Property="CornerRadius" Value="15"/>
-        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="BoxShadow" Value="0 1 3 0 #30F44336"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.BadgeError:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.05)"/>
     </Style>
 
     <!-- ================================================================== -->
@@ -301,55 +496,92 @@
     </Style>
 
     <!-- ================================================================== -->
-    <!-- PROGRESS BAR STYLES                                               -->
+    <!-- PROGRESS BAR STYLES (Enhanced v1.8.2)                             -->
     <!-- ================================================================== -->
 
+    <!-- Primary Progress Bar with gradient -->
     <Style Selector="ProgressBar.Primary">
         <Setter Property="Foreground" Value="#1E88E5"/>
-        <Setter Property="Background" Value="#E0E0E0"/>
-        <Setter Property="CornerRadius" Value="3"/>
-        <Setter Property="MinHeight" Value="8"/>
+        <Setter Property="Background" Value="#E8E8E8"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="MinHeight" Value="10"/>
     </Style>
 
+    <!-- Success Progress Bar -->
     <Style Selector="ProgressBar.Success">
         <Setter Property="Foreground" Value="#4CAF50"/>
-        <Setter Property="Background" Value="#E0E0E0"/>
-        <Setter Property="CornerRadius" Value="3"/>
-        <Setter Property="MinHeight" Value="8"/>
+        <Setter Property="Background" Value="#E8E8E8"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="MinHeight" Value="10"/>
     </Style>
 
+    <!-- Warning Progress Bar -->
     <Style Selector="ProgressBar.Warning">
         <Setter Property="Foreground" Value="#FFC107"/>
-        <Setter Property="Background" Value="#E0E0E0"/>
-        <Setter Property="CornerRadius" Value="3"/>
-        <Setter Property="MinHeight" Value="8"/>
+        <Setter Property="Background" Value="#E8E8E8"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="MinHeight" Value="10"/>
     </Style>
 
+    <!-- Error Progress Bar -->
     <Style Selector="ProgressBar.Error">
         <Setter Property="Foreground" Value="#F44336"/>
+        <Setter Property="Background" Value="#E8E8E8"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="MinHeight" Value="10"/>
+    </Style>
+
+    <!-- Thin Progress Bar - Subtle variant -->
+    <Style Selector="ProgressBar.Thin">
+        <Setter Property="Foreground" Value="#1E88E5"/>
         <Setter Property="Background" Value="#E0E0E0"/>
-        <Setter Property="CornerRadius" Value="3"/>
-        <Setter Property="MinHeight" Value="8"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="MinHeight" Value="4"/>
     </Style>
 
     <!-- ================================================================== -->
-    <!-- DATA GRID STYLES                                                  -->
+    <!-- DATA GRID STYLES (Enhanced v1.8.2)                                -->
     <!-- ================================================================== -->
 
     <Style Selector="DataGrid.Styled">
         <Setter Property="GridLinesVisibility" Value="Horizontal"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="#E0E0E0"/>
-        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Background" Value="White"/>
+    </Style>
+
+    <!-- DataGrid row hover effect -->
+    <Style Selector="DataGrid.Styled DataGridRow:pointerover">
+        <Setter Property="Background" Value="#F5F5F5"/>
+    </Style>
+
+    <!-- DataGrid alternating rows -->
+    <Style Selector="DataGrid.StyledAlternating">
+        <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="#E0E0E0"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Background" Value="White"/>
     </Style>
 
     <!-- ================================================================== -->
-    <!-- TAB ITEM STYLES                                                   -->
+    <!-- TAB ITEM STYLES (Enhanced v1.8.2)                                 -->
     <!-- ================================================================== -->
 
     <Style Selector="TabItem.MainTab">
-        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="Padding" Value="16,10"/>
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="TabItem.MainTab:pointerover">
+        <Setter Property="Foreground" Value="#1E88E5"/>
     </Style>
 
     <!-- ================================================================== -->
@@ -359,56 +591,83 @@
     <Style Selector="Separator.Horizontal">
         <Setter Property="Background" Value="#E0E0E0"/>
         <Setter Property="Height" Value="1"/>
-        <Setter Property="Margin" Value="0,10"/>
+        <Setter Property="Margin" Value="0,12"/>
     </Style>
 
     <Style Selector="Separator.Vertical">
         <Setter Property="Background" Value="#E0E0E0"/>
         <Setter Property="Width" Value="1"/>
-        <Setter Property="Margin" Value="10,0"/>
+        <Setter Property="Margin" Value="12,0"/>
     </Style>
 
     <!-- ================================================================== -->
-    <!-- TOOLTIP STYLES                                                    -->
+    <!-- TOOLTIP STYLES (Enhanced v1.8.2)                                  -->
     <!-- ================================================================== -->
 
     <Style Selector="ToolTip">
-        <Setter Property="Background" Value="#424242"/>
+        <Setter Property="Background" Value="#323232"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Padding" Value="8,6"/>
-        <Setter Property="CornerRadius" Value="3"/>
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="CornerRadius" Value="6"/>
     </Style>
 
     <!-- ================================================================== -->
-    <!-- QUICK STATS BAR STYLE                                             -->
+    <!-- QUICK STATS BAR STYLE (Enhanced v1.8.2)                           -->
     <!-- ================================================================== -->
 
     <Style Selector="Border.QuickStatsBar">
-        <Setter Property="Background" Value="#1E88E5"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16,8"/>
+        <Setter Property="BoxShadow" Value="0 2 8 0 #301E88E5"/>
     </Style>
 
     <!-- ================================================================== -->
-    <!-- REALM COLOR BADGES                                                -->
+    <!-- REALM COLOR BADGES (Enhanced v1.8.2)                              -->
     <!-- ================================================================== -->
 
     <Style Selector="Border.RealmAlbion">
         <Setter Property="Background" Value="#E53935"/>
-        <Setter Property="CornerRadius" Value="3"/>
-        <Setter Property="Padding" Value="6,3"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="BoxShadow" Value="0 1 4 0 #30E53935"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.RealmAlbion:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
 
     <Style Selector="Border.RealmMidgard">
         <Setter Property="Background" Value="#1E88E5"/>
-        <Setter Property="CornerRadius" Value="3"/>
-        <Setter Property="Padding" Value="6,3"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="BoxShadow" Value="0 1 4 0 #301E88E5"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.RealmMidgard:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
 
     <Style Selector="Border.RealmHibernia">
         <Setter Property="Background" Value="#43A047"/>
-        <Setter Property="CornerRadius" Value="3"/>
-        <Setter Property="Padding" Value="6,3"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="BoxShadow" Value="0 1 4 0 #3043A047"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Border.RealmHibernia:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
 
 </Styles>
