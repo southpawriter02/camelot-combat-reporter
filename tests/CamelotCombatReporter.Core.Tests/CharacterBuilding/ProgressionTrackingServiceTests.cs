@@ -123,6 +123,92 @@ public class ProgressionTrackingServiceTests
         Assert.Equal(14, ProgressionTrackingService.GetRankForRp(25_000_000));
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Additional Tests (v1.8.2)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void CalculateProgressionSummary_TimeSinceLastRankUp_Calculates()
+    {
+        // Arrange
+        var service = new TestableProgressionService();
+        var now = DateTime.UtcNow;
+        var milestone = CreateMilestone(rank: 5, achievedUtc: now.AddDays(-15));
+        var progression = new RealmRankProgression { Milestones = [milestone] };
+
+        // Act
+        var summary = service.CalculateProgressionSummary(progression);
+
+        // Assert
+        Assert.NotNull(summary.TimeSinceLastRankUp);
+        Assert.True(summary.TimeSinceLastRankUp.Value.TotalDays >= 14);
+    }
+
+    [Fact]
+    public void GetRpForRank_ReturnsZeroForRank1()
+    {
+        // Act
+        var rp = ProgressionTrackingService.GetRpForRank(1);
+
+        // Assert
+        Assert.Equal(0, rp);
+    }
+
+    [Fact]
+    public void GetRpForRank_IncrementsForHigherRanks()
+    {
+        // Assert - Each rank requires more RP than previous
+        var prev = 0L;
+        for (int rank = 1; rank <= 14; rank++)
+        {
+            var rp = ProgressionTrackingService.GetRpForRank(rank);
+            Assert.True(rp >= prev, $"Rank {rank} should require >= RP than rank {rank - 1}");
+            prev = rp;
+        }
+    }
+
+    [Fact]
+    public void CalculateProgressionSummary_StablePerformance_NoTrend()
+    {
+        // Arrange
+        var service = new TestableProgressionService();
+        var milestones = new[]
+        {
+            CreateMilestone(rank: 1, dps: 100, kd: 2.0),
+            CreateMilestone(rank: 2, dps: 100, kd: 2.0),
+            CreateMilestone(rank: 3, dps: 100, kd: 2.0),
+            CreateMilestone(rank: 4, dps: 100, kd: 2.0)
+        };
+        var progression = new RealmRankProgression { Milestones = milestones };
+
+        // Act
+        var summary = service.CalculateProgressionSummary(progression);
+
+        // Assert - Stable performance = ~0 trend
+        Assert.True(Math.Abs(summary.DpsTrend) < 1);
+        Assert.True(Math.Abs(summary.KdTrend) < 0.1);
+    }
+
+    [Fact]
+    public void CalculateProgressionSummary_AverageRpPerSession_Calculates()
+    {
+        // Arrange
+        var service = new TestableProgressionService();
+        var milestones = new[]
+        {
+            CreateMilestone(rank: 1, rp: 0, sessions: 0),
+            CreateMilestone(rank: 2, rp: 25000, sessions: 10),
+            CreateMilestone(rank: 3, rp: 125000, sessions: 30)
+        };
+        var progression = new RealmRankProgression { Milestones = milestones };
+
+        // Act
+        var summary = service.CalculateProgressionSummary(progression);
+
+        // Assert - Total 125000 RP over 30 sessions = ~4166 RP/session
+        Assert.True(summary.AverageRpPerSession > 0);
+    }
+
     private static RankMilestone CreateMilestone(
         int rank = 1,
         long rp = 0,
@@ -168,6 +254,9 @@ public class ProgressionTrackingServiceTests
             var daysBetween = CalculateAverageDaysBetweenRanks(milestones);
             var dpsTrend = CalculateTrend(milestones, m => m.AverageDps);
             var kdTrend = CalculateTrend(milestones, m => m.KillDeathRatio);
+            var timeSinceLastRankUp = DateTime.UtcNow - current.AchievedUtc;
+            var totalSessions = milestones.Sum(m => m.SessionCount);
+            var avgRpPerSession = totalSessions > 0 ? (double)current.RealmPoints / totalSessions : 0;
 
             return new ProgressionSummary
             {
@@ -175,8 +264,10 @@ public class ProgressionTrackingServiceTests
                 TotalRealmPoints = current.RealmPoints,
                 MilestoneCount = milestones.Count,
                 AverageDaysBetweenRanks = daysBetween,
+                AverageRpPerSession = avgRpPerSession,
                 DpsTrend = dpsTrend,
-                KdTrend = kdTrend
+                KdTrend = kdTrend,
+                TimeSinceLastRankUp = timeSinceLastRankUp
             };
         }
 

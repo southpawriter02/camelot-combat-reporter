@@ -131,6 +131,86 @@ public class PerformanceAnalysisServiceTests
         Assert.Equal(30, metrics.TotalCombatTime.TotalMinutes, 1);
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Additional Tests (v1.8.2)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task CalculateMetrics_TwoSessionsZeroDeaths_KdEqualsKills()
+    {
+        // Arrange
+        var service = new TestablePerformanceService();
+        var session1 = CreateTestSession(kills: 5, deaths: 0);
+        var session2 = CreateTestSession(kills: 10, deaths: 0);
+
+        // Act
+        var metrics = await service.CalculateMetricsAsync([session1, session2]);
+
+        // Assert
+        Assert.Equal(15, metrics.KillDeathRatio);
+    }
+
+    [Fact]
+    public async Task CalculateMetrics_CorrectHps()
+    {
+        // Arrange
+        var service = new TestablePerformanceService();
+        var session = CreateTestSession(healingDone: 6000, durationMinutes: 10); // 600 seconds
+
+        // Act
+        var metrics = await service.CalculateMetricsAsync([session]);
+
+        // Assert
+        // 6000 healing / 600 seconds = 10 HPS
+        Assert.Equal(10, metrics.AverageHps, 1);
+    }
+
+    [Fact]
+    public async Task CalculateMetrics_TotalDamageTaken_Aggregates()
+    {
+        // Arrange
+        var service = new TestablePerformanceService();
+        var session1 = CreateTestSession(damageTaken: 5000);
+        var session2 = CreateTestSession(damageTaken: 3000);
+
+        // Act
+        var metrics = await service.CalculateMetricsAsync([session1, session2]);
+
+        // Assert
+        Assert.Equal(8000, metrics.TotalDamageTaken);
+    }
+
+    [Fact]
+    public async Task CalculateMetrics_Assists_Aggregates()
+    {
+        // Arrange
+        var service = new TestablePerformanceService();
+        var session1 = CreateTestSession(assists: 10);
+        var session2 = CreateTestSession(assists: 5);
+
+        // Act
+        var metrics = await service.CalculateMetricsAsync([session1, session2]);
+
+        // Assert
+        Assert.Equal(15, metrics.Assists);
+    }
+
+    [Fact]
+    public async Task CalculateMetrics_SessionCount_IsCorrect()
+    {
+        // Arrange
+        var service = new TestablePerformanceService();
+        var sessions = Enumerable.Range(0, 5)
+            .Select(_ => CreateTestSession(damageDealt: 1000))
+            .ToList();
+
+        // Act
+        var metrics = await service.CalculateMetricsAsync(sessions);
+
+        // Assert
+        Assert.Equal(5, metrics.SessionCount);
+    }
+
     private static ExtendedCombatStatistics CreateTestSession(
         int damageDealt = 0,
         int damageTaken = 0,

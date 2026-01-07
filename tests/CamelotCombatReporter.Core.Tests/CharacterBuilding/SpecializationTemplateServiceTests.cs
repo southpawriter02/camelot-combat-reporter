@@ -200,4 +200,108 @@ public class SpecializationTemplateServiceTests
         // Assert
         Assert.NotEmpty(classes);
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Additional Tests (v1.8.2)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    [Theory]
+    [InlineData(Realm.Albion, 16)]
+    [InlineData(Realm.Midgard, 15)]
+    [InlineData(Realm.Hibernia, 16)]
+    public void GetClassesForRealm_ReturnsCorrectCount(Realm realm, int expectedCount)
+    {
+        // Act
+        var classes = _service.GetClassesForRealm(realm);
+
+        // Assert
+        Assert.Equal(expectedCount, classes.Count);
+    }
+
+    [Fact]
+    public void GetRemainingSpecPoints_FullyAllocated_ReturnsZeroOrNegative()
+    {
+        // Arrange - Over-allocated build
+        var build = new CharacterBuild
+        {
+            Name = "MaxedOut",
+            SpecLines = new Dictionary<string, int>
+            {
+                { "Polearm", 50 } // 1275 points - way over limit
+            }
+        };
+
+        // Act
+        var remaining = _service.GetRemainingSpecPoints(build, CharacterClass.Armsman, 50);
+
+        // Assert
+        Assert.True(remaining < 0);
+    }
+
+    [Fact]
+    public void GetRemainingSpecPoints_EmptyBuild_ReturnsMax()
+    {
+        // Arrange
+        var build = new CharacterBuild { Name = "Empty" };
+
+        // Act
+        var remaining = _service.GetRemainingSpecPoints(build, CharacterClass.Armsman, 50);
+
+        // Assert
+        Assert.Equal(126, remaining); // Max points at level 50
+    }
+
+    [Theory]
+    [InlineData(CharacterClass.Armsman)]
+    [InlineData(CharacterClass.Paladin)]
+    [InlineData(CharacterClass.Mercenary)]
+    [InlineData(CharacterClass.Reaver)]
+    public void GetTemplateForClass_AlbionMelee_HasPolearmOrSlash(CharacterClass charClass)
+    {
+        // Act
+        var template = _service.GetTemplateForClass(charClass);
+        var specNames = template.SpecLines.Select(s => s.Name).ToList();
+
+        // Assert - Melee classes should have some weapon spec
+        Assert.True(specNames.Any(s => 
+            s.Contains("Slash") || s.Contains("Crush") || s.Contains("Thrust") || 
+            s.Contains("Polearm") || s.Contains("Two-Handed")));
+    }
+
+    [Theory]
+    [InlineData(CharacterClass.Wizard)]
+    [InlineData(CharacterClass.Runemaster)]
+    [InlineData(CharacterClass.Eldritch)]
+    public void GetTemplateForClass_Casters_HasMagicSpecs(CharacterClass charClass)
+    {
+        // Act
+        var template = _service.GetTemplateForClass(charClass);
+
+        // Assert - All spec lines should be magic type for pure casters
+        Assert.All(template.SpecLines, spec => 
+            Assert.Equal(SpecLineType.Magic, spec.Type));
+    }
+
+    [Fact]
+    public void CalculateSpecPointCost_ZeroLevel_ReturnsZero()
+    {
+        // Act
+        var cost = _service.CalculateSpecPointCost(0);
+
+        // Assert
+        Assert.Equal(0, cost);
+    }
+
+    [Fact]
+    public void GetMaxSpecPoints_Level25_ReturnsHalfOfLevel50()
+    {
+        // Act
+        var level25Points = _service.GetMaxSpecPoints(25);
+        var level50Points = _service.GetMaxSpecPoints(50);
+
+        // Assert - Level 25 should be roughly half
+        // (25*2) + 12 + 1 = 63
+        Assert.Equal(63, level25Points);
+        Assert.True(level25Points < level50Points / 2 + 5);
+    }
 }

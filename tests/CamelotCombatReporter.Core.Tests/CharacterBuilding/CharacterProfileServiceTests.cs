@@ -267,4 +267,122 @@ public class CharacterProfileServiceTests : IDisposable
         Assert.NotEqual(original.Id, imported.Id);
         Assert.Equal("ImportTest", imported.Name);
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Additional Edge Case Tests (v1.8.2)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task CreateProfile_DuplicateName_AllowsCreation()
+    {
+        // Arrange - Two profiles can have the same name
+        var p1 = await _service.CreateProfileAsync(CreateTestProfile("DupeName"));
+        
+        // Act
+        var p2 = await _service.CreateProfileAsync(CreateTestProfile("DupeName"));
+
+        // Assert
+        Assert.NotEqual(p1.Id, p2.Id);
+        Assert.Equal(p1.Name, p2.Name);
+    }
+
+    [Fact]
+    public async Task GetProfile_AfterNewServiceInstance_PersistsData()
+    {
+        // Arrange
+        var created = await _service.CreateProfileAsync(CreateTestProfile("PersistTest"));
+        
+        // Act - Create new service instance pointing to same directory
+        using var newService = new CharacterProfileService(_testProfilesDirectory);
+        var retrieved = await newService.GetProfileAsync(created.Id);
+
+        // Assert
+        Assert.NotNull(retrieved);
+        Assert.Equal("PersistTest", retrieved.Name);
+    }
+
+    [Fact]
+    public async Task DeleteProfile_NonExistingId_ReturnsFalse()
+    {
+        // Act
+        var result = await _service.DeleteProfileAsync(Guid.NewGuid());
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public async Task AttachSession_DuplicateSessionId_NoDuplicatesInList()
+    {
+        // Arrange
+        var profile = await _service.CreateProfileAsync(CreateTestProfile("DupeSession"));
+        var sessionId = Guid.NewGuid();
+        
+        // Act - Attach same session twice
+        await _service.AttachSessionAsync(profile.Id, sessionId);
+        await _service.AttachSessionAsync(profile.Id, sessionId);
+        var sessions = await _service.GetAttachedSessionIdsAsync(profile.Id);
+
+        // Assert
+        Assert.Single(sessions);
+    }
+
+    [Fact]
+    public async Task CloneBuild_ResetsPerformanceMetrics()
+    {
+        // Arrange
+        var profile = await _service.CreateProfileAsync(CreateTestProfile("CloneTest"));
+        var build = new CharacterBuild 
+        { 
+            Name = "Original",
+            PerformanceMetrics = new BuildPerformanceMetrics 
+            { 
+                TotalDamageDealt = 50000,
+                Kills = 25,
+                Deaths = 5
+            }
+        };
+        var created = await _service.CreateBuildAsync(profile.Id, build);
+
+        // Act
+        var cloned = await _service.CloneBuildAsync(profile.Id, created.Id, "Cloned Build");
+
+        // Assert
+        Assert.NotEqual(created.Id, cloned.Id);
+        Assert.Equal("Cloned Build", cloned.Name);
+        Assert.Null(cloned.PerformanceMetrics);
+    }
+
+    [Fact]
+    public async Task GetBuildHistory_MultipleBuilds_ContainsAll()
+    {
+        // Arrange
+        var profile = await _service.CreateProfileAsync(CreateTestProfile("HistoryTest"));
+        await _service.CreateBuildAsync(profile.Id, new CharacterBuild { Name = "Build 1" });
+        await _service.CreateBuildAsync(profile.Id, new CharacterBuild { Name = "Build 2" });
+        await _service.CreateBuildAsync(profile.Id, new CharacterBuild { Name = "Build 3" });
+
+        // Act
+        var history = await _service.GetBuildHistoryAsync(profile.Id);
+
+        // Assert
+        Assert.Equal(3, history.Count);
+        Assert.Contains(history, b => b.Name == "Build 1");
+        Assert.Contains(history, b => b.Name == "Build 2");
+        Assert.Contains(history, b => b.Name == "Build 3");
+    }
+
+    [Fact]
+    public async Task GetProfileCount_ReturnsCorrectCount()
+    {
+        // Arrange
+        await _service.CreateProfileAsync(CreateTestProfile("Count1"));
+        await _service.CreateProfileAsync(CreateTestProfile("Count2"));
+
+        // Act
+        var count = await _service.GetProfileCountAsync();
+
+        // Assert
+        Assert.Equal(2, count);
+    }
 }

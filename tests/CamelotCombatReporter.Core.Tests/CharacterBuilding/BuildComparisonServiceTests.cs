@@ -129,6 +129,105 @@ public class BuildComparisonServiceTests
         Assert.Equal(20, parryDelta.Delta);
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Additional Tests (v1.8.2)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void CompareBuilds_SpecRemovedInBuildB_ShowsAsDecrease()
+    {
+        // Arrange
+        var buildA = CreateBuild(specs: [("Sword", 50), ("Parry", 20)]);
+        var buildB = CreateBuild(specs: [("Sword", 50)]);
+
+        // Act
+        var result = _service.CompareBuilds(buildA, buildB);
+
+        // Assert
+        var parryDelta = result.SpecDeltas.First(s => s.SpecName == "Parry");
+        Assert.Equal(20, parryDelta.ValueA);
+        Assert.Equal(0, parryDelta.ValueB);
+        Assert.Equal(-20, parryDelta.Delta);
+        Assert.True(parryDelta.IsDecrease);
+    }
+
+    [Fact]
+    public void CompareBuilds_TotalSpecPointsDelta_Calculates()
+    {
+        // Arrange
+        var buildA = CreateBuild(specs: [("Sword", 50), ("Shield", 30)]);
+        var buildB = CreateBuild(specs: [("Sword", 45), ("Shield", 40)]);
+
+        // Act
+        var result = _service.CompareBuilds(buildA, buildB);
+
+        // Assert - Net change: -5 + 10 = 5
+        Assert.Equal(5, result.TotalSpecPointsDelta);
+    }
+
+    [Fact]
+    public void CompareBuilds_NoPerformanceMetrics_PerformanceDeltaIsNull()
+    {
+        // Arrange
+        var buildA = CreateBuild();
+        var buildB = CreateBuild();
+
+        // Act
+        var result = _service.CompareBuilds(buildA, buildB);
+
+        // Assert
+        Assert.Null(result.PerformanceDeltas);
+    }
+
+    [Fact]
+    public void CompareBuilds_OnlyBuildAHasMetrics_PerformanceDeltaIsNull()
+    {
+        // Arrange
+        var metricsA = new BuildPerformanceMetrics { AverageDps = 100 };
+        var buildA = CreateBuild() with { PerformanceMetrics = metricsA };
+        var buildB = CreateBuild();
+
+        // Act
+        var result = _service.CompareBuilds(buildA, buildB);
+
+        // Assert
+        Assert.Null(result.PerformanceDeltas);
+    }
+
+    [Fact]
+    public void CompareBuilds_RAPointsDelta_Calculates()
+    {
+        // Arrange - Purge rank 1 = ~2 points, rank 3 = ~6 points (test uses simplified cost)
+        var buildA = CreateBuild(ras: [("Purge", 1)]);
+        var buildB = CreateBuild(ras: [("Purge", 3)]);
+
+        // Act
+        var result = _service.CompareBuilds(buildA, buildB);
+
+        // Assert
+        Assert.True(result.TotalRAPointsDelta > 0);
+    }
+
+    [Fact]
+    public void PerformanceDelta_IsDpsImproved_True_WhenHigherDps()
+    {
+        // Arrange
+        var delta = new PerformanceDelta { DpsDelta = 50 };
+
+        // Assert
+        Assert.True(delta.IsDpsImproved);
+    }
+
+    [Fact]
+    public void PerformanceDelta_IsKdImproved_False_WhenLowerKd()
+    {
+        // Arrange
+        var delta = new PerformanceDelta { KdRatioDelta = -0.5 };
+
+        // Assert
+        Assert.False(delta.IsKdImproved);
+    }
+
     private static CharacterBuild CreateBuild(
         (string name, int value)[]? specs = null,
         (string name, int rank)[]? ras = null)
@@ -153,3 +252,4 @@ public class BuildComparisonServiceTests
         };
     }
 }
+

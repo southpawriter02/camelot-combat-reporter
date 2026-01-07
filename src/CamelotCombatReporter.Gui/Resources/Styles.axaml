@@ -670,4 +670,88 @@
         <Setter Property="RenderTransform" Value="scale(1.03)"/>
     </Style>
 
+    <!-- ================================================================== -->
+    <!-- NAVIGATION SIDEBAR STYLES (v1.8.3)                                 -->
+    <!-- ================================================================== -->
+
+    <!-- Sidebar Container -->
+    <Style Selector="Border.Sidebar">
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="Background" Value="#252526"/>
+        <Setter Property="BorderBrush" Value="#3E3E42"/>
+        <Setter Property="BorderThickness" Value="0,0,1,0"/>
+    </Style>
+
+    <!-- Navigation Category Header -->
+    <Style Selector="TextBlock.NavCategory">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#808080"/>
+        <Setter Property="Margin" Value="16,20,16,8"/>
+    </Style>
+
+    <!-- Navigation Item Button -->
+    <Style Selector="Button.NavItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#CCCCCC"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="16,10"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.1"/>
+                <BrushTransition Property="Foreground" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Button.NavItem:pointerover">
+        <Setter Property="Background" Value="#3E3E42"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.NavItem:pressed">
+        <Setter Property="Background" Value="#505054"/>
+    </Style>
+
+    <!-- Selected Navigation Item -->
+    <Style Selector="Button.NavItemSelected">
+        <Setter Property="Background" Value="#094771"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="3,0,0,0"/>
+        <Setter Property="BorderBrush" Value="#1E88E5"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="13,10,16,10"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="Button.NavItemSelected:pointerover">
+        <Setter Property="Background" Value="#0A5A8C"/>
+    </Style>
+
+    <!-- Navigation Separator -->
+    <Style Selector="Separator.NavSeparator">
+        <Setter Property="Background" Value="#3E3E42"/>
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Margin" Value="16,8"/>
+    </Style>
+
+    <!-- Content Area -->
+    <Style Selector="Border.ContentArea">
+        <Setter Property="Background" Value="#1E1E1E"/>
+    </Style>
+
+    <!-- Hidden Tabs TabControl - hides tab headers for navigation-driven switching -->
+    <Style Selector="TabControl.HiddenTabs">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="TabControl.HiddenTabs > TabItem">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+
 </Styles>

@@ -339,6 +339,50 @@ public partial class MainWindowViewModel : ViewModelBase
 
     #endregion
 
+    #region Navigation
+
+    [ObservableProperty]
+    private string _selectedNavKey = "CombatAnalysis";
+
+    /// <summary>
+    /// Navigation items organized by category for the sidebar.
+    /// </summary>
+    public static IReadOnlyList<Models.NavItem> NavItems { get; } = new List<Models.NavItem>
+    {
+        // Core
+        new() { Name = "Combat Analysis", Icon = "📊", Category = Models.NavCategory.Core, ViewKey = "CombatAnalysis", Shortcut = "Ctrl+1" },
+        
+        // Analysis
+        new() { Name = "Cross-Realm", Icon = "🌍", Category = Models.NavCategory.Analysis, ViewKey = "CrossRealm" },
+        new() { Name = "Death Analysis", Icon = "💀", Category = Models.NavCategory.Analysis, ViewKey = "DeathAnalysis" },
+        new() { Name = "CC Analysis", Icon = "🎯", Category = Models.NavCategory.Analysis, ViewKey = "CCAnalysis" },
+        new() { Name = "Session Compare", Icon = "📈", Category = Models.NavCategory.Analysis, ViewKey = "SessionComparison" },
+        new() { Name = "Group Analysis", Icon = "👥", Category = Models.NavCategory.Analysis, ViewKey = "GroupAnalysis" },
+        
+        // Character
+        new() { Name = "Profiles", Icon = "👤", Category = Models.NavCategory.Character, ViewKey = "CharacterProfiles" },
+        new() { Name = "Realm Abilities", Icon = "⚔️", Category = Models.NavCategory.Character, ViewKey = "RealmAbilities" },
+        
+        // Tracking
+        new() { Name = "Loot Tracking", Icon = "💎", Category = Models.NavCategory.Tracking, ViewKey = "LootTracking" },
+        new() { Name = "Buff Tracking", Icon = "✨", Category = Models.NavCategory.Tracking, ViewKey = "BuffTracking" },
+        new() { Name = "Alerts", Icon = "🔔", Category = Models.NavCategory.Tracking, ViewKey = "Alerts" },
+        
+        // RvR
+        new() { Name = "Siege Tracking", Icon = "🏰", Category = Models.NavCategory.RvR, ViewKey = "SiegeTracking" },
+        new() { Name = "Relic Tracking", Icon = "🏆", Category = Models.NavCategory.RvR, ViewKey = "RelicTracking" },
+        new() { Name = "Battlegrounds", Icon = "⚔️", Category = Models.NavCategory.RvR, ViewKey = "Battlegrounds" },
+    };
+
+    /// <summary>
+    /// Gets nav items for a specific category.
+    /// </summary>
+    public static IEnumerable<Models.NavItem> GetNavItemsByCategory(Models.NavCategory category)
+        => NavItems.Where(n => n.Category == category);
+
+    #endregion
+
+
     #region Private Fields
 
     private List<LogEvent>? _analyzedEvents;
@@ -663,6 +707,14 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var window = new Views.KeyboardShortcutsWindow();
         await window.ShowDialog(mainWindow);
+    }
+
+    [RelayCommand]
+    private void NavigateTo(string viewKey)
+    {
+        if (string.IsNullOrEmpty(viewKey)) return;
+        SelectedNavKey = viewKey;
+        _logger.LogInformation("Navigated to {ViewKey}", viewKey);
     }
 
     #endregion

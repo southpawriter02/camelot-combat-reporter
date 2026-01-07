@@ -1,8 +1,9 @@
 # Character Building Tools - Implementation Proposal
 
-**Version:** 1.8.0+
-**Status:** Proposed
+**Version:** 1.8.0 - 1.8.2 (Implemented)
+**Status:** ✅ Phases 1-5 Complete, Phase 6 Planned
 **Created:** January 2026
+**Last Updated:** January 7, 2026
 **Author:** Combat Reporter Team
 
 ---
@@ -753,86 +754,100 @@ public record RealmRankImpact
 
 ## Implementation Phases
 
-### Phase 1: Core Profile System (v1.8.0)
+> **Status Update (January 2026):** All core phases have been implemented in v1.8.0-v1.8.2. 
+> Phase 6 (Auto-Detection & Polish) is partially complete.
+
+### Phase 1: Core Profile System (v1.8.0) ✅ COMPLETE
 
 **Duration:** Foundation release
 
 **Features:**
-- [ ] CharacterProfile and CharacterBuild data models
-- [ ] ICharacterProfileService implementation with JSON storage
-- [ ] Profile creation/editing dialog
-- [ ] Basic profile list view in new "Character Profiles" tab
-- [ ] Manual session attachment to profiles
-- [ ] Profile import/export (JSON format)
+- [x] CharacterProfile and CharacterBuild data models
+- [x] ICharacterProfileService implementation with JSON storage
+- [x] Profile creation/editing dialog
+- [x] Basic profile list view in new "Character Profiles" tab
+- [x] Manual session attachment to profiles
+- [x] Profile import/export (JSON format)
 
-**Files to Create/Modify:**
-- `src/CamelotCombatReporter.Core/CharacterBuilding/Models/`
-- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/`
-- `src/CamelotCombatReporter.Gui/CharacterBuilding/`
+**Files Created:**
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Models/CharacterProfileModels.cs`
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Models/RealmAbilitySelection.cs`
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/CharacterProfileService.cs`
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/ICharacterProfileService.cs`
+- `src/CamelotCombatReporter.Gui/CharacterBuilding/Views/CharacterProfilesView.axaml`
+- `src/CamelotCombatReporter.Gui/CharacterBuilding/Views/ProfileEditorDialog.axaml`
 
-### Phase 2: Build Configuration (v1.8.1)
+### Phase 2: Build Configuration (v1.8.0) ✅ COMPLETE
 
 **Duration:** Spec and RA tracking
 
 **Features:**
-- [ ] Specialization template definitions for all 48 classes
-- [ ] Build editor with spec line sliders
-- [ ] Realm ability selection with point validation
-- [ ] Build history and versioning
-- [ ] "Save as New Build" workflow
+- [x] Specialization template definitions for all 45 classes
+- [x] Build editor with spec line sliders
+- [x] Realm ability selection with point validation
+- [x] Build history and versioning
+- [x] "Save as New Build" workflow
 
-**Files to Create/Modify:**
-- `src/CamelotCombatReporter.Core/CharacterBuilding/Templates/`
-- `src/CamelotCombatReporter.Gui/CharacterBuilding/BuildEditorDialog.axaml`
+**Files Created:**
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Templates/SpecializationModels.cs`
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Templates/RealmAbilityCatalog.cs`
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/SpecializationTemplateService.cs`
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/ISpecializationTemplateService.cs`
+- `src/CamelotCombatReporter.Gui/CharacterBuilding/Views/BuildEditorDialog.axaml`
 
-### Phase 3: Performance Analytics (v1.9.0)
+### Phase 3: Performance Analytics (v1.8.1) ✅ COMPLETE
 
 **Duration:** Analysis engine
 
 **Features:**
-- [ ] BuildPerformanceMetrics calculation from attached sessions
-- [ ] Performance summary cards in profile view
-- [ ] Top damage sources breakdown
-- [ ] Combat time and efficiency metrics
-- [ ] Filtering by date range and build
+- [x] BuildPerformanceMetrics calculation from attached sessions
+- [x] Performance summary cards in profile view
+- [x] Top damage sources breakdown
+- [x] Combat time and efficiency metrics
+- [x] Filtering by date range and build
 
-**Files to Create/Modify:**
-- `src/CamelotCombatReporter.Core/CharacterBuilding/Analysis/`
-- `src/CamelotCombatReporter.Gui/CharacterBuilding/PerformanceSummaryView.axaml`
+**Files Created:**
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Models/BuildPerformanceMetrics.cs`
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/PerformanceAnalysisService.cs`
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/IPerformanceAnalysisService.cs`
+- `src/CamelotCombatReporter.Gui/CharacterBuilding/Views/PerformanceSummaryView.axaml`
 
-### Phase 4: Build Comparison (v1.9.1)
+### Phase 4: Build Comparison (v1.8.1) ✅ COMPLETE
 
 **Duration:** Comparison tools
 
 **Features:**
-- [ ] IBuildComparisonService implementation
-- [ ] Side-by-side build comparison dialog
-- [ ] Delta calculations with percentage changes
-- [ ] Spec difference visualization
-- [ ] Damage source comparison charts
+- [x] IBuildComparisonService implementation
+- [x] Side-by-side build comparison dialog
+- [x] Delta calculations with percentage changes
+- [x] Spec difference visualization
+- [x] Damage source comparison charts
 
-**Files to Create/Modify:**
+**Files Created:**
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Models/BuildComparisonModels.cs`
 - `src/CamelotCombatReporter.Core/CharacterBuilding/Services/BuildComparisonService.cs`
-- `src/CamelotCombatReporter.Gui/CharacterBuilding/BuildComparisonDialog.axaml`
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/IBuildComparisonService.cs`
+- `src/CamelotCombatReporter.Gui/CharacterBuilding/Views/BuildComparisonView.axaml`
 
-### Phase 5: Progression Tracking (v1.10.0)
+### Phase 5: Progression Tracking (v1.8.1) ✅ COMPLETE
 
 **Duration:** Realm rank progression
 
 **Features:**
-- [ ] IRealmRankProgressionService implementation
-- [ ] Realm rank milestone recording
-- [ ] Progression chart visualization (LiveCharts2)
-- [ ] Build change markers on timeline
-- [ ] Performance trend analysis
+- [x] IProgressionTrackingService implementation
+- [x] Realm rank milestone recording
+- [x] Progression chart visualization (LiveCharts2)
+- [x] Build change markers on timeline
+- [x] Performance trend analysis
 
-**Files to Create/Modify:**
-- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/RealmRankProgressionService.cs`
-- `src/CamelotCombatReporter.Gui/CharacterBuilding/ProgressionChartView.axaml`
+**Files Created:**
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/ProgressionTrackingService.cs`
+- `src/CamelotCombatReporter.Core/CharacterBuilding/Services/IProgressionTrackingService.cs`
+- `src/CamelotCombatReporter.Gui/CharacterBuilding/Views/ProgressionChartView.axaml`
 
-### Phase 6: Auto-Detection & Polish (v1.10.1)
+### Phase 6: Auto-Detection & Polish (v1.9.0+) 🔄 PLANNED
 
-**Duration:** Intelligence and UX
+**Duration:** Intelligence and UX (Future)
 
 **Features:**
 - [ ] Auto-suggest profile for new sessions
@@ -840,6 +855,18 @@ public record RealmRankImpact
 - [ ] Community meta build templates
 - [ ] Profile sharing (export with sessions)
 - [ ] Keyboard shortcuts and accessibility
+
+### Testing Coverage (v1.8.2) ✅ COMPLETE
+
+**Unit Tests Added:**
+- `CharacterProfileServiceTests.cs` - 7 tests for persistence, duplicates, cloning
+- `SpecializationTemplateServiceTests.cs` - 8 tests for realm classes, formulas
+- `BuildComparisonServiceTests.cs` - 7 tests for spec deltas, RA changes
+- `PerformanceAnalysisServiceTests.cs` - 5 tests for aggregation, edge cases
+- `ProgressionTrackingServiceTests.cs` - 5 tests for trends, RP calculations
+- `RealmAbilityCatalogTests.cs` - Pre-existing tests for RA catalog
+
+**Total Test Count:** 410 tests (381 Core + 29 GUI)
 
 ---
 

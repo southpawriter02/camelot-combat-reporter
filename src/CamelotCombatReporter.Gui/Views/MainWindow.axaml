@@ -55,6 +55,31 @@
                 <Separator/>
                 <MenuItem Header="E_xit" Click="OnExitClick"/>
             </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="📊 _Combat Analysis" Command="{Binding NavigateToCommand}" CommandParameter="CombatAnalysis" InputGesture="Ctrl+1"/>
+                <Separator/>
+                <MenuItem Header="Analysis">
+                    <MenuItem Header="🌍 Cross-Realm" Command="{Binding NavigateToCommand}" CommandParameter="CrossRealm"/>
+                    <MenuItem Header="💀 Death Analysis" Command="{Binding NavigateToCommand}" CommandParameter="DeathAnalysis"/>
+                    <MenuItem Header="🎯 CC Analysis" Command="{Binding NavigateToCommand}" CommandParameter="CCAnalysis"/>
+                    <MenuItem Header="📈 Session Compare" Command="{Binding NavigateToCommand}" CommandParameter="SessionComparison"/>
+                    <MenuItem Header="👥 Group Analysis" Command="{Binding NavigateToCommand}" CommandParameter="GroupAnalysis"/>
+                </MenuItem>
+                <MenuItem Header="Character">
+                    <MenuItem Header="👤 Profiles" Command="{Binding NavigateToCommand}" CommandParameter="CharacterProfiles"/>
+                    <MenuItem Header="⚔️ Realm Abilities" Command="{Binding NavigateToCommand}" CommandParameter="RealmAbilities"/>
+                </MenuItem>
+                <MenuItem Header="Tracking">
+                    <MenuItem Header="💎 Loot Tracking" Command="{Binding NavigateToCommand}" CommandParameter="LootTracking"/>
+                    <MenuItem Header="✨ Buff Tracking" Command="{Binding NavigateToCommand}" CommandParameter="BuffTracking"/>
+                    <MenuItem Header="🔔 Alerts" Command="{Binding NavigateToCommand}" CommandParameter="Alerts"/>
+                </MenuItem>
+                <MenuItem Header="RvR">
+                    <MenuItem Header="🏰 Siege Tracking" Command="{Binding NavigateToCommand}" CommandParameter="SiegeTracking"/>
+                    <MenuItem Header="🏆 Relic Tracking" Command="{Binding NavigateToCommand}" CommandParameter="RelicTracking"/>
+                    <MenuItem Header="⚔️ Battlegrounds" Command="{Binding NavigateToCommand}" CommandParameter="Battlegrounds"/>
+                </MenuItem>
+            </MenuItem>
             <MenuItem Header="_Tools">
                 <MenuItem Header="_Plugin Manager..." Command="{Binding ShowPluginManagerCommand}" InputGesture="Ctrl+P"/>
                 <Separator/>
@@ -67,7 +92,49 @@
             </MenuItem>
         </Menu>
 
-        <TabControl>
+        <!-- Main Layout: Sidebar + Content -->
+        <Grid ColumnDefinitions="Auto,*">
+            
+            <!-- Navigation Sidebar -->
+            <Border Classes="Sidebar" Grid.Column="0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- CORE -->
+                        <TextBlock Classes="NavCategory" Text="CORE"/>
+                        <Button Classes="NavItem" Content="📊  Combat Analysis" Command="{Binding NavigateToCommand}" CommandParameter="CombatAnalysis"/>
+                        
+                        <!-- ANALYSIS -->
+                        <TextBlock Classes="NavCategory" Text="ANALYSIS"/>
+                        <Button Classes="NavItem" Content="🌍  Cross-Realm" Command="{Binding NavigateToCommand}" CommandParameter="CrossRealm"/>
+                        <Button Classes="NavItem" Content="💀  Death Analysis" Command="{Binding NavigateToCommand}" CommandParameter="DeathAnalysis"/>
+                        <Button Classes="NavItem" Content="🎯  CC Analysis" Command="{Binding NavigateToCommand}" CommandParameter="CCAnalysis"/>
+                        <Button Classes="NavItem" Content="📈  Session Compare" Command="{Binding NavigateToCommand}" CommandParameter="SessionComparison"/>
+                        <Button Classes="NavItem" Content="👥  Group Analysis" Command="{Binding NavigateToCommand}" CommandParameter="GroupAnalysis"/>
+                        
+                        <!-- CHARACTER -->
+                        <TextBlock Classes="NavCategory" Text="CHARACTER"/>
+                        <Button Classes="NavItem" Content="👤  Profiles" Command="{Binding NavigateToCommand}" CommandParameter="CharacterProfiles"/>
+                        <Button Classes="NavItem" Content="⚔️  Realm Abilities" Command="{Binding NavigateToCommand}" CommandParameter="RealmAbilities"/>
+                        
+                        <!-- TRACKING -->
+                        <TextBlock Classes="NavCategory" Text="TRACKING"/>
+                        <Button Classes="NavItem" Content="💎  Loot Tracking" Command="{Binding NavigateToCommand}" CommandParameter="LootTracking"/>
+                        <Button Classes="NavItem" Content="✨  Buff Tracking" Command="{Binding NavigateToCommand}" CommandParameter="BuffTracking"/>
+                        <Button Classes="NavItem" Content="🔔  Alerts" Command="{Binding NavigateToCommand}" CommandParameter="Alerts"/>
+                        
+                        <!-- RvR -->
+                        <TextBlock Classes="NavCategory" Text="RvR"/>
+                        <Button Classes="NavItem" Content="🏰  Siege Tracking" Command="{Binding NavigateToCommand}" CommandParameter="SiegeTracking"/>
+                        <Button Classes="NavItem" Content="🏆  Relic Tracking" Command="{Binding NavigateToCommand}" CommandParameter="RelicTracking"/>
+                        <Button Classes="NavItem" Content="⚔️  Battlegrounds" Command="{Binding NavigateToCommand}" CommandParameter="Battlegrounds"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+            
+            <!-- Content Area with TabControl (hidden tabs) -->
+            <TabControl Grid.Column="1" 
+                        SelectedIndex="{Binding SelectedNavKey, Converter={StaticResource NavKeyToIndexConverter}}"
+                        Classes="HiddenTabs">
             <!-- Combat Analysis Tab -->
             <TabItem Header="Combat Analysis">
                 <ScrollViewer>
@@ -1052,6 +1119,7 @@
             <rvr:BattlegroundView x:Name="BattlegroundView"/>
         </TabItem>
     </TabControl>
+        </Grid>
 
         <!-- Status Bar -->
         <Border DockPanel.Dock="Bottom"
@@ -1101,7 +1169,7 @@
 
                 <!-- Version -->
                 <TextBlock Grid.Column="4"
-                           Text="v1.7.0"
+                           Text="v1.8.3"
                            FontSize="11"
                            Foreground="#9E9E9E"
                            VerticalAlignment="Center"/>

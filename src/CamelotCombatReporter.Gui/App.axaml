@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="CamelotCombatReporter.Gui.App"
              xmlns:local="using:CamelotCombatReporter.Gui"
+             xmlns:converters="using:CamelotCombatReporter.Gui.Converters"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -23,6 +24,9 @@
                 <ResourceInclude Source="avares://CamelotCombatReporter.Gui/Resources/Brushes.axaml"/>
                 <ResourceInclude Source="avares://CamelotCombatReporter.Gui/Resources/Icons.axaml"/>
             </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Navigation Converters -->
+            <converters:NavKeyToIndexConverter x:Key="NavKeyToIndexConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

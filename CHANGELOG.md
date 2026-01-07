@@ -11,6 +11,33 @@ No unreleased changes.
 
 ---
 
+## [1.8.3] - 2026-01-07
+
+### Added
+- **Sidebar Navigation**
+  - Categorized sidebar replaces flat tab navigation
+  - 5 categories: Core, Analysis, Character, Tracking, RvR
+  - Dark theme sidebar with hover effects
+  - Emoji icons for visual recognition
+  
+- **View Menu**
+  - New View menu with categorized navigation submenus
+  - Keyboard shortcut Ctrl+1 for Combat Analysis
+  - Quick access to all 14 views from menu bar
+
+- **Navigation Infrastructure**
+  - `NavItem` model with category, icon, and shortcut support
+  - `NavKeyToIndexConverter` for view switching
+  - `NavCategory` enum for grouping
+  - Hidden tabs style for TabControl
+
+### Changed
+- Replaced 14 flat horizontal tabs with organized sidebar
+- Updated version to v1.8.3 in status bar
+- Enhanced navigation with smooth transitions and hover states
+
+---
+
 ## [1.8.2] - 2026-01-07
 
 ### Added
@@ -41,11 +68,20 @@ No unreleased changes.
   - Progress bar variants (Thin, Primary, Success, Warning, Error)
   - QuickStatsBar enhanced styling
 
+- **New Unit Tests**
+  - 27 additional tests for Character Building services
+  - CharacterProfileService: persistence, duplicates, cloning (7 tests)
+  - SpecializationTemplateService: realm classes, formulas (8 tests)
+  - BuildComparisonService: spec deltas, RA changes (7 tests)
+  - PerformanceAnalysisService: aggregation, edge cases (5 tests)
+  - ProgressionTrackingService: trends, RP calculations (5 tests)
+
 ### Changed
 - Increased button padding (12,6 → 16,8)
 - Increased corner radius (5 → 6-8)
 - Updated card padding (15 → 16)
 - Enhanced separator margins (10 → 12)
+- Total tests: 410 (381 Core + 29 GUI)
 
 ---
 
