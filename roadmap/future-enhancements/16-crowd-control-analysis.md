@@ -1,12 +1,12 @@
 # 16. Crowd Control Analysis
 
-## Status: 📋 Planned
+## Status: ✅ Complete (v1.1.0)
 
-**Prerequisites:**
+**Implementation Complete:**
 - ✅ Log parsing infrastructure
 - ✅ Timeline view
-- ⬚ CC event parsing
-- ⬚ Diminishing returns tracking
+- ✅ CC event parsing
+- ✅ Diminishing returns tracking
 
 ---
 

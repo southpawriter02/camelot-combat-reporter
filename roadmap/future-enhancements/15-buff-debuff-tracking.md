@@ -1,11 +1,11 @@
 # 15. Buff and Debuff Tracking
 
-## Status: 📋 Planned
+## Status: ✅ Complete (v1.2.0)
 
-**Prerequisites:**
+**Implementation Complete:**
 - ✅ Log parsing infrastructure
 - ✅ Timeline view
-- ⬚ Buff/debuff event parsing
+- ✅ Buff/debuff event parsing
 
 ---
 

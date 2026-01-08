@@ -4,7 +4,7 @@ This document outlines the feature roadmap for Camelot Combat Reporter. The proj
 
 ---
 
-## Current Version: v1.7.0
+## Current Version: v1.9.0
 
 Released: January 2026
 

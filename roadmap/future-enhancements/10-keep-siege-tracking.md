@@ -1,11 +1,11 @@
 # 10. Keep and Siege Tracking
 
-## Status: 📋 Planned
+## Status: ✅ Complete (v1.5.0)
 
-**Prerequisites:**
+**Implementation Complete:**
 - ✅ Log parsing infrastructure
 - ✅ Cross-realm analysis
-- ⬚ Keep/siege event parsing patterns
+- ✅ Keep/siege event parsing patterns
 
 ---
 

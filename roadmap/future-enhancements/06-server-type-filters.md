@@ -1,11 +1,11 @@
 # 6. Server Type Filters
 
-## Status: 📋 Planned
+## Status: ✅ Complete (v1.1.0)
 
-**Prerequisites:**
+**Implementation Complete:**
 - ✅ Log parsing infrastructure
 - ✅ GUI filtering framework
-- ⬚ Server-specific configuration system
+- ✅ Server-specific configuration system
 
 ---
 

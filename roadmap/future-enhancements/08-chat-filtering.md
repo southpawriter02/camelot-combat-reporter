@@ -1,11 +1,11 @@
 # 8. Chat and Non-Combat Log Filtering
 
-## Status: 📋 Planned
+## Status: ✅ Complete (v1.1.0)
 
-**Prerequisites:**
+**Implementation Complete:**
 - ✅ Log parsing infrastructure
 - ✅ GUI filtering framework
-- ⬚ Chat message pattern recognition
+- ✅ Chat message pattern recognition
 
 ---
 
