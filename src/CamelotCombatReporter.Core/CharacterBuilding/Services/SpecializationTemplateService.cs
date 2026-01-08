@@ -2,6 +2,9 @@ using CamelotCombatReporter.Core.CharacterBuilding.Models;
 using CamelotCombatReporter.Core.CharacterBuilding.Templates;
 using CamelotCombatReporter.Core.Models;
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace CamelotCombatReporter.Core.CharacterBuilding.Services;
 
 /// <summary>
@@ -29,15 +32,18 @@ namespace CamelotCombatReporter.Core.CharacterBuilding.Services;
 /// </remarks>
 public class SpecializationTemplateService : ISpecializationTemplateService
 {
+    private readonly ILogger<SpecializationTemplateService> _logger;
     // Pre-loaded templates indexed by class for O(1) lookup
     private readonly Dictionary<CharacterClass, SpecializationTemplate> _templates;
 
     /// <summary>
     /// Initializes the service with all class templates pre-loaded.
     /// </summary>
-    public SpecializationTemplateService()
+    public SpecializationTemplateService(ILogger<SpecializationTemplateService>? logger = null)
     {
+        _logger = logger ?? NullLogger<SpecializationTemplateService>.Instance;
         _templates = InitializeTemplates();
+        _logger.LogInformation("Initialized {Count} specialization templates", _templates.Count);
     }
 
     /// <inheritdoc/>
@@ -46,9 +52,13 @@ public class SpecializationTemplateService : ISpecializationTemplateService
     /// </remarks>
     public SpecializationTemplate GetTemplateForClass(CharacterClass charClass)
     {
-        return _templates.TryGetValue(charClass, out var template)
-            ? template
-            : new SpecializationTemplate { Class = charClass, SpecLines = [] };
+        if (_templates.TryGetValue(charClass, out var template))
+        {
+            return template;
+        }
+
+        _logger.LogWarning("Template requested for unknown or uninitialized class: {Class}", charClass);
+        return new SpecializationTemplate { Class = charClass, SpecLines = [] };
     }
 
     /// <inheritdoc/>
@@ -76,8 +86,13 @@ public class SpecializationTemplateService : ISpecializationTemplateService
         // Sum cost of each allocated spec line
         return build.SpecLines.Sum(kvp =>
         {
-            var multiplier = specLookup.TryGetValue(kvp.Key, out var spec) ? spec.PointMultiplier : 1.0;
-            return CalculateSpecPointCost(kvp.Value, multiplier);
+            if (!specLookup.TryGetValue(kvp.Key, out var spec))
+            {
+                _logger.LogWarning("Build contains unknown spec line '{SpecLine}' for class {Class}", kvp.Key, charClass);
+                // Assume 1.0 multiplier if unknown
+                return CalculateSpecPointCost(kvp.Value, 1.0);
+            }
+            return CalculateSpecPointCost(kvp.Value, spec.PointMultiplier);
         });
     }
 
@@ -90,7 +105,16 @@ public class SpecializationTemplateService : ISpecializationTemplateService
     /// <inheritdoc/>
     public bool ValidateSpecAllocation(CharacterBuild build, CharacterClass charClass, int level)
     {
-        return GetAllocatedSpecPoints(build, charClass) <= GetMaxSpecPoints(level);
+        var allocated = GetAllocatedSpecPoints(build, charClass);
+        var max = GetMaxSpecPoints(level);
+        
+        if (allocated > max)
+        {
+            _logger.LogDebug("Spec validation failed for {Class}: {Allocated}/{Max} points used", charClass, allocated, max);
+            return false;
+        }
+        
+        return true;
     }
 
     /// <inheritdoc/>

@@ -60,6 +60,7 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
     /// <inheritdoc/>
     public CharacterBuild CreateBuildFromTemplate(MetaBuildTemplate template)
     {
+        _logger.LogTrace("Creating build from template: {TemplateId} ({Name})", template.Id, template.Name);
         return new CharacterBuild
         {
             Id = Guid.NewGuid(),
@@ -77,11 +78,14 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
     public IReadOnlyList<MetaBuildTemplate> SearchTemplates(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
+        {
             return _templates;
+        }
             
         var searchTerms = query.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        _logger.LogDebug("Searching templates with info: {Terms}", string.Join(", ", searchTerms));
         
-        return _templates
+        var results = _templates
             .Where(t => searchTerms.All(term =>
                 t.Name.Contains(term, StringComparison.OrdinalIgnoreCase) ||
                 t.Description.Contains(term, StringComparison.OrdinalIgnoreCase) ||
@@ -89,6 +93,9 @@ public class MetaBuildTemplateService : IMetaBuildTemplateService
                 t.Tags.Any(tag => tag.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
                 t.TargetClass.ToString().Contains(term, StringComparison.OrdinalIgnoreCase)))
             .ToList();
+            
+        _logger.LogDebug("Found {Count} templates matching query '{Query}'", results.Count, query);
+        return results;
     }
 
     private static long CalculateRealmPoints(int realmRank)

@@ -56,7 +56,13 @@ public class CombatLogClassDetector : ICombatLogClassDetector
                 {
                     classScores.TryGetValue(cls, out var count);
                     classScores[cls] = count + styleUsage[style];
+                    
+                    _logger.LogTrace("Style '{Style}' matched for class {Class} (+{Count})", style, cls, styleUsage[style]);
                 }
+            }
+            else
+            {
+                _logger.LogTrace("Style '{Style}' not found in any class mappings", style);
             }
         }
 
@@ -92,9 +98,13 @@ public class CombatLogClassDetector : ICombatLogClassDetector
 
         var candidateClasses = ranked.Select(r => r.Key).ToList();
 
-        _logger.LogDebug(
-            "Inferred class {Class} with confidence {Confidence:P0} from {StyleCount} styles",
-            topClass, confidence, detectedStyles.Count);
+        if (_logger.IsEnabled(LogLevel.Debug))
+        {
+            var topCandidates = ranked.Take(3).Select(r => $"{r.Key} ({r.Value})");
+            _logger.LogDebug(
+                "Inferred class {Class} with confidence {Confidence:P0} from {StyleCount} styles. Top candidates: {Candidates}",
+                topClass, confidence, detectedStyles.Count, string.Join(", ", topCandidates));
+        }
 
         return new ClassInferenceResult(
             topClass,
