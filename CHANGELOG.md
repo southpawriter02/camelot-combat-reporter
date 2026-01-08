@@ -11,6 +11,22 @@ No unreleased changes.
 
 ---
 
+## [1.9.3] - 2026-01-08
+
+### Added
+- **Discord Bot Integration Plugin**
+  - Webhook-based Discord posting (no bot token required)
+  - Session summary embeds with realm-specific colors
+  - Personal best announcements (DPS, damage)
+  - Major kill notifications (configurable threshold)
+  - Rate limiting (Discord API compliant)
+  - Privacy controls: Full/Partial/StatsOnly
+  - Configurable post triggers
+  - Webhook URL testing
+  - Comprehensive logging
+
+---
+
 ## [1.9.2] - 2026-01-08
 
 ### Added

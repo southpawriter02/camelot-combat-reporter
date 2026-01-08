@@ -1,0 +1,32 @@
+{
+    "id": "discord-bot-integration",
+    "name": "Discord Bot Integration",
+    "version": "1.0.0",
+    "author": "CCR Community",
+    "description": "Posts combat summaries and achievements to Discord via webhooks",
+    "type": "DataAnalysis",
+    "entryPoint": {
+        "assembly": "DiscordIntegration.dll",
+        "typeName": "DiscordIntegration.DiscordIntegrationPlugin"
+    },
+    "compatibility": {
+        "minAppVersion": "1.0.0"
+    },
+    "permissions": [
+        "CombatDataAccess",
+        "NetworkAccess",
+        "SettingsRead",
+        "SettingsWrite",
+        "UINotifications"
+    ],
+    "resources": {
+        "maxMemoryMb": 32,
+        "maxCpuTimeSeconds": 15
+    },
+    "network": {
+        "allowedDomains": [
+            "discord.com",
+            "discordapp.com"
+        ]
+    }
+}
