@@ -1,0 +1,88 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             xmlns:vm="using:DamageBreakdownChart.ViewModels"
+             x:Class="DamageBreakdownChart.Views.BreakdownView"
+             x:DataType="vm:BreakdownViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.title">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="TextBlock.subtitle">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#888"/>
+        </Style>
+        <Style Selector="Border.stats-panel">
+            <Setter Property="Background" Value="#1A1A1A"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+        </Style>
+        <Style Selector="TextBlock.stat-label">
+            <Setter Property="Foreground" Value="#888"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style Selector="TextBlock.stat-value">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid ColumnDefinitions="*,280">
+        <!-- Chart Panel -->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*" Margin="8">
+            <!-- Header -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,8">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding CurrentTitle}" Classes="title"/>
+                    <Button Content="↑ Back" 
+                            Command="{Binding NavigateUpCommand}"
+                            IsVisible="{Binding CanNavigateUp}"
+                            Margin="16,0,0,0"
+                            VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Text="Click a segment to drill down" Classes="subtitle"/>
+            </StackPanel>
+
+            <!-- Pie Chart -->
+            <lvc:PieChart Grid.Row="1"
+                          Series="{Binding Series}"
+                          LegendPosition="Right"
+                          InitialRotation="-90">
+            </lvc:PieChart>
+        </Grid>
+
+        <!-- Stats Panel -->
+        <Border Grid.Column="1" Classes="stats-panel" Margin="8">
+            <StackPanel>
+                <TextBlock Text="Selection" Classes="title" Margin="0,0,0,16"/>
+
+                <StackPanel IsVisible="{Binding HasSelection}">
+                    <TextBlock Text="{Binding SelectedNode.Name}" 
+                               FontSize="16" 
+                               FontWeight="Bold"
+                               Margin="0,0,0,16"/>
+
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Total Damage" Classes="stat-label"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedNode.TotalDamage, StringFormat='{}{0:N0}'}" Classes="stat-value"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Hits" Classes="stat-label" Margin="0,8,0,0"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedNode.HitCount, StringFormat='{}{0:N0}'}" Classes="stat-value" Margin="0,8,0,0"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Average" Classes="stat-label" Margin="0,8,0,0"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedNode.AverageDamage, StringFormat='{}{0:F0}'}" Classes="stat-value" Margin="0,8,0,0"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Share" Classes="stat-label" Margin="0,8,0,0"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedNode.Percentage, StringFormat='{}{0:F1}%'}" Classes="stat-value" Margin="0,8,0,0"/>
+                    </Grid>
+                </StackPanel>
+
+                <TextBlock IsVisible="{Binding !HasSelection}" 
+                           Text="Click a segment to view details" 
+                           Foreground="#666"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

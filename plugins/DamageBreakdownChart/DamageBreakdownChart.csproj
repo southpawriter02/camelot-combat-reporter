@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>DamageBreakdownChart</AssemblyName>
+    <RootNamespace>DamageBreakdownChart</RootNamespace>
+  </PropertyGroup>
+
+  <!-- SDK and Core References -->
+  <ItemGroup>
+    <ProjectReference Include="../../src/CamelotCombatReporter.Core/CamelotCombatReporter.Core.csproj" />
+    <ProjectReference Include="../../src/CamelotCombatReporter.Plugins/CamelotCombatReporter.Plugins.csproj" />
+    <ProjectReference Include="../../src/CamelotCombatReporter.PluginSdk/CamelotCombatReporter.PluginSdk.csproj" />
+  </ItemGroup>
+
+  <!-- Logging -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+  </ItemGroup>
+
+  <!-- Avalonia UI -->
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.3" />
+  </ItemGroup>
+
+  <!-- LiveCharts2 for charting -->
+  <ItemGroup>
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc3.3" />
+  </ItemGroup>
+
+  <!-- Content files -->
+  <ItemGroup>
+    <None Update="plugin.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

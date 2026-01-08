@@ -11,6 +11,19 @@ No unreleased changes.
 
 ---
 
+## [1.9.4] - 2026-01-08
+
+### Added
+- **Damage Breakdown Chart Plugin**
+  - Interactive pie and bar chart visualizations
+  - Hierarchical drill-down (Type → Category → Source → Target)
+  - DAoC damage type color coding
+  - Statistics panel for selected segments
+  - Breadcrumb navigation
+  - Uses LiveCharts2 for rendering
+
+---
+
 ## [1.9.3] - 2026-01-08
 
 ### Added

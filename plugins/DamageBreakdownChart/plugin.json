@@ -1,0 +1,23 @@
+{
+    "id": "damage-breakdown-chart",
+    "name": "Damage Breakdown Chart",
+    "version": "1.0.0",
+    "author": "CCR Community",
+    "description": "Interactive visualization for exploring damage breakdown by type, ability, and target",
+    "type": "UIComponent",
+    "entryPoint": {
+        "assembly": "DamageBreakdownChart.dll",
+        "typeName": "DamageBreakdownChart.DamageChartPlugin"
+    },
+    "compatibility": {
+        "minAppVersion": "1.0.0"
+    },
+    "permissions": [
+        "CombatDataAccess",
+        "UIModification"
+    ],
+    "resources": {
+        "maxMemoryMb": 64,
+        "maxCpuTimeSeconds": 20
+    }
+}

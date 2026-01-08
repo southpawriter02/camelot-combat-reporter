@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             xmlns:vm="using:DamageBreakdownChart.ViewModels"
+             x:Class="DamageBreakdownChart.Views.TreemapView"
+             x:DataType="vm:TreemapViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.title">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+        <Style Selector="Button.breadcrumb">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="4,2"/>
+            <Setter Property="Margin" Value="0,0,4,0"/>
+        </Style>
+        <Style Selector="TextBlock.separator">
+            <Setter Property="Margin" Value="4,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#666"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*">
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="8">
+            <TextBlock Text="Damage Treemap" Classes="title"/>
+            <Button Content="↑ Back" 
+                    Command="{Binding NavigateUpCommand}"
+                    IsVisible="{Binding CanNavigateUp}"
+                    Margin="16,0,0,0"/>
+        </StackPanel>
+
+        <!-- Breadcrumbs -->
+        <ItemsControl Grid.Row="1" 
+                      ItemsSource="{Binding Breadcrumbs}"
+                      Margin="8,0,8,8">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="{Binding Name}" 
+                                Classes="breadcrumb"
+                                Command="{Binding $parent[ItemsControl].((vm:TreemapViewModel)DataContext).NavigateToCommand}"
+                                CommandParameter="{Binding}"/>
+                        <TextBlock Text="›" Classes="separator"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Chart -->
+        <lvc:CartesianChart Grid.Row="2"
+                            Series="{Binding Series}"
+                            Margin="8">
+        </lvc:CartesianChart>
+    </Grid>
+</UserControl>
