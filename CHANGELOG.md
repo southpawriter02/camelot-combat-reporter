@@ -11,6 +11,25 @@ No unreleased changes.
 
 ---
 
+## [1.9.1] - 2026-01-08
+
+### Added
+- **Enemy Encounter Database Plugin**
+  - Complete plugin implementation for tracking enemy encounters
+  - `EnemyRecord`, `EnemyStatistics`, `EncounterSummary` data models
+  - `JsonEnemyDatabase` with thread-safe persistence using SemaphoreSlim
+  - `EncounterAnalyzer` for detecting and classifying enemies (Mob/Player/NPC)
+  - Enemy classification heuristics based on naming patterns
+  - Per-enemy statistics: damage dealt/taken, kills/deaths, win rate, average DPS
+  - Damage breakdown by ability type
+  - User notes and favorites per enemy
+  - `EnemyBrowserView` Avalonia UI with search, filter, and sort functionality
+  - Two-panel layout: enemy list (left) and detailed statistics (right)
+  - Plugin manifest with CombatDataAccess, FileRead, FileWrite, UIModification permissions
+  - Comprehensive test suite (23 tests) covering analyzer, database, and models
+
+---
+
 ## [1.9.0] - 2026-01-07
 
 ### Added

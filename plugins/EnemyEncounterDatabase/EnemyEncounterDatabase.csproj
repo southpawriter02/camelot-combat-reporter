@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    
+    <!-- Plugin metadata -->
+    <AssemblyTitle>Enemy Encounter Database</AssemblyTitle>
+    <Description>Tracks and catalogs all enemy encounters with detailed statistics</Description>
+    <Version>1.0.0</Version>
+    <Authors>CCR Community</Authors>
+    
+    <!-- Copy dependencies to output -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    
+    <!-- Enable Avalonia source generators -->
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Project references -->
+    <ProjectReference Include="..\..\src\CamelotCombatReporter.Core\CamelotCombatReporter.Core.csproj" />
+    <ProjectReference Include="..\..\src\CamelotCombatReporter.PluginSdk\CamelotCombatReporter.PluginSdk.csproj" />
+    <ProjectReference Include="..\..\src\CamelotCombatReporter.Plugins\CamelotCombatReporter.Plugins.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Avalonia packages for UI -->
+    <PackageReference Include="Avalonia" Version="11.2.7" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Copy plugin.json to output -->
+    <None Update="plugin.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

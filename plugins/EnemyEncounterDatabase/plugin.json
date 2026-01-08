@@ -1,0 +1,32 @@
+{
+    "id": "enemy-encounter-database",
+    "name": "Enemy Encounter Database",
+    "version": "1.0.0",
+    "author": "CCR Community",
+    "description": "Tracks and catalogs all enemy encounters with detailed statistics. Build a personal database of every enemy you've fought, with win/loss records, damage statistics, and personal notes.",
+    "type": "DataAnalysis",
+    "entryPoint": {
+        "assembly": "EnemyEncounterDatabase.dll",
+        "typeName": "EnemyEncounterDatabase.EnemyEncounterPlugin"
+    },
+    "compatibility": {
+        "minAppVersion": "1.0.0"
+    },
+    "permissions": [
+        "CombatDataAccess",
+        "FileRead",
+        "FileWrite",
+        "UIModification"
+    ],
+    "resources": {
+        "maxMemoryMb": 128,
+        "maxCpuTimeSeconds": 30
+    },
+    "tags": [
+        "analysis",
+        "database",
+        "tracking",
+        "pvp",
+        "pve"
+    ]
+}

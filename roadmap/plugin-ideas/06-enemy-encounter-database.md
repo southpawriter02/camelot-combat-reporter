@@ -2,6 +2,8 @@
 
 ## Plugin Type: Data Analysis + UI Component
 
+## Status: ✅ Implemented (v1.9.1)
+
 ## Overview
 
 Build a personal database of enemy encounters, tracking statistics for each unique enemy you've fought. Useful for understanding mob patterns in PvE or tracking specific player nemeses in RvR.
