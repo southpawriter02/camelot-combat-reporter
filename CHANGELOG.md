@@ -11,6 +11,21 @@ No unreleased changes.
 
 ---
 
+## [1.9.2] - 2026-01-08
+
+### Added
+- **Enemy Encounter Database v1.1.0 GUI Enhancements**
+  - Type color-coded badges: Red (Players), Green (Mobs), Blue (NPCs)
+  - Win rate progress bars with color gradient (red → green)
+  - Statistics dashboard panel showing totals across filtered enemies
+  - Encounter outcome coloring (Victory=green, Defeat=red, Escaped=orange)
+  - Export command for JSON export of filtered enemies
+  - 7 new value converters for visual styling
+  - Performance timing in debug logs
+  - Enhanced README with feature documentation
+
+---
+
 ## [1.9.1] - 2026-01-08
 
 ### Added

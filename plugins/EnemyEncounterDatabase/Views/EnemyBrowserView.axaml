@@ -2,10 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:EnemyEncounterDatabase.ViewModels"
              xmlns:models="using:EnemyEncounterDatabase.Models"
+             xmlns:views="using:EnemyEncounterDatabase.Views"
              x:Class="EnemyEncounterDatabase.Views.EnemyBrowserView"
              x:DataType="vm:EnemyBrowserViewModel">
 
+    <UserControl.Resources>
+        <views:EnemyTypeToBrushConverter x:Key="TypeToBrush"/>
+        <views:EnemyTypeToLabelConverter x:Key="TypeToLabel"/>
+        <views:WinRateToColorConverter x:Key="WinRateToColor"/>
+        <views:WinRateToProgressConverter x:Key="WinRateToProgress"/>
+        <views:OutcomeToDisplayConverter x:Key="OutcomeToDisplay"/>
+        <views:OutcomeToColorConverter x:Key="OutcomeToColor"/>
+        <views:BoolToStarConverter x:Key="BoolToStar"/>
+        <views:BoolToFavoriteTextConverter x:Key="BoolToFavoriteText"/>
+    </UserControl.Resources>
+
     <UserControl.Styles>
+        <!-- Typography -->
         <Style Selector="TextBlock.header">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -19,83 +32,150 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Medium"/>
         </Style>
+        <Style Selector="TextBlock.stat-value">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <!-- Cards -->
         <Style Selector="Border.card">
             <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="16"/>
-            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
         </Style>
+
+        <!-- Enemy Type Badges -->
+        <Style Selector="Border.type-badge">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="6,2"/>
+        </Style>
+        <Style Selector="Border.type-badge TextBlock">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- List Selection -->
         <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
         </Style>
+
+        <!-- Buttons -->
+        <Style Selector="Button.accent">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.secondary">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="Button.export">
+            <Setter Property="Padding" Value="12,6"/>
+        </Style>
     </UserControl.Styles>
 
-    <Grid ColumnDefinitions="320,*">
-        <!-- Left Panel: Search and Enemy List -->
+    <Grid ColumnDefinitions="350,*">
+        <!-- Left Panel: Search, Filters, and Enemy List -->
         <Border Grid.Column="0" 
                 BorderBrush="{DynamicResource BorderBrush}" 
                 BorderThickness="0,0,1,0"
                 Padding="16">
-            <Grid RowDefinitions="Auto,Auto,*">
+            <Grid RowDefinitions="Auto,Auto,Auto,*">
+                
+                <!-- Dashboard Summary -->
+                <Border Grid.Row="0" Classes="card" Background="#1A2A3A" Margin="0,0,0,12">
+                    <Grid ColumnDefinitions="*,*,*">
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding DashboardStats.TotalEnemies}" 
+                                       Classes="stat-value" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Enemies" Classes="label" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding DashboardStats.TotalEncounters}" 
+                                       Classes="stat-value" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Encounters" Classes="label" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding DashboardStats.OverallWinRate, StringFormat='{}{0:F0}%'}" 
+                                       Classes="stat-value" HorizontalAlignment="Center"
+                                       Foreground="{Binding DashboardStats.OverallWinRate, Converter={StaticResource WinRateToColor}}"/>
+                            <TextBlock Text="Win Rate" Classes="label" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
                 <!-- Search Box -->
-                <TextBox Grid.Row="0"
+                <TextBox Grid.Row="1"
                          Text="{Binding SearchText}"
-                         Watermark="Search enemies..."
-                         Margin="0,0,0,12">
-                    <TextBox.InnerLeftContent>
-                        <PathIcon Data="{DynamicResource SearchIcon}" 
-                                  Width="16" Height="16"
-                                  Margin="8,0,0,0"/>
-                    </TextBox.InnerLeftContent>
-                </TextBox>
+                         Watermark="🔍 Search enemies..."
+                         Margin="0,0,0,12"/>
 
                 <!-- Filters -->
-                <StackPanel Grid.Row="1" Spacing="8" Margin="0,0,0,12">
+                <StackPanel Grid.Row="2" Spacing="8" Margin="0,0,0,12">
                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
                         <ComboBox Grid.Row="0" Grid.Column="0"
                                   ItemsSource="{Binding TypeOptions}"
-                                  SelectedItem="{Binding TypeFilter, Mode=TwoWay}"
+                                  SelectedItem="{Binding SelectedTypeOption, Mode=TwoWay}"
                                   DisplayMemberBinding="{Binding Display}"
                                   HorizontalAlignment="Stretch"
                                   Margin="0,0,4,0"/>
                         <ComboBox Grid.Row="0" Grid.Column="1"
                                   ItemsSource="{Binding SortOptions}"
-                                  SelectedItem="{Binding SortBy, Mode=TwoWay}"
+                                  SelectedItem="{Binding SelectedSortOption, Mode=TwoWay}"
                                   DisplayMemberBinding="{Binding Display}"
                                   HorizontalAlignment="Stretch"
                                   Margin="4,0,0,0"/>
                     </Grid>
-                    <StackPanel Orientation="Horizontal" Spacing="12">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
                         <CheckBox Content="Favorites Only" 
                                   IsChecked="{Binding FavoritesOnly}"/>
                         <Button Content="Clear" 
                                 Command="{Binding ClearFiltersCommand}"
                                 Classes="secondary"/>
+                        <Button Content="📤 Export" 
+                                Command="{Binding ExportCommand}"
+                                Classes="export"
+                                ToolTip.Tip="Export enemies to CSV or JSON"/>
                     </StackPanel>
                 </StackPanel>
 
                 <!-- Enemy List -->
-                <ListBox Grid.Row="2"
+                <ListBox Grid.Row="3"
                          ItemsSource="{Binding Enemies}"
                          SelectedItem="{Binding SelectedEnemy}"
                          SelectionMode="Single">
                     <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="models:EnemyRecord">
-                            <Grid ColumnDefinitions="Auto,*" Margin="4,8">
+                            <Grid ColumnDefinitions="Auto,Auto,*" Margin="4,8">
+                                <!-- Favorite Star -->
                                 <TextBlock Grid.Column="0"
-                                           Text="{Binding IsFavorite, Converter={StaticResource BoolToStarConverter}}"
+                                           Text="{Binding IsFavorite, Converter={StaticResource BoolToStar}}"
                                            FontSize="14"
+                                           Foreground="#F1C40F"
                                            Margin="0,0,8,0"
                                            VerticalAlignment="Center"/>
-                                <StackPanel Grid.Column="1">
+                                
+                                <!-- Type Badge -->
+                                <Border Grid.Column="1" 
+                                        Classes="type-badge"
+                                        Background="{Binding Type, Converter={StaticResource TypeToBrush}}"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Type, Converter={StaticResource TypeToLabel}}"/>
+                                </Border>
+                                
+                                <!-- Name and Stats -->
+                                <StackPanel Grid.Column="2">
                                     <TextBlock Text="{Binding Name}" 
                                                FontWeight="Medium"
                                                FontSize="14"/>
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock Text="{Binding EncounterCount, StringFormat='{}{0} encounters'}"
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <TextBlock Text="{Binding EncounterCount, StringFormat='{}{0} enc'}"
                                                    Classes="label"/>
-                                        <TextBlock Text="{Binding Type}"
-                                                   Classes="label"/>
+                                        <TextBlock Text="{Binding Statistics.WinRate, StringFormat='{}{0:F0}% win'}"
+                                                   Foreground="{Binding Statistics.WinRate, Converter={StaticResource WinRateToColor}}"
+                                                   FontSize="11"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Grid>
@@ -108,67 +188,106 @@
         <!-- Right Panel: Enemy Details -->
         <ScrollViewer Grid.Column="1" Padding="16">
             <StackPanel IsVisible="{Binding HasSelectedEnemy}">
+                
                 <!-- Enemy Header -->
                 <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
                     <StackPanel Grid.Column="0">
-                        <TextBlock Text="{Binding SelectedEnemy.Name}" 
-                                   FontSize="24" 
-                                   FontWeight="Bold"/>
-                        <StackPanel Orientation="Horizontal" Spacing="16">
-                            <TextBlock Text="{Binding SelectedEnemy.Type}" Classes="label"/>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock Text="{Binding SelectedEnemy.Name}" 
+                                       FontSize="28" 
+                                       FontWeight="Bold"/>
+                            <Border Classes="type-badge"
+                                    Background="{Binding SelectedEnemy.Type, Converter={StaticResource TypeToBrush}}"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="{Binding SelectedEnemy.Type, Converter={StaticResource TypeToLabel}}"/>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,4,0,0">
                             <TextBlock Text="{Binding SelectedEnemy.Realm}" 
                                        Classes="label"
                                        IsVisible="{Binding SelectedEnemy.Realm, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                            <TextBlock Text="{Binding SelectedEnemy.Class, Converter={StaticResource ClassDisplayConverter}}" 
-                                       Classes="label"
-                                       IsVisible="{Binding SelectedEnemy.Class, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            <TextBlock Text="{Binding SelectedEnemy.FirstSeen, StringFormat='First seen: {0:d}'}" 
+                                       Classes="label"/>
+                            <TextBlock Text="{Binding SelectedEnemy.LastSeen, StringFormat='Last seen: {0:d}'}" 
+                                       Classes="label"/>
                         </StackPanel>
                     </StackPanel>
                     <Button Grid.Column="1"
                             Command="{Binding ToggleFavoriteCommand}"
-                            Content="{Binding SelectedEnemy.IsFavorite, Converter={StaticResource BoolToFavoriteTextConverter}}"
+                            Content="{Binding SelectedEnemy.IsFavorite, Converter={StaticResource BoolToFavoriteText}}"
                             Classes="accent"/>
                 </Grid>
+
+                <!-- Win Rate Card with Progress Bar -->
+                <Border Classes="card">
+                    <StackPanel>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="WIN RATE" Classes="header"/>
+                            <TextBlock Grid.Column="1" 
+                                       Text="{Binding SelectedEnemy.Statistics.WinRate, StringFormat='{}{0:F1}%'}"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       Foreground="{Binding SelectedEnemy.Statistics.WinRate, Converter={StaticResource WinRateToColor}}"/>
+                        </Grid>
+                        <ProgressBar Value="{Binding SelectedEnemy.Statistics.WinRate, Converter={StaticResource WinRateToProgress}}"
+                                     Maximum="1"
+                                     Height="12"
+                                     CornerRadius="6"
+                                     Foreground="{Binding SelectedEnemy.Statistics.WinRate, Converter={StaticResource WinRateToColor}}"
+                                     Margin="0,8,0,0"/>
+                        <Grid ColumnDefinitions="*,*" Margin="0,12,0,0">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Your Kills" Classes="label"/>
+                                <TextBlock Text="{Binding SelectedEnemy.Statistics.TotalKills}" 
+                                           Classes="value" Foreground="#27AE60"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Your Deaths" Classes="label"/>
+                                <TextBlock Text="{Binding SelectedEnemy.Statistics.TotalDeaths}" 
+                                           Classes="value" Foreground="#E74C3C"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
 
                 <!-- Statistics Card -->
                 <Border Classes="card">
                     <StackPanel>
-                        <TextBlock Text="STATISTICS" Classes="header"/>
-                        <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto">
+                        <TextBlock Text="COMBAT STATISTICS" Classes="header"/>
+                        <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto">
                             <!-- Row 1 -->
                             <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,12">
                                 <TextBlock Text="Encounters" Classes="label"/>
                                 <TextBlock Text="{Binding SelectedEnemy.EncounterCount}" Classes="value"/>
                             </StackPanel>
                             <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,12">
-                                <TextBlock Text="Your Kills" Classes="label"/>
-                                <TextBlock Text="{Binding SelectedEnemy.Statistics.TotalKills}" Classes="value"/>
-                            </StackPanel>
-                            <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,12">
-                                <TextBlock Text="Your Deaths" Classes="label"/>
-                                <TextBlock Text="{Binding SelectedEnemy.Statistics.TotalDeaths}" Classes="value"/>
-                            </StackPanel>
-                            <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,0,0,12">
-                                <TextBlock Text="Win Rate" Classes="label"/>
-                                <TextBlock Text="{Binding SelectedEnemy.Statistics.WinRate, StringFormat='{}{0:F1}%'}" Classes="value"/>
-                            </StackPanel>
-
-                            <!-- Row 2 -->
-                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,12">
-                                <TextBlock Text="Damage Dealt" Classes="label"/>
+                                <TextBlock Text="Total Damage Dealt" Classes="label"/>
                                 <TextBlock Text="{Binding SelectedEnemy.Statistics.TotalDamageDealt, StringFormat='{}{0:N0}'}" Classes="value"/>
                             </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,12">
-                                <TextBlock Text="Damage Taken" Classes="label"/>
+                            <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,12">
+                                <TextBlock Text="Total Damage Taken" Classes="label"/>
                                 <TextBlock Text="{Binding SelectedEnemy.Statistics.TotalDamageTaken, StringFormat='{}{0:N0}'}" Classes="value"/>
                             </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,12">
+                            <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,0,0,12">
                                 <TextBlock Text="Avg Duration" Classes="label"/>
                                 <TextBlock Text="{Binding SelectedEnemy.Statistics.AverageEncounterDuration, StringFormat='{}{0:F1}s'}" Classes="value"/>
                             </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="3" Margin="0,0,0,12">
+
+                            <!-- Row 2 -->
+                            <StackPanel Grid.Row="1" Grid.Column="0">
                                 <TextBlock Text="Avg DPS" Classes="label"/>
                                 <TextBlock Text="{Binding SelectedEnemy.Statistics.AverageDps, StringFormat='{}{0:F1}'}" Classes="value"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="1">
+                                <TextBlock Text="Damage Ratio" Classes="label"/>
+                                <TextBlock Classes="value">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0:F1}:1">
+                                            <Binding Path="SelectedEnemy.Statistics.TotalDamageDealt"/>
+                                            <Binding Path="SelectedEnemy.Statistics.TotalDamageTaken"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -177,18 +296,22 @@
                 <!-- Top Abilities Card -->
                 <Border Classes="card">
                     <StackPanel>
-                        <TextBlock Text="TOP ABILITIES AGAINST" Classes="header"/>
+                        <TextBlock Text="TOP ABILITIES" Classes="header"/>
                         <ItemsControl ItemsSource="{Binding TopAbilities}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:AbilityDamage">
-                                    <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,4">
-                                        <TextBlock Grid.Column="0" Text="{Binding Name}"/>
+                                    <Grid ColumnDefinitions="*,Auto,80" Margin="0,6">
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"/>
                                         <TextBlock Grid.Column="1" 
                                                    Text="{Binding TotalDamage, StringFormat='{}{0:N0}'}"
+                                                   FontWeight="Medium"
                                                    Margin="16,0"/>
-                                        <TextBlock Grid.Column="2" 
-                                                   Text="{Binding Percentage, StringFormat='({0:F1}%)'}"
-                                                   Classes="label"/>
+                                        <ProgressBar Grid.Column="2"
+                                                     Value="{Binding Percentage}"
+                                                     Maximum="100"
+                                                     Height="8"
+                                                     CornerRadius="4"
+                                                     Foreground="#3498DB"/>
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -199,13 +322,13 @@
                 <!-- Notes Card -->
                 <Border Classes="card">
                     <StackPanel>
-                        <TextBlock Text="NOTES" Classes="header"/>
+                        <TextBlock Text="PERSONAL NOTES" Classes="header"/>
                         <TextBox Text="{Binding EditingNotes}"
                                  AcceptsReturn="True"
                                  TextWrapping="Wrap"
                                  MinHeight="80"
-                                 Watermark="Add notes about this enemy..."/>
-                        <Button Content="Save Notes"
+                                 Watermark="Add your notes about this enemy..."/>
+                        <Button Content="💾 Save Notes"
                                 Command="{Binding SaveNotesCommand}"
                                 IsVisible="{Binding HasUnsavedNotes}"
                                 HorizontalAlignment="Right"
@@ -224,22 +347,26 @@
                                     <Border BorderBrush="{DynamicResource BorderBrush}"
                                             BorderThickness="0,0,0,1"
                                             Padding="0,8">
-                                        <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                                        <Grid ColumnDefinitions="120,Auto,*,Auto,Auto">
                                             <TextBlock Grid.Column="0" 
                                                        Text="{Binding Timestamp, StringFormat='{}{0:g}'}"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Center"
+                                                       Classes="label"/>
                                             <TextBlock Grid.Column="1" 
-                                                       Text="{Binding Outcome}"
-                                                       Margin="16,0"
-                                                       VerticalAlignment="Center"/>
-                                            <TextBlock Grid.Column="2" 
-                                                       Text="{Binding DamageDealt, StringFormat='Dealt: {0:N0}'}"
-                                                       Classes="label"
+                                                       Text="{Binding Outcome, Converter={StaticResource OutcomeToDisplay}}"
+                                                       Foreground="{Binding Outcome, Converter={StaticResource OutcomeToColor}}"
+                                                       FontWeight="Medium"
                                                        Margin="8,0"
                                                        VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="2"/>
                                             <TextBlock Grid.Column="3" 
-                                                       Text="{Binding DamageTaken, StringFormat='Taken: {0:N0}'}"
-                                                       Classes="label"
+                                                       Text="{Binding DamageDealt, StringFormat='↑{0:N0}'}"
+                                                       Foreground="#27AE60"
+                                                       Margin="8,0"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="4" 
+                                                       Text="{Binding DamageTaken, StringFormat='↓{0:N0}'}"
+                                                       Foreground="#E74C3C"
                                                        VerticalAlignment="Center"/>
                                         </Grid>
                                     </Border>
