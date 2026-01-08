@@ -61,15 +61,28 @@ fi
 APPIMAGETOOL=""
 if command -v appimagetool &> /dev/null; then
     APPIMAGETOOL="appimagetool"
+elif [ -f "$SCRIPT_DIR/squashfs-root/AppRun" ]; then
+    # Use previously extracted appimagetool
+    APPIMAGETOOL="$SCRIPT_DIR/squashfs-root/AppRun"
 elif [ -f "$SCRIPT_DIR/appimagetool-x86_64.AppImage" ]; then
-    chmod +x "$SCRIPT_DIR/appimagetool-x86_64.AppImage"
-    APPIMAGETOOL="$SCRIPT_DIR/appimagetool-x86_64.AppImage"
+    # Extract appimagetool to run without FUSE (required for GitHub Actions runners)
+    echo "Extracting appimagetool (FUSE workaround)..."
+    cd "$SCRIPT_DIR"
+    chmod +x appimagetool-x86_64.AppImage
+    ./appimagetool-x86_64.AppImage --appimage-extract > /dev/null 2>&1
+    cd - > /dev/null
+    APPIMAGETOOL="$SCRIPT_DIR/squashfs-root/AppRun"
 else
     echo "Downloading appimagetool..."
     wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage" \
          -O "$SCRIPT_DIR/appimagetool-x86_64.AppImage"
     chmod +x "$SCRIPT_DIR/appimagetool-x86_64.AppImage"
-    APPIMAGETOOL="$SCRIPT_DIR/appimagetool-x86_64.AppImage"
+    # Extract for FUSE-less execution
+    echo "Extracting appimagetool (FUSE workaround)..."
+    cd "$SCRIPT_DIR"
+    ./appimagetool-x86_64.AppImage --appimage-extract > /dev/null 2>&1
+    cd - > /dev/null
+    APPIMAGETOOL="$SCRIPT_DIR/squashfs-root/AppRun"
 fi
 
 # Build AppImage
