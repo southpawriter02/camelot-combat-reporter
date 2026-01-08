@@ -4,6 +4,9 @@
 # Force shell scripts to always use LF endings (Unix)
 *.sh text eol=lf
 
+# Force Linux desktop files to always use LF endings
+*.desktop text eol=lf
+
 # Force batch files to always use CRLF endings (Windows)
 *.bat text eol=crlf
 *.cmd text eol=crlf
